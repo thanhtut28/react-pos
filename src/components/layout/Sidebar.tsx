@@ -3,12 +3,12 @@ import { pages } from '../../dummy/pages'
 import MenuItem from './MenuItem'
 
 interface Props {
-   open: boolean
+   openSidebar: boolean
 }
 
-export default function Sidebar({ open }: Props) {
+export default function Sidebar({ openSidebar }: Props) {
    return (
-      <SidebarContainer open={open}>
+      <SidebarContainer openSidebar={openSidebar}>
          <SidebarMenu>
             {pages.map((page) => (
                <MenuItem key={page.title} page={page} />

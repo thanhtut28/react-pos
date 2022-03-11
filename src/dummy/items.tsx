@@ -60,12 +60,12 @@ export const items: TypeItem[] = [
       size: Size.small,
       amount: 7,
    },
-   {
-      title: 'Choco Bite',
-      price: 400,
-      type: ItemType.snack,
-      code: CODES.CHOB,
-      size: Size.large,
-      amount: 6,
-   },
+   // {
+   //    title: 'Choco Bite',
+   //    price: 400,
+   //    type: ItemType.snack,
+   //    code: CODES.CHOB,
+   //    size: Size.large,
+   //    amount: 6,
+   // },
 ]

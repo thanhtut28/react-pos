@@ -6,14 +6,17 @@ import App from './App'
 import Layout from './components/layout'
 import reportWebVitals from './reportWebVitals'
 import theme from './theme'
+import LayoutContextProvider from './contexts/LayoutContext'
 
 ReactDOM.render(
    <React.StrictMode>
       <ThemeProvider theme={theme}>
-         <CssBaseline />
-         <Layout>
-            <App />
-         </Layout>
+         <LayoutContextProvider>
+            <CssBaseline />
+            <Layout>
+               <App />
+            </Layout>
+         </LayoutContextProvider>
       </ThemeProvider>
    </React.StrictMode>,
    document.getElementById('root')

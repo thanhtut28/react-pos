@@ -1,26 +1,27 @@
-import { useState } from 'react'
 import Sidebar from './Sidebar'
 import { LayoutContainer } from './Elements'
 import { Box, AppBar, Button, Toolbar } from '@mui/material'
+import { useLayoutContext } from '../../contexts/LayoutContext'
 
 interface Props {
    children: React.ReactNode
 }
 
 export default function Layout({ children }: Props) {
-   const [open, setOpen] = useState<boolean>(true)
+   const { openSidebar, handleToggleSidebar } = useLayoutContext()
 
+   console.log(openSidebar)
    return (
       <Box>
          <AppBar elevation={0}>
             <Toolbar sx={{ bgcolor: '#fff' }}>
-               <Button variant="contained" color="success" onClick={() => setOpen((prev) => !prev)}>
+               <Button variant="contained" color="success" onClick={handleToggleSidebar}>
                   Toggle
                </Button>
             </Toolbar>
          </AppBar>
          <LayoutContainer marginTop={10}>
-            <Sidebar open={open} />
+            <Sidebar openSidebar={openSidebar} />
             {children}
          </LayoutContainer>
       </Box>
