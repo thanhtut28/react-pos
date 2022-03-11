@@ -2,9 +2,13 @@ import { SidebarContainer, SidebarMenu } from './Elements'
 import { pages } from '../../dummy/pages'
 import MenuItem from './MenuItem'
 
-export default function Sidebar() {
+interface Props {
+   open: boolean
+}
+
+export default function Sidebar({ open }: Props) {
    return (
-      <SidebarContainer>
+      <SidebarContainer open={open}>
          <SidebarMenu>
             {pages.map((page) => (
                <MenuItem key={page.title} page={page} />

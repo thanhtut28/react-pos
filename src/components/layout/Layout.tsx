@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Sidebar from './Sidebar'
-import { LayoutContainer, GridItem } from './Elements'
+import { LayoutContainer } from './Elements'
 import { Box, AppBar, Button, Toolbar } from '@mui/material'
 
 interface Props {
@@ -20,14 +20,8 @@ export default function Layout({ children }: Props) {
             </Toolbar>
          </AppBar>
          <LayoutContainer marginTop={10}>
-            {open && (
-               <GridItem xs={2} sx={{ flexShrink: 0 }}>
-                  <Sidebar />
-               </GridItem>
-            )}
-            <GridItem xs={open ? 10 : 12} sx={{ height: '100vh', px: 5 }}>
-               {children}
-            </GridItem>
+            <Sidebar open={open} />
+            {children}
          </LayoutContainer>
       </Box>
    )

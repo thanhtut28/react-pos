@@ -1,20 +1,25 @@
 import { Box, MenuItem } from '@mui/material'
-import Grid, { GridProps } from '@mui/material/Grid'
+import Stack, { StackProps } from '@mui/material/Stack'
 import MenuList, { MenuListProps } from '@mui/material/MenuList'
 import { styled, alpha } from '@mui/material/styles'
 
-export const LayoutContainer = styled((props: GridProps) => <Grid container {...props} />)(({ theme }) => ({
-   padding: `${theme.spacing(2)} 0`,
-}))
+export const LayoutContainer = styled((props: StackProps) => <Stack direction="row" {...props} />)(
+   ({ theme }) => ({
+      padding: `${theme.spacing(2)} 0`,
+   })
+)
 
-export const GridItem = styled((props: GridProps) => <Grid item {...props} />)(() => ({}))
-
-export const SidebarContainer = styled(Box)(({ theme }) => ({
+export const SidebarContainer = styled(Box)<{ open: boolean }>(({ theme, open }) => ({
    padding: theme.spacing(3),
    // position: 'fixed',
    paddingTop: 0,
-   height: '100vh',
    overflowY: 'auto',
+   width: 260,
+   flexShrink: 0,
+   transform: open ? 'none' : `translateX(-260px)`,
+   transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.standard,
+   }),
 }))
 
 export const SidebarMenu = styled((props: MenuListProps) => <MenuList {...props} />)(() => ({
