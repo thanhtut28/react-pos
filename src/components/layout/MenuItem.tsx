@@ -1,9 +1,9 @@
 import { SidebarMenuItem } from './Elements'
 import { ListItemIcon, ListItemText } from '@mui/material'
-import { Page } from '../../dummy/pages'
+import { PageInterface } from '../../dummy'
 
 interface Props {
-   page: Page
+   page: PageInterface
 }
 
 const MenuItem: React.FC<Props> = ({ page }: Props) => (

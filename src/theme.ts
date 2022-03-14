@@ -1,5 +1,5 @@
 import { createTheme, responsiveFontSizes } from '@mui/material'
-import { deepPurple, blue } from '@mui/material/colors'
+import { blue, deepPurple } from '@mui/material/colors'
 
 declare module '@mui/material/styles' {
    interface PaletteColor {

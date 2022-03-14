@@ -1,9 +1,9 @@
-import Dashboard from './components/dashboard'
+import Dashboard from '../components/dashboard'
 import * as React from 'react'
 import { DataGrid, GridColumns, GridRowsProp, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid'
 import { randomCreatedDate, randomTraderName, randomUpdatedDate } from '@mui/x-data-grid-generator'
 import { useDemoData } from '@mui/x-data-grid-generator'
-import { Button } from '@mui/material'
+import { Button, Box, Typography } from '@mui/material'
 
 const PageSizeCustomOptions = () => {
    const [pageSize, setPageSize] = React.useState<number>(5)
@@ -74,20 +74,31 @@ const PageSizeCustomOptions = () => {
 
    function CustomToolbar() {
       return (
-         <GridToolbarContainer>
-            <GridToolbar />
-            <Button
-               variant={`${isEditable ? 'contained' : 'outlined'}`}
-               onClick={() => setIsEditable((prev) => !prev)}
-            >
-               Edit
-            </Button>
-         </GridToolbarContainer>
+         <Box sx={{ width: '100%' }}>
+            <GridToolbarContainer>
+               <GridToolbar />
+               <Button
+                  variant={`${isEditable ? 'contained' : 'outlined'}`}
+                  onClick={() => setIsEditable((prev) => !prev)}
+               >
+                  Edit
+               </Button>
+            </GridToolbarContainer>
+         </Box>
       )
    }
 
    return (
-      <div style={{ height: '80vh', width: '100%' }}>
+      <Box
+         sx={{
+            height: '70vh',
+            maxHeight: '100%',
+            width: '100%',
+            bgcolor: 'white',
+            padding: 2,
+            borderRadius: 1,
+         }}
+      >
          <DataGrid
             pageSize={pageSize}
             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
@@ -97,12 +108,24 @@ const PageSizeCustomOptions = () => {
             columns={columns}
             rows={rows}
          />
-      </div>
+      </Box>
    )
 }
 
-function App() {
-   return <PageSizeCustomOptions />
+export default function Routes() {
+   return (
+      //   <Box
+      //      sx={{
+      //         backgroundColor: (theme) => theme.palette.common.white,
+      //         borderRadius: 1,
+      //         padding: (theme) => theme.spacing(1),
+      //      }}
+      //   >
+      //      <Typography variant="h6" sx={{ py: 1, color: 'primary.main' }}>
+      //         Customers
+      //      </Typography>
+      //      <PageSizeCustomOptions />
+      //   </Box>
+      <Dashboard />
+   )
 }
-
-export default App

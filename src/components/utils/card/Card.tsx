@@ -1,36 +1,41 @@
-import { TypeItem } from '@root/src/dummy/items'
 import {
    StyledCard,
    CardHeader,
    StyledCardContent,
-   CardPriceText,
-   CardTitleText,
+   CardHeaderText,
+   CardSubHeaderText,
    CardBody,
    CardAmountText,
-   CardCodeText,
+   CardSubDetailsFooterText,
    CardBodyDetails,
-   CardSizeText,
+   CardSubDetailsHeaderText,
 } from './Elements'
 
 interface Props {
-   item: TypeItem
+   header: string
+   subheader?: string
+   detailsHeader: number
+   detailsFooter: string
+   amount: number
 }
 
-export default function Card({ item }: Props) {
+export default function Card({ header, subheader, detailsFooter, detailsHeader, amount }: Props) {
    return (
       <StyledCard>
          <StyledCardContent>
             <CardHeader>
-               <CardCodeText>{item.code}</CardCodeText>
-               <CardSizeText>{item.size}</CardSizeText>
+               <CardHeaderText>{header}</CardHeaderText>
+               {subheader && <CardSubHeaderText>{subheader}</CardSubHeaderText>}
             </CardHeader>
 
             <CardBody>
                <CardBodyDetails>
-                  <CardPriceText>{item.price}Ks</CardPriceText>
-                  <CardTitleText>{item.title}</CardTitleText>
+                  <CardSubDetailsHeaderText>
+                     {detailsHeader > 100000 ? `${detailsHeader / 100000}Lhks` : `${amount}Ks`}
+                  </CardSubDetailsHeaderText>
+                  <CardSubDetailsFooterText>{detailsFooter}</CardSubDetailsFooterText>
                </CardBodyDetails>
-               <CardAmountText>{item.amount}</CardAmountText>
+               <CardAmountText>{amount}</CardAmountText>
             </CardBody>
          </StyledCardContent>
       </StyledCard>

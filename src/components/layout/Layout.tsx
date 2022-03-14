@@ -1,5 +1,5 @@
 import Sidebar from './Sidebar'
-import { LayoutContainer } from './Elements'
+import { LayoutContainer, MainContainer, MainWrapper } from './Elements'
 import { Box, AppBar, Button, Toolbar } from '@mui/material'
 import { useLayoutContext } from '../../contexts/LayoutContext'
 
@@ -22,7 +22,9 @@ export default function Layout({ children }: Props) {
          </AppBar>
          <LayoutContainer marginTop={10}>
             <Sidebar openSidebar={openSidebar} />
-            {children}
+            <MainContainer openSidebar={openSidebar}>
+               <MainWrapper>{children}</MainWrapper>
+            </MainContainer>
          </LayoutContainer>
       </Box>
    )

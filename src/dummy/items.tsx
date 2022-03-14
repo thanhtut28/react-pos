@@ -17,7 +17,7 @@ const CODES = {
    CHOB: 'CHOB',
 }
 
-export interface TypeItem {
+export interface ItemInterface {
    title: string
    price: number
    type: ItemType
@@ -26,7 +26,7 @@ export interface TypeItem {
    amount: number
 }
 
-export const items: TypeItem[] = [
+export const items: ItemInterface[] = [
    {
       title: 'Alpine',
       price: 500,
@@ -37,12 +37,12 @@ export const items: TypeItem[] = [
    },
 
    {
-      title: 'Design Water',
-      price: 6500,
+      title: 'Design Water Design Water Design Water Design Water Design Water',
+      price: 1500000,
       type: ItemType.waterBottle,
       code: CODES.DSW,
       size: Size.large,
-      amount: 3,
+      amount: 3000,
    },
    {
       title: 'Oishi',

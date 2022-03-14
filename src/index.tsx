@@ -2,11 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import App from './App'
 import Layout from './components/layout'
 import reportWebVitals from './reportWebVitals'
 import theme from './theme'
 import LayoutContextProvider from './contexts/LayoutContext'
+import Routes from './pages'
 
 ReactDOM.render(
    <React.StrictMode>
@@ -14,7 +14,7 @@ ReactDOM.render(
          <LayoutContextProvider>
             <CssBaseline />
             <Layout>
-               <App />
+               <Routes />
             </Layout>
          </LayoutContextProvider>
       </ThemeProvider>

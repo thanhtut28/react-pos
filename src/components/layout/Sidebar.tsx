@@ -1,5 +1,5 @@
 import { SidebarContainer, SidebarMenu } from './Elements'
-import { pages } from '../../dummy/pages'
+import { pages } from '../../dummy'
 import MenuItem from './MenuItem'
 
 interface Props {

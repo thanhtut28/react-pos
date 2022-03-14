@@ -3,19 +3,43 @@ import Stack, { StackProps } from '@mui/material/Stack'
 import MenuList, { MenuListProps } from '@mui/material/MenuList'
 import { styled } from '@mui/material/styles'
 
-export const LayoutContainer = styled((props: StackProps) => <Stack direction="row" {...props} />)(
-   ({ theme }) => ({
-      padding: `${theme.spacing(2)} 0`,
-   })
-)
+export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
+   backgroundColor: theme.palette.secondary.accent,
+   borderTopLeftRadius: theme.shape.borderRadius,
+   borderTopRightRadius: theme.shape.borderRadius,
+
+   /**
+    * @WillDel
+    */
+   width: 'calc(100% - 280px)',
+   marginLeft: openSidebar ? 0 : -240,
+   marginRight: 20,
+   transition: theme.transitions.create('margin', {
+      duration: theme.transitions.duration.standard,
+   }),
+   flexGrow: 1,
+   padding: theme.spacing(2),
+   marginBottom: theme.spacing(-2),
+}))
+
+export const MainWrapper = styled((props: StackProps) => <Stack {...props} spacing={2} />)(() => ({
+   // marginTop: theme.spacing(-2),
+   // marginLeft: theme.spacing(-2),
+}))
+
+export const LayoutContainer = styled(Box)(() => ({
+   // padding: `${theme.spacing(2)} 0`,
+   display: 'flex',
+}))
 
 export const SidebarContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
    padding: theme.spacing(3),
    // position: 'fixed',
    paddingTop: 0,
-   overflowY: 'auto',
-   width: 260,
+   // overflowY: 'auto',
+   // width: 260,
    flexShrink: 0,
+   width: 260,
    transform: openSidebar ? 'none' : `translateX(-260px)`,
    transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.standard,
