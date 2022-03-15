@@ -31,7 +31,7 @@ export default function Card({ header, subheader, detailsFooter, detailsHeader, 
             <CardBody>
                <CardBodyDetails>
                   <CardSubDetailsHeaderText>
-                     {detailsHeader > 100000 ? `${detailsHeader / 100000}Lhks` : `${amount}Ks`}
+                     {detailsHeader >= 100000 ? `${detailsHeader / 100000} Lakhs` : `${detailsHeader} Ks`}
                   </CardSubDetailsHeaderText>
                   <CardSubDetailsFooterText>{detailsFooter}</CardSubDetailsFooterText>
                </CardBodyDetails>

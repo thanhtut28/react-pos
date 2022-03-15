@@ -94,7 +94,6 @@ const PageSizeCustomOptions = () => {
             height: '70vh',
             maxHeight: '100%',
             width: '100%',
-            bgcolor: 'white',
             padding: 2,
             borderRadius: 1,
          }}
@@ -114,18 +113,18 @@ const PageSizeCustomOptions = () => {
 
 export default function Routes() {
    return (
-      //   <Box
-      //      sx={{
-      //         backgroundColor: (theme) => theme.palette.common.white,
-      //         borderRadius: 1,
-      //         padding: (theme) => theme.spacing(1),
-      //      }}
-      //   >
-      //      <Typography variant="h6" sx={{ py: 1, color: 'primary.main' }}>
-      //         Customers
-      //      </Typography>
-      //      <PageSizeCustomOptions />
-      //   </Box>
+      // <Box
+      //    sx={{
+      //       backgroundColor: (theme) => theme.palette.common.white,
+      //       borderRadius: 1,
+      //       padding: (theme) => theme.spacing(1),
+      //    }}
+      // >
+      //    <Typography variant="h6" sx={{ p: 2, pb: 0, color: 'primary.main' }}>
+      //       Customers
+      //    </Typography>
+      //    <PageSizeCustomOptions />
+      // </Box>
       <Dashboard />
    )
 }

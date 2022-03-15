@@ -1,4 +1,4 @@
-import { CardContent, Box, IconButton, IconButtonProps } from '@mui/material'
+import { CardContent, Box } from '@mui/material'
 import Card, { CardProps } from '@mui/material/Card'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
@@ -31,6 +31,9 @@ export const StyledCard = styled((props: CardProps) => <Card {...props} elevatio
       borderRadius: '50%',
       top: -50,
       right: -70,
+   },
+   '&:hover': {
+      boxShadow: `0 0 2px 3px ${theme.palette.primary.main}`,
    },
 }))
 

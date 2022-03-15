@@ -1,66 +1,66 @@
-import { Box, MenuItem } from '@mui/material'
-import Stack, { StackProps } from '@mui/material/Stack'
-import MenuList, { MenuListProps } from '@mui/material/MenuList'
+import { Box } from '@mui/material'
+import List, { ListProps } from '@mui/material/List'
+import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton'
+import Drawer, { DrawerProps } from '@mui/material/Drawer'
+
 import { styled } from '@mui/material/styles'
+
+const drawerWidth = 260
+const marginWidth = 20
 
 export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
    backgroundColor: theme.palette.secondary.accent,
    borderTopLeftRadius: theme.shape.borderRadius,
    borderTopRightRadius: theme.shape.borderRadius,
-
-   /**
-    * @WillDel
-    */
-   width: 'calc(100% - 280px)',
-   marginLeft: openSidebar ? 0 : -240,
-   marginRight: 20,
+   width: `calc(100% - ${drawerWidth + marginWidth}px)`,
+   marginRight: marginWidth,
    transition: theme.transitions.create('margin', {
       duration: theme.transitions.duration.standard,
    }),
    flexGrow: 1,
+
    padding: theme.spacing(2),
    marginBottom: theme.spacing(-2),
-}))
-
-export const MainWrapper = styled((props: StackProps) => <Stack {...props} spacing={2} />)(() => ({
-   // marginTop: theme.spacing(-2),
-   // marginLeft: theme.spacing(-2),
+   [theme.breakpoints.up('md')]: {
+      marginLeft: openSidebar ? 0 : -(drawerWidth - marginWidth),
+   },
+   [theme.breakpoints.down('md')]: {
+      marginLeft: marginWidth,
+   },
 }))
 
 export const LayoutContainer = styled(Box)(() => ({
-   // padding: `${theme.spacing(2)} 0`,
    display: 'flex',
 }))
 
-export const SidebarContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
+export const SidebarContainer = styled(Box)<{ openSidebar?: boolean }>(({ theme, openSidebar }) => ({
    padding: theme.spacing(3),
-   // position: 'fixed',
    paddingTop: 0,
-   // overflowY: 'auto',
-   // width: 260,
    flexShrink: 0,
-   width: 260,
+   width: drawerWidth,
    transform: openSidebar ? 'none' : `translateX(-260px)`,
    transition: theme.transitions.create('transform', {
       duration: theme.transitions.duration.standard,
    }),
 }))
 
-export const SidebarMenu = styled((props: MenuListProps) => <MenuList {...props} />)(() => ({
+export const SidebarMenu = styled((props: ListProps) => <List {...props} />)(() => ({
    // width: '100%',
    // maxWidth: 250,
    // margin: '0 auto',
 }))
 
-export const SidebarMenuItem = styled(MenuItem)<{ active: boolean }>(({ theme, active }) => ({
+export const SidebarListItem = styled((props: ListItemButtonProps) => <ListItemButton {...props} />)<{
+   active: boolean
+}>(({ theme, active }) => ({
    marginTop: theme.spacing(1.5),
    marginBottom: theme.spacing(1.5),
-   paddingTop: theme.spacing(1.5),
-   paddingBottom: theme.spacing(1.5),
    color: active ? theme.palette.primary.main : theme.palette.grey[700],
-
    backgroundColor: active ? theme.palette.primary.accent : 'transparent',
    borderRadius: theme.shape.borderRadius,
+   '& .MuiListItemIcon-root': {
+      minWidth: 36,
+   },
    '& .MuiSvgIcon-root': {
       color: active ? theme.palette.primary.main : 'inherit',
    },
@@ -73,5 +73,24 @@ export const SidebarMenuItem = styled(MenuItem)<{ active: boolean }>(({ theme, a
       '& .MuiSvgIcon-root': {
          color: theme.palette.primary.main,
       },
+   },
+}))
+
+// Sidebar Drawer
+
+export const SidebarDrawerContainer = styled((props: DrawerProps) => (
+   <Drawer
+      {...props}
+      ModalProps={{
+         keepMounted: true,
+      }}
+   />
+))(({ theme }) => ({
+   width: drawerWidth,
+   padding: theme.spacing(3),
+   paddingTop: 0,
+   '& .MuiPaper-root': {
+      width: drawerWidth,
+      padding: theme.spacing(3),
    },
 }))
