@@ -1,6 +1,6 @@
 import { SidebarListItem } from './Elements'
 import { ListItemIcon, ListItemText } from '@mui/material'
-import { PageInterface } from '../../dummy'
+import { PageInterface } from '../../../dummy'
 
 interface Props {
    page: PageInterface

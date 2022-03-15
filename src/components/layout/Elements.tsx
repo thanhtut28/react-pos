@@ -1,12 +1,9 @@
 import { Box } from '@mui/material'
-import List, { ListProps } from '@mui/material/List'
-import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton'
-import Drawer, { DrawerProps } from '@mui/material/Drawer'
-
+import AppBar, { AppBarProps } from '@mui/material/AppBar'
+import Toolbar, { ToolbarProps } from '@mui/material/Toolbar'
+import Avatar, { AvatarProps } from '@mui/material/Avatar'
 import { styled } from '@mui/material/styles'
-
-const drawerWidth = 260
-const marginWidth = 20
+import { drawerWidth, marginWidth } from '../../constants/drawer'
 
 export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
    backgroundColor: theme.palette.secondary.accent,
@@ -29,68 +26,36 @@ export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, ope
    },
 }))
 
-export const LayoutContainer = styled(Box)(() => ({
+export const LayoutContainer = styled(Box)(({ theme }) => ({
    display: 'flex',
+   paddingTop: theme.spacing(3),
 }))
 
-export const SidebarContainer = styled(Box)<{ openSidebar?: boolean }>(({ theme, openSidebar }) => ({
-   padding: theme.spacing(3),
-   paddingTop: 0,
-   flexShrink: 0,
-   width: drawerWidth,
-   transform: openSidebar ? 'none' : `translateX(-260px)`,
-   transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.standard,
-   }),
+export const Offset = styled('div')(({ theme }) => theme.mixins.toolbar)
+
+// <---------------- Header --------------->
+
+export const StyledAppBar = styled((props: AppBarProps) => <AppBar {...props} elevation={0} />)()
+
+export const StyledToolbar = styled((props: ToolbarProps) => <Toolbar {...props} />)(({ theme }) => ({
+   backgroundColor: theme.palette.common.white,
+   paddingTop: theme.spacing(2),
+   paddingBottom: theme.spacing(2),
 }))
 
-export const SidebarMenu = styled((props: ListProps) => <List {...props} />)(() => ({
-   // width: '100%',
-   // maxWidth: 250,
-   // margin: '0 auto',
-}))
-
-export const SidebarListItem = styled((props: ListItemButtonProps) => <ListItemButton {...props} />)<{
-   active: boolean
-}>(({ theme, active }) => ({
-   marginTop: theme.spacing(1.5),
-   marginBottom: theme.spacing(1.5),
-   color: active ? theme.palette.primary.main : theme.palette.grey[700],
-   backgroundColor: active ? theme.palette.primary.accent : 'transparent',
-   borderRadius: theme.shape.borderRadius,
-   '& .MuiListItemIcon-root': {
-      minWidth: 36,
-   },
-   '& .MuiSvgIcon-root': {
-      color: active ? theme.palette.primary.main : 'inherit',
-   },
-   '& .MuiTypography-root': {
-      fontWeight: active ? theme.typography.fontWeightBold : 'normal',
-   },
-   '&:hover': {
+export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(
+   ({ theme }) => ({
       backgroundColor: theme.palette.primary.accent,
       color: theme.palette.primary.main,
-      '& .MuiSvgIcon-root': {
-         color: theme.palette.primary.main,
+      '&:hover': {
+         backgroundColor: theme.palette.primary.main,
+         color: theme.palette.primary.light,
       },
-   },
-}))
+   })
+)
 
-// Sidebar Drawer
-
-export const SidebarDrawerContainer = styled((props: DrawerProps) => (
-   <Drawer
-      {...props}
-      ModalProps={{
-         keepMounted: true,
-      }}
-   />
-))(({ theme }) => ({
-   width: drawerWidth,
-   padding: theme.spacing(3),
-   paddingTop: 0,
-   '& .MuiPaper-root': {
-      width: drawerWidth,
-      padding: theme.spacing(3),
-   },
+export const ToggleBarWrapper = styled(Box)(({ theme }) => ({
+   display: 'flex',
+   justifyContent: 'space-between',
+   width: 200,
 }))

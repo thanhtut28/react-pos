@@ -1,5 +1,5 @@
-import { SidebarContainer } from './Elements'
-import SidebarMenuList from './SidebarMenuList'
+import { SidebarContainer, SidebarWrapper } from './Elements'
+import SidebarList from './SidebarList'
 
 interface Props {
    openSidebar?: boolean
@@ -8,7 +8,9 @@ interface Props {
 export default function Sidebar({ openSidebar }: Props) {
    return (
       <SidebarContainer openSidebar={openSidebar}>
-         <SidebarMenuList />
+         <SidebarWrapper>
+            <SidebarList />
+         </SidebarWrapper>
       </SidebarContainer>
    )
 }

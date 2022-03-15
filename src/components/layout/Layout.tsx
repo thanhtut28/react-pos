@@ -1,6 +1,5 @@
-import Sidebar from './Sidebar'
-import SidebarDrawer from './SidebarDrawer'
-import { LayoutContainer, MainContainer } from './Elements'
+import { Sidebar, SidebarDrawer } from './sidebar'
+import { LayoutContainer, MainContainer, Offset } from './Elements'
 import { Box, useTheme, useMediaQuery } from '@mui/material'
 import { useLayoutContext } from '../../contexts/LayoutContext'
 import Header from './header'
@@ -17,7 +16,8 @@ export default function Layout({ children }: Props) {
    return (
       <Box>
          <Header />
-         <LayoutContainer marginTop={10}>
+         <Offset />
+         <LayoutContainer>
             {!isMobile && <Sidebar openSidebar={openSidebar} />}
             {isMobile && <SidebarDrawer openSidebar={openSidebar} />}
             <MainContainer openSidebar={openSidebar}>{children}</MainContainer>
