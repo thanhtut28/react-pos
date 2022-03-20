@@ -1,16 +1,16 @@
-import { SidebarMenuItem } from './Elements'
+import { SidebarListItem } from './Elements'
 import { ListItemIcon, ListItemText } from '@mui/material'
-import { Page } from '../../dummy/pages'
+import { PageInterface } from '../../../dummy'
 
 interface Props {
-   page: Page
+   page: PageInterface
 }
 
 const MenuItem: React.FC<Props> = ({ page }: Props) => (
-   <SidebarMenuItem active={page.active} onClick={() => console.log(page)}>
+   <SidebarListItem active={page.active} onClick={() => console.log(page)}>
       <ListItemIcon>{page.icon}</ListItemIcon>
       <ListItemText>{page.title}</ListItemText>
-   </SidebarMenuItem>
+   </SidebarListItem>
 )
 
 export default MenuItem

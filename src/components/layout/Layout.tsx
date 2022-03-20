@@ -1,28 +1,26 @@
-import Sidebar from './Sidebar'
-import { LayoutContainer } from './Elements'
-import { Box, AppBar, Button, Toolbar } from '@mui/material'
+import { Sidebar, SidebarDrawer } from './sidebar'
+import { LayoutContainer, MainContainer, Offset } from './Elements'
+import { Box, useTheme, useMediaQuery } from '@mui/material'
 import { useLayoutContext } from '../../contexts/LayoutContext'
+import Header from './header'
 
 interface Props {
    children: React.ReactNode
 }
 
 export default function Layout({ children }: Props) {
-   const { openSidebar, handleToggleSidebar } = useLayoutContext()
+   const { openSidebar } = useLayoutContext()
+   const theme = useTheme()
+   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
-   console.log(openSidebar)
    return (
       <Box>
-         <AppBar elevation={0}>
-            <Toolbar sx={{ bgcolor: '#fff' }}>
-               <Button variant="contained" color="success" onClick={handleToggleSidebar}>
-                  Toggle
-               </Button>
-            </Toolbar>
-         </AppBar>
-         <LayoutContainer marginTop={10}>
-            <Sidebar openSidebar={openSidebar} />
-            {children}
+         <Header />
+         <Offset />
+         <LayoutContainer>
+            {!isMobile && <Sidebar openSidebar={openSidebar} />}
+            {isMobile && <SidebarDrawer openSidebar={openSidebar} />}
+            <MainContainer openSidebar={openSidebar}>{children}</MainContainer>
          </LayoutContainer>
       </Box>
    )

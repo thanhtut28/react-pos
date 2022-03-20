@@ -1,53 +1,61 @@
-import { Box, MenuItem } from '@mui/material'
-import Stack, { StackProps } from '@mui/material/Stack'
-import MenuList, { MenuListProps } from '@mui/material/MenuList'
+import { Box } from '@mui/material'
+import AppBar, { AppBarProps } from '@mui/material/AppBar'
+import Toolbar, { ToolbarProps } from '@mui/material/Toolbar'
+import Avatar, { AvatarProps } from '@mui/material/Avatar'
 import { styled } from '@mui/material/styles'
+import { drawerWidth, marginWidth } from '../../constants/drawer'
 
-export const LayoutContainer = styled((props: StackProps) => <Stack direction="row" {...props} />)(
+export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
+   backgroundColor: theme.palette.secondary.accent,
+   borderTopLeftRadius: theme.shape.borderRadius,
+   borderTopRightRadius: theme.shape.borderRadius,
+   width: `calc(100% - ${drawerWidth + marginWidth}px)`,
+   marginRight: marginWidth,
+   transition: theme.transitions.create('margin', {
+      duration: theme.transitions.duration.standard,
+   }),
+   flexGrow: 1,
+
+   padding: theme.spacing(2),
+   marginBottom: theme.spacing(-2),
+   [theme.breakpoints.up('md')]: {
+      marginLeft: openSidebar ? 0 : -(drawerWidth - marginWidth),
+   },
+   [theme.breakpoints.down('md')]: {
+      marginLeft: marginWidth,
+   },
+}))
+
+export const LayoutContainer = styled(Box)(({ theme }) => ({
+   display: 'flex',
+   paddingTop: theme.spacing(3),
+}))
+
+export const Offset = styled('div')(({ theme }) => theme.mixins.toolbar)
+
+// <---------------- Header --------------->
+
+export const StyledAppBar = styled((props: AppBarProps) => <AppBar {...props} elevation={0} />)()
+
+export const StyledToolbar = styled((props: ToolbarProps) => <Toolbar {...props} />)(({ theme }) => ({
+   backgroundColor: theme.palette.common.white,
+   paddingTop: theme.spacing(2),
+   paddingBottom: theme.spacing(2),
+}))
+
+export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(
    ({ theme }) => ({
-      padding: `${theme.spacing(2)} 0`,
+      backgroundColor: theme.palette.primary.accent,
+      color: theme.palette.primary.main,
+      '&:hover': {
+         backgroundColor: theme.palette.primary.main,
+         color: theme.palette.primary.light,
+      },
    })
 )
 
-export const SidebarContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
-   padding: theme.spacing(3),
-   // position: 'fixed',
-   paddingTop: 0,
-   overflowY: 'auto',
-   width: 260,
-   flexShrink: 0,
-   transform: openSidebar ? 'none' : `translateX(-260px)`,
-   transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.standard,
-   }),
-}))
-
-export const SidebarMenu = styled((props: MenuListProps) => <MenuList {...props} />)(() => ({
-   // width: '100%',
-   // maxWidth: 250,
-   // margin: '0 auto',
-}))
-
-export const SidebarMenuItem = styled(MenuItem)<{ active: boolean }>(({ theme, active }) => ({
-   marginTop: theme.spacing(1.5),
-   marginBottom: theme.spacing(1.5),
-   paddingTop: theme.spacing(1.5),
-   paddingBottom: theme.spacing(1.5),
-   color: active ? theme.palette.primary.main : theme.palette.grey[700],
-
-   backgroundColor: active ? theme.palette.primary.accent : 'transparent',
-   borderRadius: theme.shape.borderRadius,
-   '& .MuiSvgIcon-root': {
-      color: active ? theme.palette.primary.main : 'inherit',
-   },
-   '& .MuiTypography-root': {
-      fontWeight: active ? theme.typography.fontWeightBold : 'normal',
-   },
-   '&:hover': {
-      backgroundColor: theme.palette.primary.accent,
-      color: theme.palette.primary.main,
-      '& .MuiSvgIcon-root': {
-         color: theme.palette.primary.main,
-      },
-   },
+export const ToggleBarWrapper = styled(Box)(({ theme }) => ({
+   display: 'flex',
+   justifyContent: 'space-between',
+   width: 200,
 }))

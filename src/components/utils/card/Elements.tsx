@@ -32,10 +32,14 @@ export const StyledCard = styled((props: CardProps) => <Card {...props} elevatio
       top: -50,
       right: -70,
    },
+   '&:hover': {
+      boxShadow: `0 0 2px 3px ${theme.palette.primary.main}`,
+   },
 }))
 
 export const StyledCardContent = styled(CardContent)(({ theme }) => ({
    padding: theme.spacing(3),
+   width: '100%',
 }))
 
 export const CardHeader = styled(Box)(() => ({
@@ -49,45 +53,65 @@ export const CardBody = styled(Box)(({ theme }) => ({
    justifyContent: 'space-between',
    alignItems: 'center',
    paddingTop: theme.spacing(6),
+   width: '100%',
 }))
 
 export const CardBodyDetails = styled(Box)(() => ({
-   textAlign: 'left',
+   // textAlign: 'left',
    display: 'flex',
    flexDirection: 'column',
+   maxWidth: '50%',
 }))
 
-export const CardTitleText = styled((props: TypographyProps) => (
-   <Typography {...props} variant="subtitle2" />
+export const CardSubDetailsFooterText = styled((props: TypographyProps) => (
+   <Typography {...props} variant="subtitle2" noWrap />
 ))(({ theme }) => ({
    color: theme.palette.primary.light,
+   paddingRight: theme.spacing(1),
 }))
 
-export const CardPriceText = styled((props: TypographyProps) => <Typography {...props} variant="h6" />)(
+export const CardSubDetailsHeaderText = styled((props: TypographyProps) => (
+   <Typography {...props} variant="h6" />
+))(({ theme }) => ({
+   fontWeight: theme.typography.fontWeightBold,
+   color: theme.palette.primary.contrastText,
+}))
+
+export const CardAmountText = styled((props: TypographyProps) => <Typography {...props} variant="h3" />)(
    ({ theme }) => ({
       fontWeight: theme.typography.fontWeightBold,
       color: theme.palette.primary.contrastText,
    })
 )
 
-export const CardAmountText = styled((props: TypographyProps) => <Typography {...props} variant="h2" />)(
-   ({ theme }) => ({
-      fontWeight: theme.typography.fontWeightBold,
-      color: theme.palette.primary.contrastText,
-   })
-)
-
-export const CardCodeText = styled((props: TypographyProps) => <Typography {...props} variant="h5" />)(
+export const CardHeaderText = styled((props: TypographyProps) => <Typography {...props} variant="h5" />)(
    ({ theme }) => ({
       fontWeight: theme.typography.fontWeightBold,
       color: theme.palette.primary.light,
    })
 )
 
-export const CardSizeText = styled((props: TypographyProps) => <Typography {...props} variant="h6" />)(
+export const CardSubHeaderText = styled((props: TypographyProps) => <Typography {...props} variant="h6" />)(
    ({ theme }) => ({
       fontWeight: theme.typography.fontWeightBold,
       color: theme.palette.primary.light,
       zIndex: 3,
    })
 )
+
+export const SeeAllText = styled((props: TypographyProps) => <Typography {...props} variant="h6" />)(
+   ({ theme }) => ({
+      paddingTop: theme.spacing(2),
+      color: theme.palette.primary.contrastText,
+      zIndex: 5,
+   })
+)
+
+export const IconWrapper = styled(Box)(({ theme }) => ({
+   padding: 5,
+   display: 'flex',
+   justifyContent: 'center',
+   alignItems: 'center',
+   borderRadius: '50%',
+   backgroundColor: theme.palette.common.white,
+}))
