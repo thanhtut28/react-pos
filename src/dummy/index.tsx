@@ -1,6 +1,6 @@
 export { items } from './items'
 export { customers } from './customers'
-export { pages } from './pages'
+export { pages, Type } from './pages'
 export type { ItemInterface } from './items'
 export type { CustomerInterface } from './customers'
 export type { PageInterface } from './pages'

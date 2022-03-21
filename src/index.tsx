@@ -6,18 +6,19 @@ import Layout from './components/layout'
 import reportWebVitals from './reportWebVitals'
 import theme from './theme'
 import LayoutContextProvider from './contexts/LayoutContext'
-import Routes from './pages'
+import Routes from './routes'
+import { BrowserRouter } from 'react-router-dom'
 
 ReactDOM.render(
    <React.StrictMode>
-      <ThemeProvider theme={theme}>
-         <LayoutContextProvider>
-            <CssBaseline />
-            <Layout>
+      <BrowserRouter>
+         <ThemeProvider theme={theme}>
+            <LayoutContextProvider>
+               <CssBaseline />
                <Routes />
-            </Layout>
-         </LayoutContextProvider>
-      </ThemeProvider>
+            </LayoutContextProvider>
+         </ThemeProvider>
+      </BrowserRouter>
    </React.StrictMode>,
    document.getElementById('root')
 )

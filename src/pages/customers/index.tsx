@@ -1,4 +1,3 @@
-import Dashboard from '../components/dashboard'
 import * as React from 'react'
 import { DataGrid, GridColumns, GridRowsProp, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid'
 import { randomCreatedDate, randomTraderName, randomUpdatedDate } from '@mui/x-data-grid-generator'
@@ -111,20 +110,19 @@ const PageSizeCustomOptions = () => {
    )
 }
 
-export default function Routes() {
+export default function Customers() {
    return (
-      // <Box
-      //    sx={{
-      //       backgroundColor: (theme) => theme.palette.common.white,
-      //       borderRadius: 1,
-      //       padding: (theme) => theme.spacing(1),
-      //    }}
-      // >
-      //    <Typography variant="h6" sx={{ p: 2, pb: 0, color: 'primary.main' }}>
-      //       Customers
-      //    </Typography>
-      //    <PageSizeCustomOptions />
-      // </Box>
-      <Dashboard />
+      <Box
+         sx={{
+            backgroundColor: (theme) => theme.palette.common.white,
+            borderRadius: 1,
+            padding: (theme) => theme.spacing(1),
+         }}
+      >
+         <Typography variant="h6" sx={{ p: 2, pb: 0, color: 'primary.main' }}>
+            Customers
+         </Typography>
+         <PageSizeCustomOptions />
+      </Box>
    )
 }

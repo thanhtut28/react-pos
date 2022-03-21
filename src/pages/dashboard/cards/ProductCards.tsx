@@ -1,7 +1,7 @@
-import Card from '../../utils/card'
+import Card from '../../../components/utils/card'
 import { CardsWrapper, CardWrapper, Container, Heading } from './Elements'
 import { ItemInterface } from '../../../dummy'
-import SeeAllCard from '../../utils/card/SeeAllCard'
+import SeeAllCard from '../../../components/utils/card/SeeAllCard'
 
 export default function ProductCard({ items }: { items: ItemInterface[] }) {
    return (

@@ -15,11 +15,10 @@ export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, ope
       duration: theme.transitions.duration.standard,
    }),
    flexGrow: 1,
-
    padding: theme.spacing(2),
    marginBottom: theme.spacing(-2),
    [theme.breakpoints.up('md')]: {
-      marginLeft: openSidebar ? 0 : -(drawerWidth - marginWidth),
+      marginLeft: openSidebar ? marginWidth : -(drawerWidth - marginWidth),
    },
    [theme.breakpoints.down('md')]: {
       marginLeft: marginWidth,
@@ -35,7 +34,7 @@ export const Offset = styled('div')(({ theme }) => theme.mixins.toolbar)
 
 // <---------------- Header --------------->
 
-export const StyledAppBar = styled((props: AppBarProps) => <AppBar {...props} elevation={0} />)()
+export const StyledAppBar = styled((props: AppBarProps) => <AppBar {...props} elevation={0} />)(() => ({}))
 
 export const StyledToolbar = styled((props: ToolbarProps) => <Toolbar {...props} />)(({ theme }) => ({
    backgroundColor: theme.palette.common.white,
