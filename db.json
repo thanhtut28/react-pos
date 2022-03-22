@@ -1,0 +1,16 @@
+{
+   "categories": [
+      {
+         "categoryId": 1,
+         "categoryName": "Food & Drink"
+      },
+      {
+         "categoryId": 2,
+         "categoryName": "Snacks"
+      },
+      {
+         "categoryId": 3,
+         "categoryName": "bread"
+      }
+   ]
+}

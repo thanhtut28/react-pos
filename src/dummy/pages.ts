@@ -117,7 +117,7 @@ export const pages: PageInterface[] = [
             title: 'Category',
             type: Type.item,
             icon: Icons.CategoryIcon,
-            url: '/products/category',
+            url: '/categories',
          },
       ],
    },

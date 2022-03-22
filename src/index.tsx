@@ -2,23 +2,28 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import CssBaseline from '@mui/material/CssBaseline'
 import { ThemeProvider } from '@mui/material/styles'
-import Layout from './components/layout'
 import reportWebVitals from './reportWebVitals'
 import theme from './theme'
 import LayoutContextProvider from './contexts/LayoutContext'
 import Routes from './routes'
 import { BrowserRouter } from 'react-router-dom'
+import { QueryClientProvider } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
+import { client } from './api'
 
 ReactDOM.render(
    <React.StrictMode>
-      <BrowserRouter>
-         <ThemeProvider theme={theme}>
-            <LayoutContextProvider>
-               <CssBaseline />
-               <Routes />
-            </LayoutContextProvider>
-         </ThemeProvider>
-      </BrowserRouter>
+      <QueryClientProvider client={client}>
+         <BrowserRouter>
+            <ThemeProvider theme={theme}>
+               <LayoutContextProvider>
+                  <CssBaseline />
+                  <Routes />
+               </LayoutContextProvider>
+            </ThemeProvider>
+         </BrowserRouter>
+         <ReactQueryDevtools initialIsOpen={true} />
+      </QueryClientProvider>
    </React.StrictMode>,
    document.getElementById('root')
 )

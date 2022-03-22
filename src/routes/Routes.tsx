@@ -1,7 +1,9 @@
-import { lazy } from 'react'
-import { Navigate } from 'react-router-dom'
+// import { lazy } from 'react'
+// import { Navigate } from 'react-router-dom'
 import Dashboard from '../pages/dashboard'
 import Customers from '../pages/customers'
+import Category from '../pages/category'
+import Stocks from '../pages/stocks'
 import Layout from '../components/layout'
 
 const Routes = {
@@ -16,10 +18,14 @@ const Routes = {
          path: '/customers',
          element: <Customers />,
       },
-      //   {
-      //      path: '*',
-      //      element: <Navigate to="/" replace />,
-      //   },
+      {
+         path: '/categories',
+         element: <Category />,
+      },
+      {
+         path: '/stocks',
+         element: <Stocks />,
+      },
    ],
 }
 
