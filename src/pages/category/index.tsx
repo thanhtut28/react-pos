@@ -3,11 +3,10 @@ import useGetCategories from '../../api/queries/useGetCategories'
 import { useAddCategory } from '../../api/mutations/category'
 import { Box, Input, Button } from '@mui/material'
 
-// eslint-disable-next-line react/display-name
-export default function () {
+export default function CategoriesPage() {
    const [text, setText] = useState<string>('')
    const { data, isFetching, error } = useGetCategories()
-   const { mutate, data: mutationData, error: mutationError } = useAddCategory({ categoryName: text })
+   const { mutate, data: mutationData } = useAddCategory({ categoryName: text })
 
    const categories = data?.data
 

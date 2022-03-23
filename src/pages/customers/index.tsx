@@ -3,8 +3,7 @@ import useGetCustomers from '../../api/queries/useGetCustomers'
 import { useAddCustomer } from '../../api/mutations/customer/'
 import { Box, Input, Button } from '@mui/material'
 
-// eslint-disable-next-line react/display-name
-export default function () {
+export default function CustomerPage() {
    const [customerCode, setCustomerCode] = useState<string>('')
    const [customerName, setCustomerName] = useState<string>('')
    const { data, isFetching, error } = useGetCustomers()
