@@ -1,19 +1,19 @@
 import { useState } from 'react'
 import useGetCategories from '../../api/queries/useGetCategories'
-import usePostCategory from '../../api/mutations/usePostCategory'
+import { useAddCategory } from '../../api/mutations/category'
 import { Box, Input, Button } from '@mui/material'
 
 // eslint-disable-next-line react/display-name
 export default function () {
    const [text, setText] = useState<string>('')
    const { data, isFetching, error } = useGetCategories()
-   const { mutate, data: mutationData, error: mutationError } = usePostCategory()
+   const { mutate, data: mutationData, error: mutationError } = useAddCategory({ categoryName: text })
 
    const categories = data?.data
 
    const handleAddCustomer = () => {
       if (text.trim() === '') return
-      mutate({ categoryName: text })
+      mutate()
       setText('')
    }
 

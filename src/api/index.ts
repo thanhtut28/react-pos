@@ -10,7 +10,7 @@ export const client = new QueryClient({
    },
 })
 
-export const axiosInstance = axios.create({
+export const apiClient = axios.create({
    baseURL: 'https://umt-api.herokuapp.com/api',
    headers: {
       Authorization:
