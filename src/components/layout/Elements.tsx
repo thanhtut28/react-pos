@@ -11,9 +11,9 @@ export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, ope
    borderTopRightRadius: theme.shape.borderRadius,
    width: `calc(100% - ${drawerWidth + marginWidth}px)`,
    marginRight: marginWidth,
-   transition: theme.transitions.create('margin', {
-      duration: theme.transitions.duration.standard,
-   }),
+   // transition: theme.transitions.create('margin', {
+   //    duration: theme.transitions.duration.standard,
+   // }),
    flexGrow: 1,
    padding: theme.spacing(2),
    marginBottom: theme.spacing(-2),

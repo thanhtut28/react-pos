@@ -22,7 +22,7 @@ ReactDOM.render(
                </LayoutContextProvider>
             </ThemeProvider>
          </BrowserRouter>
-         <ReactQueryDevtools initialIsOpen={true} />
+         {/* <ReactQueryDevtools initialIsOpen={true} /> */}
       </QueryClientProvider>
    </React.StrictMode>,
    document.getElementById('root')

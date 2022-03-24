@@ -9,9 +9,9 @@ export const SidebarContainer = styled(Box)<{ openSidebar?: boolean }>(({ theme,
    flexShrink: 0,
    width: drawerWidth,
    transform: openSidebar ? 'none' : `translateX(-260px)`,
-   transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.standard,
-   }),
+   // transition: theme.transitions.create('transform', {
+   //    duration: theme.transitions.duration.standard,
+   // }),
 }))
 
 export const SidebarWrapper = styled(Box)(({ theme }) => ({
