@@ -3,6 +3,9 @@ import useGetCategories from '../../api/queries/useGetCategories'
 import { useAddCategory } from '../../api/mutations/category'
 import { Box, Typography, Button } from '@mui/material'
 import StyledTable from '../../components/table'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { GridActionsCellItem } from '@mui/x-data-grid'
 
 export default function CategoriesPage() {
    const [text, setText] = useState<string>('')
@@ -14,13 +17,25 @@ export default function CategoriesPage() {
    const category = categories?.[0]
 
    const columnFields = category ? Object.entries(category) : []
-   const columns = columnFields?.map(([key, value]) => ({
-      field: key,
-      headerName: key,
-      flex: 1,
-      type: typeof value,
-      headerClassName: 'table--header',
-   }))
+   const columns = [
+      ...columnFields.map(([key, value]) => ({
+         field: key,
+         headerName: key,
+         flex: 1,
+         type: typeof value,
+         headerClassName: 'table--header',
+      })),
+      {
+         field: 'actions',
+         type: 'actions',
+         width: 200,
+         getActions: () => [
+            <GridActionsCellItem key="edit" icon={<EditIcon />} label="Edit" />,
+            <GridActionsCellItem key="delete" icon={<DeleteIcon />} label="Delete" />,
+         ],
+         headerClassName: 'table--header-actions',
+      },
+   ]
 
    const handleAddCustomer = () => {
       if (text.trim() === '') return

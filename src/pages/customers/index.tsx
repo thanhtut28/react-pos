@@ -3,12 +3,17 @@ import useGetCustomers from '../../api/queries/useGetCustomers'
 import { useAddCustomer } from '../../api/mutations/customer/'
 import StyledTable from '../../components/table'
 import { Box, Typography, Button } from '@mui/material'
-import { GridEditRowsModel } from '@mui/x-data-grid'
+import { GridEditRowsModel, GridColumns } from '@mui/x-data-grid'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { GridActionsCellItem, MuiEvent, useGridApiRef } from '@mui/x-data-grid'
 
 export default function CustomerPage() {
    const [customerCode, setCustomerCode] = useState<string>('')
    const [customerName, setCustomerName] = useState<string>('')
    const [editRowsModel, setEditRowsModel] = React.useState({})
+
+   const apiRef = useGridApiRef()
 
    const { data, isFetching, error } = useGetCustomers()
    const { mutate, data: mutationData, error: mutationError } = useAddCustomer({ customerCode, customerName })
@@ -17,13 +22,6 @@ export default function CustomerPage() {
    const customer = customers?.[0]
 
    const columnFields = customer ? Object.entries(customer) : []
-   const columns = columnFields?.map(([key, value]) => ({
-      field: key,
-      headerName: key,
-      flex: 1,
-      type: typeof value,
-      headerClassName: 'table--header',
-   }))
 
    const handleEditRowsModelChange = React.useCallback((model: GridEditRowsModel) => {
       setEditRowsModel(model)
@@ -67,7 +65,13 @@ export default function CustomerPage() {
                Add Customer
             </Button>
          </Box>
-         <StyledTable columns={columns} rows={customers} />
+         <StyledTable
+            editRowsModel={editRowsModel}
+            handleEditRowsModelChange={handleEditRowsModelChange}
+            // columns={columns}
+            rows={customers}
+            columnFields={columnFields}
+         />
       </>
    )
 }
