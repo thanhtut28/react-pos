@@ -1,0 +1,210 @@
+local -> 'http://localhost:5000/api'
+digitalocean -> 'https://umt-api-mgoum.ondigitalocean.app/api'
+
+Method: POST
+Endpoint: '/login'
+description: user login
+Request body: {
+    "username": String,
+    "password": String
+}
+
+**User Routes**
+Method: POST
+Endpoint: '/user'
+Authorization: admin
+description: create user
+Request body: {
+    "username": String,
+    "password": String
+}
+
+Method: GET
+Endpoint: '/users'
+Authorization: admin
+description: get all users
+Request body: {}
+
+Method: PUT
+Endpoint: '/user'
+Authorization: admin
+description: update user
+Request body: {
+    "userId": String,
+    "username": String,
+    "password": String
+}
+
+Method: DELETE
+Endpoint: '/user'
+Authorization: admin
+description: delete user
+Request body: {
+    "userId": String
+}
+**End of User Routes**
+
+**Category Routes**
+Method: POST
+Endpoint: '/category'
+Authorization: admin
+description: create category
+Request body: {
+    "categoryName": String
+}
+
+Method: GET
+Endpoint: '/categories'
+Authorization: admin
+description: get all categories
+Request body: {}
+
+Method: PUT
+Endpoint: '/category'
+Authorization: admin
+description: update category
+Request body: {
+    "categoryId": String,
+    "categoryName": String,
+}
+
+Method: DELETE
+Endpoint: '/category'
+Authorization: admin
+description: delete category
+Request body: {
+    "categoryId": String
+}
+**End of Category routes**
+
+**Customer Routes**
+Method: POST
+Endpoint: '/customer'
+Authorization: admin
+description: create customer
+Request body: {
+    "customerCode": String,
+    "customerName": String,
+    "customerType": String
+}
+
+Method: GET
+Endpoint: '/customers'
+Authorization: admin
+description: get all customers
+Request body: {}
+
+Method: PUT
+Endpoint: '/customer'
+Authorization: admin
+description: update customer
+Request body: {
+    "customerId": String,
+    "customerCode": String,
+    "customerName": String,
+    "customerType": String
+}
+
+Method: DELETE
+Endpoint: '/customer'
+Authorization: admin
+description: delete customer
+Request body: {
+    "customerId": String
+}
+**End of Customer routes**
+
+
+**Supplier Routes**
+Method: POST
+Endpoint: '/supplier'
+Authorization: admin
+description: create supplier
+Request body: {
+    "supplierCode": String,
+    "supplierName": String
+}
+
+Method: GET
+Endpoint: '/suppliers'
+Authorization: admin
+description: get all suppliers
+Request body: {}
+
+Method: PUT
+Endpoint: '/supplier'
+Authorization: admin
+description: update supplier
+Request body: {
+    "supplierId": String,
+    "supplierCode": String,
+    "supplierName": String,
+}
+
+Method: DELETE
+Endpoint: '/supplier'
+Authorization: admin
+description: delete category
+Request body: {
+    "supplierId": String
+}
+**End of Category routes**
+
+**Supply Routes**
+Method: POST
+Endpoint: '/supply'
+Authorization: admin
+description: create supply
+Request body: {
+    "supplyType": Enum ['credit','cash','return'],
+    "supplierName": String,
+    "items": [
+        "itemId": String,
+        "qty": Number,
+        "unitPrice": Number,
+        "unitPercent": Number,
+    ]
+}
+
+Method: GET
+Endpoint: '/supplies'
+Authorization: admin
+description: get all supplies
+Request body: {
+    "fromDate": DateString,
+    "toDate": DateString,
+}
+**End of Supply routes**
+
+**Transfer Routes**
+Method: POST
+Endpoint: '/transfer'
+Authorization: admin
+description: create transfer
+Request body: {
+    "transferType": Enum ['give', 'take'],
+    "userId": String,
+    "username": String,
+    "items": [
+        "itemId": String,
+        "qty": Number
+    ]
+}
+
+Method: GET
+Endpoint: '/transfers'
+Authorization: admin
+description: get all transfers
+Request body: {
+    "fromDate": DateString,
+    "toDate": DateString,
+}
+**End of Transfer routes**
+
+**Stock routes**
+Method: GET
+Endpoint: '/stocks/summary'
+Authorization: admin
+description: get the stock summary
+Request body: {}
+**End of Stock routes**
