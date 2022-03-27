@@ -1,4 +1,4 @@
-import Card from '../../utils/card'
+import Card from '../../../components/utils/card'
 import { CardsWrapper, CardWrapper, Container, Heading } from './Elements'
 import { CustomerInterface } from '../../../dummy'
 

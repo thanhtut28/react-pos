@@ -9,9 +9,9 @@ export const SidebarContainer = styled(Box)<{ openSidebar?: boolean }>(({ theme,
    flexShrink: 0,
    width: drawerWidth,
    transform: openSidebar ? 'none' : `translateX(-260px)`,
-   transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.standard,
-   }),
+   // transition: theme.transitions.create('transform', {
+   //    duration: theme.transitions.duration.standard,
+   // }),
 }))
 
 export const SidebarWrapper = styled(Box)(({ theme }) => ({
@@ -19,35 +19,41 @@ export const SidebarWrapper = styled(Box)(({ theme }) => ({
    width: drawerWidth,
    padding: theme.spacing(3),
    paddingTop: 0,
+   height: 'calc(100% - 80px)',
+   overflow: 'auto',
 }))
 
-export const SidebarMenu = styled((props: ListProps) => <List {...props} />)()
+export const SidebarMenu = styled((props: ListProps) => <List {...props} />)(() => ({}))
 
-export const SidebarListItem = styled((props: ListItemButtonProps) => <ListItemButton {...props} />)<{
-   active: boolean
-}>(({ theme, active }) => ({
-   marginTop: theme.spacing(1.5),
-   marginBottom: theme.spacing(1.5),
-   color: active ? theme.palette.primary.main : theme.palette.grey[700],
-   backgroundColor: active ? theme.palette.primary.accent : 'transparent',
-   borderRadius: theme.shape.borderRadius,
-   '& .MuiListItemIcon-root': {
-      minWidth: 36,
-   },
-   '& .MuiSvgIcon-root': {
-      color: active ? theme.palette.primary.main : 'inherit',
-   },
-   '& .MuiTypography-root': {
-      fontWeight: active ? theme.typography.fontWeightBold : 'normal',
-   },
-   '&:hover': {
-      backgroundColor: theme.palette.primary.accent,
-      color: theme.palette.primary.main,
-      '& .MuiSvgIcon-root': {
+export const SidebarListItem = styled((props: ListItemButtonProps) => <ListItemButton {...props} />)(
+   ({ theme }) => ({
+      marginTop: theme.spacing(1.5),
+      marginBottom: theme.spacing(1.5),
+      color: theme.palette.grey[700],
+      borderRadius: theme.shape.borderRadius,
+      '&.Mui-selected': {
          color: theme.palette.primary.main,
+         backgroundColor: theme.palette.primary.accent,
+         '& .MuiTypography-root': {
+            fontWeight: theme.typography.fontWeightBold,
+         },
+         '& .MuiSvgIcon-root': {
+            color: theme.palette.primary.main,
+         },
       },
-   },
-}))
+      '& .MuiListItemIcon-root': {
+         minWidth: 36,
+      },
+
+      '&:hover': {
+         backgroundColor: theme.palette.primary.accent,
+         color: theme.palette.primary.main,
+         '& .MuiSvgIcon-root': {
+            color: theme.palette.primary.main,
+         },
+      },
+   })
+)
 
 // Sidebar Drawer
 

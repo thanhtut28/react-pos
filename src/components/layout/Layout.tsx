@@ -2,13 +2,10 @@ import { Sidebar, SidebarDrawer } from './sidebar'
 import { LayoutContainer, MainContainer, Offset } from './Elements'
 import { Box, useTheme, useMediaQuery } from '@mui/material'
 import { useLayoutContext } from '../../contexts/LayoutContext'
+import { Outlet } from 'react-router-dom'
 import Header from './header'
 
-interface Props {
-   children: React.ReactNode
-}
-
-export default function Layout({ children }: Props) {
+export default function Layout() {
    const { openSidebar } = useLayoutContext()
    const theme = useTheme()
    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -20,7 +17,10 @@ export default function Layout({ children }: Props) {
          <LayoutContainer>
             {!isMobile && <Sidebar openSidebar={openSidebar} />}
             {isMobile && <SidebarDrawer openSidebar={openSidebar} />}
-            <MainContainer openSidebar={openSidebar}>{children}</MainContainer>
+
+            <MainContainer openSidebar={openSidebar}>
+               <Outlet />
+            </MainContainer>
          </LayoutContainer>
       </Box>
    )
