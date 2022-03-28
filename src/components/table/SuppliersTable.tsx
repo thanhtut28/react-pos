@@ -58,6 +58,7 @@ const SuppliersTable = memo(function SuppliersTable({
       {
          field: 'actions',
          type: 'actions',
+         headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
             <GridActionsCellItem
@@ -73,7 +74,7 @@ const SuppliersTable = memo(function SuppliersTable({
                onClick={() => handleDelete(data.id)}
             />,
          ],
-         headerClassName: 'table--header-actions',
+         headerClassName: 'table--header-actions table--header',
       },
    ]
 

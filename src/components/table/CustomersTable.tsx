@@ -39,6 +39,7 @@ const CustomersTable = memo(function CustomersTable({
          headerName: 'Customer Code',
          flex: 1,
          headerClassName: 'table--header',
+
          // editable: true
       },
       {
@@ -58,6 +59,7 @@ const CustomersTable = memo(function CustomersTable({
       {
          field: 'actions',
          type: 'actions',
+         headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
             <GridActionsCellItem
@@ -73,7 +75,7 @@ const CustomersTable = memo(function CustomersTable({
                onClick={() => handleDelete(data.id)}
             />,
          ],
-         headerClassName: 'table--header-actions',
+         headerClassName: 'table--header-actions table--header',
       },
    ]
 

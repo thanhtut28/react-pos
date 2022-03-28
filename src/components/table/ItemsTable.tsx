@@ -68,6 +68,7 @@ const ItemsTable = memo(function ItemsTable({
       {
          field: 'actions',
          type: 'actions',
+         headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
             <GridActionsCellItem
@@ -83,7 +84,7 @@ const ItemsTable = memo(function ItemsTable({
                onClick={() => handleDelete(data.id)}
             />,
          ],
-         headerClassName: 'table--header-actions',
+         headerClassName: 'table--header-actions table--header',
       },
    ]
 
