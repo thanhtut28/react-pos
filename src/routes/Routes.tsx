@@ -4,6 +4,8 @@ import Dashboard from '../pages/dashboard'
 import Customers from '../pages/customers'
 import Category from '../pages/category'
 import Stocks from '../pages/stocks'
+import Items from '../pages/items'
+import Suppliers from '../pages/suppliers'
 import Layout from '../components/layout'
 
 const Routes = {
@@ -25,6 +27,14 @@ const Routes = {
       {
          path: '/stocks',
          element: <Stocks />,
+      },
+      {
+         path: '/products/items',
+         element: <Items />,
+      },
+      {
+         path: '/supplies/suppliers',
+         element: <Suppliers />,
       },
    ],
 }

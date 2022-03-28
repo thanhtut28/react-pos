@@ -32,9 +32,9 @@ export interface GetCustomersQuery {
  */
 
 export interface Suppliers {
-   _id: string
-   name: string
-   __v: number
+   supplierId: string
+   supplierCode: string
+   supplierName: number
 }
 
 export interface GetSuppliersQuery {
@@ -44,11 +44,16 @@ export interface GetSuppliersQuery {
 
 export interface Items {
    _id: string
+   code: string
    name: string
-   __v: number
+   lowest_qty: number
+   category: string
+   // selling_price: [],
+   // selling_percent: [],
+   __v: 0
 }
 
 export interface GetItemsQuery {
    status: string
-   data: Suppliers[]
+   data: Items[]
 }

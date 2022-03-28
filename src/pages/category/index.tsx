@@ -64,7 +64,9 @@ export default function CategoriesPage() {
                Add Customer
             </Button>
          </Box>
-         <StyledTable columns={columns} rows={categories} />
+         {categories && (
+            <StyledTable loading={true} columns={columns} rows={categories} getRowId={(row) => row._id} />
+         )}
       </>
 
       /* {error && <h1>{error}</h1>}

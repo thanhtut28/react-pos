@@ -1,38 +1,38 @@
 import { useState, useCallback } from 'react'
-import CustomersTable from '../../components/table/CustomersTable'
+import SuppliersTable from '../../components/table/SuppliersTable'
 import { Box, Typography, Button, TextField, Dialog, DialogTitle } from '@mui/material'
-import { useAddCustomer, useUpdateCustomer } from '../../api/mutations/customer'
+import { useAddSupplier, useUpdateSupplier } from '../../api/mutations/supplier'
 
-export default function CustomerPage() {
-   const [customerCode, setCustomerCode] = useState<string>('')
-   const [customerName, setCustomerName] = useState<string>('')
+export default function SupplierPage() {
+   const [supplierCode, setSupplierCode] = useState<string>('')
+   const [supplierName, setSupplierName] = useState<string>('')
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [selectedId, setSelectedId] = useState<string>('')
 
-   const { mutate: addCustomer, data: mutationData, isLoading: addingCustomer } = useAddCustomer()
-   const { mutate: updateCustomer, data: updateData, isLoading: updatingCustomer } = useUpdateCustomer()
+   const { mutate: addSupplier, data: mutationData, isLoading: addingSupplier } = useAddSupplier()
+   const { mutate: updateSupplier, data: updateData, isLoading: updatingSupplier } = useUpdateSupplier()
 
-   const customerCodeIsEmpty = customerCode.trim() === ''
-   const customerNameIsEmpty = customerName.trim() === ''
+   const supplierCodeIsEmpty = supplierCode.trim() === ''
+   const supplierNameIsEmpty = supplierName.trim() === ''
 
    const resetForm = useCallback(() => {
       setIsEditing(false)
       setSelectedId('')
-      setCustomerCode('')
-      setCustomerName('')
+      setSupplierCode('')
+      setSupplierName('')
    }, [])
 
-   const handleAddCustomer = () => {
-      if (customerCodeIsEmpty || customerNameIsEmpty) return
-      addCustomer({ customerCode, customerName })
+   const handleAddSupplier = () => {
+      if (supplierCodeIsEmpty || supplierNameIsEmpty) return
+      addSupplier({ supplierCode, supplierName })
       setOpenModal(false)
       resetForm()
    }
 
-   const handleUpdateCustomer = () => {
-      if (customerCodeIsEmpty || customerNameIsEmpty) return
-      updateCustomer({ customerId: selectedId, customerCode, customerName })
+   const handleUpdateSupplier = () => {
+      if (supplierCode.trim() === '' || supplierName.trim() === '') return
+      updateSupplier({ supplierId: selectedId, supplierCode, supplierName })
       setOpenModal(false)
       resetForm()
    }
@@ -44,9 +44,9 @@ export default function CustomerPage() {
 
    return (
       <Box sx={{ p: 5, bgcolor: 'white' }}>
-         <Typography variant="h5">Customers</Typography>
+         <Typography variant="h5">Suppliers</Typography>
          <Dialog onClose={() => setOpenModal(false)} open={openModal}>
-            <DialogTitle>{isEditing ? 'Update Customer' : 'Add Customer'}</DialogTitle>
+            <DialogTitle>{isEditing ? 'Update Supplier' : 'Add Supplier'}</DialogTitle>
             <Box
                sx={{
                   display: 'flex',
@@ -54,27 +54,27 @@ export default function CustomerPage() {
                   flexDirection: 'column',
                   pb: 4,
                   p: 5,
-                  alignCustomers: 'center',
+                  alignSuppliers: 'center',
                }}
             >
                <Box py={2}>
                   <TextField
-                     key="customer-code"
+                     key="supplier-code"
                      variant="outlined"
-                     label="customer code"
-                     onChange={(e) => setCustomerCode(e.target.value)}
-                     value={customerCode}
+                     label="supplier code"
+                     onChange={(e) => setSupplierCode(e.target.value)}
+                     value={supplierCode}
                      size="small"
                      required
                   />
                </Box>
                <Box py={2}>
                   <TextField
-                     key="customer-name"
+                     key="supplier-name"
                      variant="outlined"
-                     label="customer name"
-                     onChange={(e) => setCustomerName(e.target.value)}
-                     value={customerName}
+                     label="supplier name"
+                     onChange={(e) => setSupplierName(e.target.value)}
+                     value={supplierName}
                      size="small"
                      required
                   />
@@ -95,7 +95,7 @@ export default function CustomerPage() {
                      color="primary"
                      size="small"
                      disableElevation
-                     onClick={isEditing ? handleUpdateCustomer : handleAddCustomer}
+                     onClick={isEditing ? handleUpdateSupplier : handleAddSupplier}
                   >
                      {isEditing ? 'Update' : 'Add'}
                   </Button>
@@ -111,16 +111,16 @@ export default function CustomerPage() {
                sx={{ borderRadius: 0 }}
                onClick={() => setOpenModal(true)}
             >
-               Add Customer
+               Add Supplier
             </Button>
          </Box>
-         <CustomersTable
-            setCustomerCode={setCustomerCode}
-            setCustomerName={setCustomerName}
+         <SuppliersTable
+            setSupplierCode={setSupplierCode}
+            setSupplierName={setSupplierName}
             setSelectedId={setSelectedId}
             setIsEditing={setIsEditing}
             setOpenModal={setOpenModal}
-            loading={addingCustomer || updatingCustomer}
+            loading={addingSupplier || updatingSupplier}
             resetForm={resetForm}
          />
       </Box>

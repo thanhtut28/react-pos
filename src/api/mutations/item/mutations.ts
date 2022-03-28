@@ -1,0 +1,5 @@
+export const ADD_ITEM_MUTATION = 'ADD_ITEM_MUTATION'
+export const UPDATE_ITEM_MUTATION = 'UPDATE_ITEM_MUTATION'
+export const DELETE_ITEM_MUTATION = 'DELETE_ITEM_MUTATION'
+
+export const URL = '/item'

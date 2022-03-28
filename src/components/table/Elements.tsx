@@ -2,7 +2,6 @@ import { Box } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles'
 
 export const StyledContainer = styled(Box)(({ theme }) => ({
-   padding: theme.spacing(3),
    backgroundColor: theme.palette.common.white,
    //    display: 'flex',
    //    height: '80vh',
