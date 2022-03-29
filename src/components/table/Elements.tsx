@@ -27,6 +27,7 @@ export const StyledTableWrapper = styled(Box)(({ theme }) => ({
          //  '&:nth-of-type(2n)': {
          //     backgroundColor: alpha(theme.palette.primary.accent as string, 0.5),
          //  },
+
          '&:hover': {
             backgroundColor: alpha(theme.palette.primary.light as string, 0.25),
          },
@@ -40,7 +41,7 @@ export const StyledTableWrapper = styled(Box)(({ theme }) => ({
       },
 
       '& .MuiDataGrid-cell': {
-         //  borderBottom: 0,
+         borderBottom: 0,
          //  '&:focus': {
          //     outline: `1px solid red`,
          //  },

@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
+import useForm from '../../hooks/useForm'
 import SuppliersTable from '../../components/table/SuppliersTable'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
 import { useAddSupplier, useUpdateSupplier, useDeleteSupplier } from '../../api/mutations/supplier'
@@ -15,17 +16,34 @@ import DeleteModal from '../../components/deleteModal'
 // import MessageModal from '../../components/messageModal'
 
 export default function SupplierPage() {
-   const [supplierCode, setSupplierCode] = useState<string>('')
-   const [supplierName, setSupplierName] = useState<string>('')
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
    // const [openMessageModal, setOpenMessageModal] = useState<boolean>(false)
    // const [isSuccessMessage, setIsSuccessMessage] = useState<boolean>(false)
    // const [modalMessage, setModalMessage] = useState<string>('')
-   const [codeIsTouched, setCodeIsTouched] = useState<boolean>(false)
-   const [nameIsTouched, setNameIsTouched] = useState<boolean>(false)
+
    const [selectedId, setSelectedId] = useState<string>('')
+
+   const {
+      value: supplierCode,
+      setValue: setSupplierCode,
+      valueIsValid: supplierCodeIsValid,
+      inputError: supplierCodeError,
+      inputChangeHandler: codeChangeHandler,
+      inputBlurHandler: codeBlurHandler,
+      reset: resetCode,
+   } = useForm()
+
+   const {
+      value: supplierName,
+      setValue: setSupplierName,
+      valueIsValid: supplierNameIsValid,
+      inputError: supplierNameError,
+      inputChangeHandler: nameChangeHandler,
+      inputBlurHandler: nameBlurHandler,
+      reset: resetName,
+   } = useForm()
 
    const {
       mutate: addSupplier,
@@ -54,56 +72,53 @@ export default function SupplierPage() {
       isError: isFailToDelete,
    } = useDeleteSupplier()
 
-   const supplierCodeIsEmpty = supplierCode.trim() === ''
-   const supplierNameIsEmpty = supplierName.trim() === ''
+   const sameValues = supplierCode === supplierName
+   const isValid = supplierCodeIsValid && supplierNameIsValid && !sameValues
 
-   const inputCodeError = codeIsTouched && (supplierCodeIsEmpty || supplierCode === supplierName)
-
-   const inputNameError = nameIsTouched && (supplierNameIsEmpty || supplierCode === supplierName)
+   const inputCodeError = supplierCodeError
+   const inputNameError = supplierNameError
 
    const loading = addingSupplier || updatingSupplier || deletingSupplier
 
    let timeout: NodeJS.Timeout
 
-   const resetForm = useCallback(() => {
+   const resetAll = () => {
       setIsEditing(false)
       setSelectedId('')
-      setSupplierCode('')
-      setSupplierName('')
-      setCodeIsTouched(false)
-      setNameIsTouched(false)
-   }, [])
+      resetCode()
+      resetName()
+   }
 
    const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (supplierCodeIsEmpty || supplierNameIsEmpty || inputCodeError || inputNameError) return
+      if (!isValid) return
       addSupplier({ supplierCode, supplierName })
       setOpenModal(false)
-      resetForm()
+      resetAll()
    }
 
    const handleUpdateSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (supplierCodeIsEmpty || supplierNameIsEmpty || inputCodeError || inputNameError) return
+      if (!isValid) return
       updateSupplier({ supplierId: selectedId, supplierCode, supplierName })
       setOpenModal(false)
-      resetForm()
+      resetAll()
    }
 
    const handleDeleteSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       deleteSupplier({ supplierId: selectedId })
       setOpenDeleteModal(false)
-      resetForm()
+      resetAll()
    }
 
    const handleOnCloseModal = () => {
-      timeout = setTimeout(() => resetForm(), 200)
+      timeout = setTimeout(() => resetAll(), 200)
       setOpenModal(false)
    }
 
    const handleOnCloseDeleteModal = () => {
-      resetForm()
+      resetAll()
       setOpenDeleteModal(false)
    }
 
@@ -162,8 +177,8 @@ export default function SupplierPage() {
                      key="supplier-code"
                      variant="outlined"
                      label="supplier code"
-                     onChange={(e) => setSupplierCode(e.target.value)}
-                     onFocus={() => setCodeIsTouched(true)}
+                     onChange={codeChangeHandler}
+                     onBlur={codeBlurHandler}
                      value={supplierCode}
                      error={inputCodeError}
                      helperText={inputCodeError && 'Please fill correct value'}
@@ -176,8 +191,8 @@ export default function SupplierPage() {
                      key="supplier-name"
                      variant="outlined"
                      label="supplier name"
-                     onChange={(e) => setSupplierName(e.target.value)}
-                     onFocus={() => setNameIsTouched(true)}
+                     onChange={nameChangeHandler}
+                     onBlur={nameBlurHandler}
                      value={supplierName}
                      error={inputNameError}
                      helperText={inputNameError && 'Please fill correct value'}
@@ -202,6 +217,7 @@ export default function SupplierPage() {
                      size="small"
                      disableElevation
                      type="submit"
+                     disabled={!isValid}
                   >
                      {isEditing ? 'Update' : 'Add'}
                   </StyledButton>
@@ -241,7 +257,6 @@ export default function SupplierPage() {
             setOpenModal={setOpenModal}
             setOpenDeleteModal={setOpenDeleteModal}
             loading={loading}
-            resetForm={resetForm}
          />
       </Container>
    )

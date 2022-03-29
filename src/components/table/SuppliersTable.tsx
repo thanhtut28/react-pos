@@ -14,7 +14,6 @@ interface Props {
    setSupplierCode: React.Dispatch<React.SetStateAction<string>>
    setSupplierName: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
-   resetForm: () => void
 }
 
 const SuppliersTable = memo(function SuppliersTable({
@@ -25,7 +24,6 @@ const SuppliersTable = memo(function SuppliersTable({
    setSupplierCode,
    setSupplierName,
    setSelectedId,
-   resetForm,
 }: Props) {
    const { data, isFetching, error } = useGetSuppliers()
 
