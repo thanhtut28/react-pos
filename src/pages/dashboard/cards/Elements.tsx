@@ -5,7 +5,7 @@ import { styled } from '@mui/material/styles'
 
 export const Container = styled(Box)(({ theme }) => ({
    backgroundColor: theme.palette.common.white,
-   borderRadius: theme.shape.borderRadius,
+   borderRadius: 12,
    padding: theme.spacing(1),
 }))
 

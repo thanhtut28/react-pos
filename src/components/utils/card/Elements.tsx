@@ -4,7 +4,7 @@ import Typography, { TypographyProps } from '@mui/material/Typography'
 import { styled } from '@mui/material/styles'
 
 export const StyledCard = styled((props: CardProps) => <Card {...props} elevation={0} />)(({ theme }) => ({
-   borderRadius: theme.shape.borderRadius,
+   borderRadius: 12,
    backgroundColor: theme.palette.primary.main,
    height: '100%',
    position: 'relative',

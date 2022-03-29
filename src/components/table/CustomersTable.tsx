@@ -39,23 +39,13 @@ const CustomersTable = memo(function CustomersTable({
          headerName: 'Customer Code',
          flex: 1,
          headerClassName: 'table--header',
-
-         // editable: true
       },
       {
          field: 'name',
          headerName: 'Customer Name',
          flex: 1,
          headerClassName: 'table--header',
-         // editable: true
       },
-      // {
-      //    field: '__v',
-      //    headerName: 'Item Value',
-      //    flex: 1,
-      //    headerClassName: 'table--header',
-      //    // editable: true
-      // },
       {
          field: 'actions',
          type: 'actions',

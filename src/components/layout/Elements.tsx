@@ -7,8 +7,8 @@ import { drawerWidth, marginWidth } from '../../constants/drawer'
 
 export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
    backgroundColor: theme.palette.secondary.accent,
-   borderTopLeftRadius: theme.shape.borderRadius,
-   borderTopRightRadius: theme.shape.borderRadius,
+   borderTopLeftRadius: 12,
+   borderTopRightRadius: 12,
    width: `calc(100% - ${drawerWidth + marginWidth}px)`,
    marginRight: marginWidth,
    // transition: theme.transitions.create('margin', {

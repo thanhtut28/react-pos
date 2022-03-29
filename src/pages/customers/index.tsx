@@ -108,7 +108,7 @@ export default function CustomerPage() {
                color="primary"
                size="small"
                disableElevation
-               sx={{ borderRadius: 0 }}
+               // sx={{ borderRadius: 0 }}
                onClick={() => setOpenModal(true)}
             >
                Add Customer

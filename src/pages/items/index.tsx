@@ -138,7 +138,7 @@ export default function ItemPage() {
                color="primary"
                size="small"
                disableElevation
-               sx={{ borderRadius: 0 }}
+               // sx={{ borderRadius: 0 }}
                onClick={() => setOpenModal(true)}
             >
                Add Item

@@ -8,6 +8,10 @@ declare module '@mui/material/styles' {
    interface SimplePaletteColorOptions {
       accent?: string
    }
+
+   interface Shape {
+      rounded?: number | string
+   }
 }
 
 let theme = createTheme({
@@ -26,7 +30,7 @@ let theme = createTheme({
       },
    },
    shape: {
-      borderRadius: 12,
+      // borderRadius: 12,
    },
 })
 
