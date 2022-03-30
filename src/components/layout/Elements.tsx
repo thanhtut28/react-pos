@@ -42,6 +42,15 @@ export const StyledToolbar = styled((props: ToolbarProps) => <Toolbar {...props}
    paddingBottom: theme.spacing(2),
 }))
 
+export const ToolbarWrapper = styled(Box)(({ theme }) => ({
+   width: '100%',
+   display: 'flex',
+   justifyContent: 'space-between',
+   alignItems: 'center',
+   paddingLeft: theme.spacing(4),
+   paddingRight: theme.spacing(4),
+}))
+
 export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(
    ({ theme }) => ({
       backgroundColor: theme.palette.primary.accent,
@@ -54,6 +63,7 @@ export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} va
 )
 
 export const ToggleBarWrapper = styled(Box)(({ theme }) => ({
+   paddingLeft: theme.spacing(2),
    display: 'flex',
    justifyContent: 'space-between',
    width: 200,

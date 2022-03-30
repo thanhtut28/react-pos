@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import useForm from '../../hooks/useForm'
+import React, { useState, useEffect } from 'react'
+import useInput from '../../hooks/useInput'
 import SuppliersTable from '../../components/table/SuppliersTable'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
 import { useAddSupplier, useUpdateSupplier, useDeleteSupplier } from '../../api/mutations/supplier'
@@ -33,7 +33,7 @@ export default function SupplierPage() {
       inputChangeHandler: codeChangeHandler,
       inputBlurHandler: codeBlurHandler,
       reset: resetCode,
-   } = useForm()
+   } = useInput()
 
    const {
       value: supplierName,
@@ -43,7 +43,7 @@ export default function SupplierPage() {
       inputChangeHandler: nameChangeHandler,
       inputBlurHandler: nameBlurHandler,
       reset: resetName,
-   } = useForm()
+   } = useInput()
 
    const {
       mutate: addSupplier,
@@ -74,9 +74,6 @@ export default function SupplierPage() {
 
    const sameValues = supplierCode === supplierName
    const isValid = supplierCodeIsValid && supplierNameIsValid && !sameValues
-
-   const inputCodeError = supplierCodeError
-   const inputNameError = supplierNameError
 
    const loading = addingSupplier || updatingSupplier || deletingSupplier
 
@@ -180,8 +177,8 @@ export default function SupplierPage() {
                      onChange={codeChangeHandler}
                      onBlur={codeBlurHandler}
                      value={supplierCode}
-                     error={inputCodeError}
-                     helperText={inputCodeError && 'Please fill correct value'}
+                     error={supplierCodeError}
+                     helperText={supplierCodeError && 'Please fill correct value'}
                      size="small"
                      required
                   />
@@ -194,8 +191,8 @@ export default function SupplierPage() {
                      onChange={nameChangeHandler}
                      onBlur={nameBlurHandler}
                      value={supplierName}
-                     error={inputNameError}
-                     helperText={inputNameError && 'Please fill correct value'}
+                     error={supplierNameError}
+                     helperText={supplierNameError && 'Please fill correct value'}
                      size="small"
                      required
                   />

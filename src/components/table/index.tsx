@@ -1,6 +1,6 @@
 import React from 'react'
 import { LinearProgress } from '@mui/material'
-import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter, GridRowSpacingParams } from '@mui/x-data-grid'
+import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter } from '@mui/x-data-grid'
 import { StyledContainer, StyledTableWrapper } from './Elements'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -36,11 +36,9 @@ const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
                   ColumnSortedDescendingIcon: SortedDescendingIcon,
                   ColumnSortedAscendingIcon: SortedAscendingIcon,
                }}
-               // disableSelectionOnClick
                rows={rows}
                columns={columns}
                loading={loading}
-               // {...data}
                getRowClassName={(params) => `row super-app-theme--${params.row.status}`}
             />
          </StyledTableWrapper>

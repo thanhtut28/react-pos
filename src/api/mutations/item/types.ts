@@ -10,7 +10,7 @@ export interface ItemMutation {
 export interface AddItemMutationVariables {
    itemCode: string
    itemName: string
-   categoryName?: string
+   category?: string
 }
 
 /**

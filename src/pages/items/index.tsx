@@ -1,107 +1,230 @@
-import { useState, useCallback } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import useInput from '../../hooks/useInput'
 import ItemsTable from '../../components/table/ItemsTable'
-import { Box, Typography, Button, TextField, Dialog, DialogTitle, Autocomplete } from '@mui/material'
-import { useAddItem, useUpdateItem } from '../../api/mutations/item'
+import {
+   Typography,
+   Button,
+   TextField,
+   Dialog,
+   AutocompleteChangeReason,
+   AutocompleteChangeDetails,
+} from '@mui/material'
+import { useAddItem, useUpdateItem, useDeleteItem } from '../../api/mutations/item'
 import useGetCategories from '../../api/queries/useGetCategories'
+import {
+   Container,
+   ActionsWrapper,
+   DialogBody,
+   TextFieldWrapper,
+   ToolbarWrapper,
+   StyledDialogTitle,
+   StyledButton,
+   StyledAutocomplete,
+} from '../../components/toolbar/Elements'
+import DeleteModal from '../../components/deleteModal'
 
 export default function ItemPage() {
-   const [itemCode, setItemCode] = useState<string>('')
-   const [itemName, setItemName] = useState<string>('')
-   const [categoryName, setCategoryName] = useState<string>('')
-   const [search, setSearch] = useState<string>('')
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
+   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+   const [categoryName, setCategoryName] = useState<string | null>(null)
+   // const [openMessageModal, setOpenMessageModal] = useState<boolean>(false)
+   // const [isSuccessMessage, setIsSuccessMessage] = useState<boolean>(false)
+   // const [modalMessage, setModalMessage] = useState<string>('')
+
    const [selectedId, setSelectedId] = useState<string>('')
+   const navigate = useNavigate()
 
-   const { data: categoriesData, isFetching: gettingCategories } = useGetCategories()
-   const { mutate: addItem, data: mutationData, isLoading: addingItem } = useAddItem()
-   const { mutate: updateItem, data: updateData, isLoading: updatingItem } = useUpdateItem()
+   const {
+      value: itemCode,
+      setValue: setItemCode,
+      valueIsValid: itemCodeIsValid,
+      inputError: itemCodeError,
+      inputChangeHandler: codeChangeHandler,
+      inputBlurHandler: codeBlurHandler,
+      reset: resetCode,
+   } = useInput()
 
-   const categories = categoriesData?.data
+   const {
+      value: itemName,
+      setValue: setItemName,
+      valueIsValid: itemNameIsValid,
+      inputError: itemNameError,
+      inputChangeHandler: nameChangeHandler,
+      inputBlurHandler: nameBlurHandler,
+      reset: resetName,
+   } = useInput()
 
-   const itemCodeIsEmpty = itemCode.trim() === ''
-   const itemNameIsEmpty = itemName.trim() === ''
-   const categoryNameIsEmpty = categoryName.trim() === ''
+   // const { data: categoriesData, isFetching: fetchingCategories } = useGetCategories()
 
-   const resetForm = useCallback(() => {
+   // const categories = categoriesData?.data
+   const categories = [{ name: 'Water' }, { name: 'Snacks' }, { name: 'Waffle' }]
+
+   const {
+      mutate: addItem,
+      data: addData,
+      error: addError,
+      isLoading: addingItem,
+      isSuccess: isAdded,
+      isError: isFailToAdd,
+   } = useAddItem()
+
+   const {
+      mutate: updateItem,
+      data: updateData,
+      isLoading: updatingItem,
+      error: updateError,
+      isSuccess: isUpdated,
+      isError: isFailToUpdate,
+   } = useUpdateItem()
+
+   const {
+      mutate: deleteItem,
+      data: deleteData,
+      isLoading: deletingItem,
+      error: deleteError,
+      isSuccess: isDeleted,
+      isError: isFailToDelete,
+   } = useDeleteItem()
+
+   const sameValues = itemCode === itemName
+   const isValid = itemCodeIsValid && itemNameIsValid && !sameValues
+
+   const loading = addingItem || updatingItem || deletingItem
+
+   let timeout: NodeJS.Timeout
+
+   const resetAll = () => {
       setIsEditing(false)
       setSelectedId('')
-      setItemCode('')
-      setItemName('')
-      setCategoryName('')
-   }, [])
-
-   const handleAddItem = () => {
-      if (itemCodeIsEmpty || itemNameIsEmpty) return
-      categoryNameIsEmpty ? addItem({ itemCode, itemName }) : addItem({ itemCode, itemName, categoryName })
-      setOpenModal(false)
-      resetForm()
+      resetCode()
+      resetName()
+      setCategoryName(null)
    }
 
-   const handleUpdateItem = () => {
-      if (itemCodeIsEmpty || itemNameIsEmpty) return
-      categoryNameIsEmpty
-         ? updateItem({ itemId: selectedId, itemCode, itemName })
-         : updateItem({ itemId: selectedId, itemCode, itemName, categoryName })
+   const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValid) return
+      categoryName ? addItem({ itemCode, itemName, category: categoryName }) : addItem({ itemCode, itemName })
       setOpenModal(false)
-      resetForm()
+      resetAll()
+   }
+
+   const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!isValid) return
+      categoryName
+         ? updateItem({ itemId: selectedId, itemCode, itemName, category: categoryName })
+         : updateItem({ itemId: selectedId, itemCode, itemName })
+      setOpenModal(false)
+      resetAll()
+   }
+
+   const handleDeleteItem = (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      deleteItem({ itemId: selectedId })
+      setOpenDeleteModal(false)
+      resetAll()
    }
 
    const handleOnCloseModal = () => {
+      timeout = setTimeout(() => resetAll(), 200)
       setOpenModal(false)
-      resetForm()
    }
 
+   const handleOnCloseDeleteModal = () => {
+      resetAll()
+      setOpenDeleteModal(false)
+   }
+
+   // const handleOnCloseMessageModal = () => {
+   //    setOpenMessageModal(false)
+   //    setModalMessage('')
+   //    setIsSuccessMessage(false)
+   // }
+
+   /***
+    * @description
+    * needs to fix
+    */
+   useEffect(() => {
+      // if (isAdded) {
+      //    setModalMessage(addData.message)
+      //    setOpenMessageModal(true)
+      //    setIsSuccessMessage(true)
+      //    return
+      // }
+
+      // if (isUpdated) {
+      //    setModalMessage(updateData.message)
+      //    setOpenMessageModal(true)
+      //    setIsSuccessMessage(true)
+      // }
+
+      // if (isDeleted) {
+      //    setModalMessage(deleteData.message)
+      //    setOpenMessageModal(true)
+      //    setIsSuccessMessage(true)
+      // }
+
+      // if (isFailToUpdate) {
+      //    setModalMessage((updateError as Error)?.message)
+      //    setOpenMessageModal(true)
+      //    setIsSuccessMessage(false)
+      // }
+
+      return () => clearTimeout(timeout)
+      // }, [isAdded, isUpdated, isDeleted, isFailToUpdate])
+   }, [])
+
    return (
-      <Box sx={{ p: 5, bgcolor: 'white' }}>
+      <Container>
          <Typography variant="h5">Items</Typography>
-         <Dialog onClose={() => setOpenModal(false)} open={openModal}>
-            <DialogTitle>{isEditing ? 'Update Item' : 'Add Item'}</DialogTitle>
-            <Box
-               sx={{
-                  display: 'flex',
-                  // justifyContent: 'space-between',
-                  flexDirection: 'column',
-                  pb: 4,
-                  p: 5,
-                  alignItems: 'center',
-               }}
-            >
-               <Box py={2}>
+         <Dialog onClose={handleOnCloseModal} open={openModal}>
+            <StyledDialogTitle>{isEditing ? 'Update Item' : 'Add Item'}</StyledDialogTitle>
+            <DialogBody noValidate autoComplete="off" onSubmit={isEditing ? handleUpdateItem : handleAddItem}>
+               <TextFieldWrapper>
                   <TextField
                      key="item-code"
                      variant="outlined"
                      label="item code"
-                     onChange={(e) => setItemCode(e.target.value)}
+                     onChange={codeChangeHandler}
+                     onBlur={codeBlurHandler}
                      value={itemCode}
+                     error={itemCodeError}
+                     helperText={itemCodeError && 'Please fill correct value'}
                      size="small"
                      required
                   />
-               </Box>
-               <Box py={2}>
+               </TextFieldWrapper>
+               <TextFieldWrapper>
                   <TextField
                      key="item-name"
                      variant="outlined"
                      label="item name"
-                     onChange={(e) => setItemName(e.target.value)}
+                     onChange={nameChangeHandler}
+                     onBlur={nameBlurHandler}
                      value={itemName}
+                     error={itemNameError}
+                     helperText={itemNameError && 'Please fill correct value'}
                      size="small"
                      required
                   />
-               </Box>
-               <Box py={2} sx={{ width: 1 }}>
-                  <Autocomplete
-                     key="categor-name"
-                     inputValue={categoryName}
-                     onInputChange={(event, newValue) => {
-                        setCategoryName(newValue)
+               </TextFieldWrapper>
+               <TextFieldWrapper>
+                  <StyledAutocomplete
+                     key="category-name"
+                     value={categoryName}
+                     onChange={(event: any, newValue: any) => {
+                        setCategoryName(newValue as string)
                      }}
                      options={categories ? categories.map((category) => category.name) : []}
                      renderInput={(params: any) => <TextField {...params} label="category" />}
                   />
-               </Box>
-               <Box py={2}>
-                  <Button
+               </TextFieldWrapper>
+               <ActionsWrapper>
+                  <StyledButton
                      variant="outlined"
                      color="primary"
                      size="small"
@@ -110,40 +233,41 @@ export default function ItemPage() {
                      sx={{ mr: 2 }}
                   >
                      Cancel
-                  </Button>
-                  <Button
+                  </StyledButton>
+                  <StyledButton
                      variant="contained"
                      color="primary"
                      size="small"
                      disableElevation
-                     onClick={isEditing ? handleUpdateItem : handleAddItem}
+                     type="submit"
+                     disabled={!isValid}
                   >
                      {isEditing ? 'Update' : 'Add'}
-                  </Button>
-               </Box>
-            </Box>
+                  </StyledButton>
+               </ActionsWrapper>
+            </DialogBody>
          </Dialog>
-         <Box sx={{ display: 'flex', justifyContent: 'space-between', py: 3 }}>
-            <TextField
-               key="search by name"
-               variant="standard"
-               placeholder="Search By Name"
-               onChange={(e) => setSearch(e.target.value)}
-               value={search}
-               size="small"
-               // required
-            />
+         <DeleteModal onSubmit={handleDeleteItem} open={openDeleteModal} onClose={handleOnCloseDeleteModal} />
+         {/* <MessageModal
+            onClose={handleOnCloseMessageModal}
+            message={modalMessage}
+            open={openMessageModal}
+            isSuccessMessage={isSuccessMessage}
+         /> */}
+
+         <ToolbarWrapper>
             <Button
                variant="contained"
                color="primary"
                size="small"
+               disabled={loading}
                disableElevation
                // sx={{ borderRadius: 0 }}
                onClick={() => setOpenModal(true)}
             >
                Add Item
             </Button>
-         </Box>
+         </ToolbarWrapper>
          <ItemsTable
             setItemCode={setItemCode}
             setItemName={setItemName}
@@ -151,9 +275,9 @@ export default function ItemPage() {
             setSelectedId={setSelectedId}
             setIsEditing={setIsEditing}
             setOpenModal={setOpenModal}
-            loading={addingItem || updatingItem}
-            resetForm={resetForm}
+            setOpenDeleteModal={setOpenDeleteModal}
+            loading={loading}
          />
-      </Box>
+      </Container>
    )
 }

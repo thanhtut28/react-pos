@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default function useForm() {
+export default function useInput() {
    const [value, setValue] = useState<string>('')
    const [isTouched, setIsTouched] = useState<boolean>(false)
 

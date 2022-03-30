@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import useGetItems from '../../api/queries/useGetItems'
-import useDeleteItem from '../../api/mutations/item/useDeleteItem'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -11,25 +10,24 @@ interface Props {
    onDelete?: (id: string) => void
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+   setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setItemCode: React.Dispatch<React.SetStateAction<string>>
    setItemName: React.Dispatch<React.SetStateAction<string>>
-   setCategoryName: React.Dispatch<React.SetStateAction<string>>
+   setCategoryName: React.Dispatch<React.SetStateAction<string | null>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
-   resetForm: () => void
 }
 
 const ItemsTable = memo(function ItemsTable({
    loading,
    setIsEditing,
    setOpenModal,
+   setOpenDeleteModal,
    setItemCode,
    setItemName,
    setCategoryName,
    setSelectedId,
-   resetForm,
 }: Props) {
    const { data, isFetching, error } = useGetItems()
-   const { mutate: deleteItem, data: mutationDelete, isLoading: deletingItem } = useDeleteItem()
 
    const items = data?.data
    //    const customer = customers?.[0]
@@ -89,9 +87,8 @@ const ItemsTable = memo(function ItemsTable({
    ]
 
    const handleDelete = (itemId: string) => {
-      console.log(itemId)
-      deleteItem({ itemId })
-      resetForm()
+      setOpenDeleteModal(true)
+      setSelectedId(itemId)
    }
 
    const handleUpdate = (data: any) => {
@@ -109,7 +106,7 @@ const ItemsTable = memo(function ItemsTable({
             <StyledTable
                rows={items}
                columns={columns}
-               loading={loading || deletingItem || isFetching}
+               loading={loading || isFetching}
                getRowId={(row) => row._id}
             />
          ) : (

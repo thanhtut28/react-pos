@@ -1,4 +1,4 @@
-import { Box, Button, DialogTitle } from '@mui/material'
+import { Autocomplete, Box, Button, DialogTitle } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 export const Container = styled(Box)(({ theme }) => ({
@@ -31,6 +31,11 @@ export const DialogBody = styled('form')(({ theme }) => ({
 export const TextFieldWrapper = styled(Box)(({ theme }) => ({
    paddingTop: theme.spacing(2),
    paddingBottom: theme.spacing(2),
+   width: '100%',
+}))
+
+export const StyledAutocomplete = styled(Autocomplete)(({ theme }) => ({
+   height: 40,
 }))
 
 export const ActionsWrapper = styled(Box)(({ theme }) => ({

@@ -133,6 +133,6 @@ export const pages: PageInterface[] = [
       title: 'Summary',
       type: Type.item,
       icon: Icons.SummarizeIcon,
-      url: '/summary',
+      url: '/login',
    },
 ]

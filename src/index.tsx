@@ -5,6 +5,7 @@ import { ThemeProvider } from '@mui/material/styles'
 import reportWebVitals from './reportWebVitals'
 import theme from './theme'
 import LayoutContextProvider from './contexts/LayoutContext'
+import AuthContextProvider from './contexts/AuthContext'
 import Routes from './routes'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClientProvider } from 'react-query'
@@ -16,10 +17,12 @@ ReactDOM.render(
       <QueryClientProvider client={client}>
          <BrowserRouter>
             <ThemeProvider theme={theme}>
-               <LayoutContextProvider>
-                  <CssBaseline />
-                  <Routes />
-               </LayoutContextProvider>
+               <AuthContextProvider>
+                  <LayoutContextProvider>
+                     <CssBaseline />
+                     <Routes />
+                  </LayoutContextProvider>
+               </AuthContextProvider>
             </ThemeProvider>
          </BrowserRouter>
          {/* <ReactQueryDevtools initialIsOpen={true} /> */}

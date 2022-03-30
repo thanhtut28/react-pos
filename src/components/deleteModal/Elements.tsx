@@ -38,10 +38,8 @@ export const ActionsWrapper = styled(Box)(() => ({
    paddingRight: theme.spacing(2),
 }))
 
-export const StyledButton = styled((props: ButtonProps) => <Button {...props} disableElevation />)(
-   ({ theme }) => ({
-      width: 120,
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-   })
-)
+export const StyledButton = styled(Button)(({ theme }) => ({
+   width: 120,
+   marginLeft: theme.spacing(1),
+   marginRight: theme.spacing(1),
+}))

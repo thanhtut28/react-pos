@@ -30,7 +30,7 @@ export default function DeleteModal({ open, onClose, onSubmit }: Props) {
                   <StyledButton size="small" variant="outlined" onClick={onClose}>
                      Cancel
                   </StyledButton>
-                  <StyledButton color="error" size="small" variant="contained" type="submit">
+                  <StyledButton disableElevation color="error" size="small" variant="contained" type="submit">
                      Confirm
                   </StyledButton>
                </ActionsWrapper>
