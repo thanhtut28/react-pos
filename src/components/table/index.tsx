@@ -22,6 +22,7 @@ interface Props {
 
 const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
    console.log('table rendering')
+
    return (
       <StyledContainer>
          <StyledTableWrapper>
@@ -35,11 +36,9 @@ const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
                   ColumnSortedDescendingIcon: SortedDescendingIcon,
                   ColumnSortedAscendingIcon: SortedAscendingIcon,
                }}
-               // disableSelectionOnClick
                rows={rows}
                columns={columns}
                loading={loading}
-               // {...data}
                getRowClassName={(params) => `row super-app-theme--${params.row.status}`}
             />
          </StyledTableWrapper>

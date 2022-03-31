@@ -7,8 +7,8 @@ import { drawerWidth, marginWidth } from '../../constants/drawer'
 
 export const MainContainer = styled(Box)<{ openSidebar: boolean }>(({ theme, openSidebar }) => ({
    backgroundColor: theme.palette.secondary.accent,
-   borderTopLeftRadius: theme.shape.borderRadius,
-   borderTopRightRadius: theme.shape.borderRadius,
+   borderTopLeftRadius: 12,
+   borderTopRightRadius: 12,
    width: `calc(100% - ${drawerWidth + marginWidth}px)`,
    marginRight: marginWidth,
    // transition: theme.transitions.create('margin', {
@@ -42,6 +42,15 @@ export const StyledToolbar = styled((props: ToolbarProps) => <Toolbar {...props}
    paddingBottom: theme.spacing(2),
 }))
 
+export const ToolbarWrapper = styled(Box)(({ theme }) => ({
+   width: '100%',
+   display: 'flex',
+   justifyContent: 'space-between',
+   alignItems: 'center',
+   paddingLeft: theme.spacing(4),
+   paddingRight: theme.spacing(4),
+}))
+
 export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(
    ({ theme }) => ({
       backgroundColor: theme.palette.primary.accent,
@@ -54,6 +63,7 @@ export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} va
 )
 
 export const ToggleBarWrapper = styled(Box)(({ theme }) => ({
+   paddingLeft: theme.spacing(2),
    display: 'flex',
    justifyContent: 'space-between',
    width: 200,

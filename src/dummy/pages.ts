@@ -124,15 +124,16 @@ export const pages: PageInterface[] = [
    {
       id: 'Stocks',
       title: 'Stocks',
-      type: Type.item,
+      type: Type.collapse,
       icon: Icons.PlaylistAddCheckIcon,
-      url: '/stocks',
-   },
-   {
-      id: 'Summary',
-      title: 'Summary',
-      type: Type.item,
-      icon: Icons.SummarizeIcon,
-      url: '/summary',
+      children: [
+         {
+            id: 'Summary',
+            title: 'Summary',
+            type: Type.item,
+            icon: Icons.SummarizeIcon,
+            url: '/login',
+         },
+      ],
    },
 ]

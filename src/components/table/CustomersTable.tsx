@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import useGetCustomers from '../../api/queries/useGetCustomers'
-import useDeleteCustomer from '../../api/mutations/customer/useDeleteCustomer'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -11,23 +10,22 @@ interface Props {
    onDelete?: (id: string) => void
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+   setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setCustomerCode: React.Dispatch<React.SetStateAction<string>>
    setCustomerName: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
-   resetForm: () => void
 }
 
 const CustomersTable = memo(function CustomersTable({
    loading,
    setIsEditing,
    setOpenModal,
+   setOpenDeleteModal,
    setCustomerCode,
    setCustomerName,
    setSelectedId,
-   resetForm,
 }: Props) {
    const { data, isFetching, error } = useGetCustomers()
-   const { mutate: deleteCustomer, data: mutationDelete, isLoading: deletingCustomer } = useDeleteCustomer()
 
    const customers = data?.data
    // const customer = customers?.[0]
@@ -39,7 +37,6 @@ const CustomersTable = memo(function CustomersTable({
          headerName: 'Customer Code',
          flex: 1,
          headerClassName: 'table--header',
-
          // editable: true
       },
       {
@@ -67,12 +64,14 @@ const CustomersTable = memo(function CustomersTable({
                icon={<EditIcon />}
                label="Edit"
                onClick={() => handleUpdate(data)}
+               disabled={loading}
             />,
             <GridActionsCellItem
                key="delete"
                icon={<DeleteIcon />}
                label="Delete"
                onClick={() => handleDelete(data.id)}
+               disabled={loading}
             />,
          ],
          headerClassName: 'table--header-actions table--header',
@@ -80,9 +79,8 @@ const CustomersTable = memo(function CustomersTable({
    ]
 
    const handleDelete = (customerId: string) => {
-      console.log(customerId)
-      deleteCustomer({ customerId })
-      resetForm()
+      setOpenDeleteModal(true)
+      setSelectedId(customerId)
    }
 
    const handleUpdate = (data: any) => {
@@ -99,7 +97,7 @@ const CustomersTable = memo(function CustomersTable({
             <StyledTable
                rows={customers}
                columns={columns}
-               loading={loading || deletingCustomer || isFetching}
+               loading={loading || isFetching}
                getRowId={(row) => row._id}
             />
          ) : (

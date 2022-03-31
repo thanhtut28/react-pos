@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import useGetSuppliers from '../../api/queries/useGetSuppliers'
-import useDeleteSupplier from '../../api/mutations/supplier/useDeleteSupplier'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -11,25 +10,24 @@ interface Props {
    onDelete?: (id: string) => void
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+   setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setSupplierCode: React.Dispatch<React.SetStateAction<string>>
    setSupplierName: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
-   resetForm: () => void
 }
 
 const SuppliersTable = memo(function SuppliersTable({
    loading,
    setIsEditing,
    setOpenModal,
+   setOpenDeleteModal,
    setSupplierCode,
    setSupplierName,
    setSelectedId,
-   resetForm,
 }: Props) {
    const { data, isFetching, error } = useGetSuppliers()
-   const { mutate: deleteSupplier, data: mutationDelete, isLoading: deletingSupplier } = useDeleteSupplier()
 
-   const customers = data?.data
+   const suppliers = data?.data
    // const customer = customers?.[0]
 
    // const columnFields = customer ? Object.entries(customer) : []
@@ -66,12 +64,14 @@ const SuppliersTable = memo(function SuppliersTable({
                icon={<EditIcon />}
                label="Edit"
                onClick={() => handleUpdate(data)}
+               disabled={loading}
             />,
             <GridActionsCellItem
                key="delete"
                icon={<DeleteIcon />}
                label="Delete"
                onClick={() => handleDelete(data.id)}
+               disabled={loading}
             />,
          ],
          headerClassName: 'table--header-actions table--header',
@@ -79,9 +79,8 @@ const SuppliersTable = memo(function SuppliersTable({
    ]
 
    const handleDelete = (supplierId: string) => {
-      console.log(supplierId)
-      deleteSupplier({ supplierId })
-      resetForm()
+      setOpenDeleteModal(true)
+      setSelectedId(supplierId)
    }
 
    const handleUpdate = (data: any) => {
@@ -94,11 +93,11 @@ const SuppliersTable = memo(function SuppliersTable({
 
    return (
       <>
-         {customers ? (
+         {suppliers ? (
             <StyledTable
-               rows={customers}
+               rows={suppliers}
                columns={columns}
-               loading={loading || deletingSupplier || isFetching}
+               loading={loading || isFetching}
                getRowId={(row) => row.supplierId}
             />
          ) : (
