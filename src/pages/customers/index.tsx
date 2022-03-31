@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import useInput from '../../hooks/useInput'
+import useMessageModal from '../../hooks/useMessageModal'
 import CustomersTable from '../../components/table/CustomersTable'
 import { useAddCustomer, useUpdateCustomer, useDeleteCustomer } from '../../api/mutations/customer'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
@@ -13,16 +14,29 @@ import {
    StyledButton,
 } from '../../components/toolbar/Elements'
 import DeleteModal from '../../components/deleteModal'
+import MessageModal from '../../components/messageModal'
 
 export default function CustomerPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
-   // const [openMessageModal, setOpenMessageModal] = useState<boolean>(false)
-   // const [isSuccessMessage, setIsSuccessMessage] = useState<boolean>(false)
-   // const [modalMessage, setModalMessage] = useState<string>('')
-
    const [selectedId, setSelectedId] = useState<string>('')
+
+   const {
+      message: successMessage,
+      openMessageModal: openSuccessMessageModal,
+      handleOpenMessageModal: handleOpenSuccessMessageModal,
+      handleCloseMessageModal: handleCloseSuccessMessageModal,
+      handleSetMessage: handleSetSuccessMessage,
+   } = useMessageModal()
+
+   const {
+      message: errorMessage,
+      openMessageModal: openErrorMessageModal,
+      handleOpenMessageModal: handleOpenErrorMessageModal,
+      handleSetMessage: handleSetErrorMessage,
+      handleCloseMessageModal: handleCloseErrorMessageModal,
+   } = useMessageModal()
 
    const {
       value: customerCode,
@@ -50,6 +64,7 @@ export default function CustomerPage() {
       error: addError,
       isLoading: addingCustomer,
       isSuccess: isAdded,
+      reset: resetAddData,
       isError: isFailToAdd,
    } = useAddCustomer()
 
@@ -59,6 +74,7 @@ export default function CustomerPage() {
       isLoading: updatingCustomer,
       error: updateError,
       isSuccess: isUpdated,
+      reset: resetUpdateData,
       isError: isFailToUpdate,
    } = useUpdateCustomer()
 
@@ -68,6 +84,7 @@ export default function CustomerPage() {
       isLoading: deletingCustomer,
       error: deleteError,
       isSuccess: isDeleted,
+      reset: resetDeleteData,
       isError: isFailToDelete,
    } = useDeleteCustomer()
 
@@ -118,45 +135,55 @@ export default function CustomerPage() {
       setOpenDeleteModal(false)
    }
 
-   // const handleOnCloseMessageModal = () => {
-   //    setOpenMessageModal(false)
-   //    setModalMessage('')
-   //    setIsSuccessMessage(false)
-   // }
-
    /***
     * @description
     * needs to fix
     */
    useEffect(() => {
-      // if (isAdded) {
-      //    setModalMessage(addData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      //    return
-      // }
+      if (isAdded) {
+         handleSetSuccessMessage(addData.message)
+         handleOpenSuccessMessageModal()
+         resetAddData()
+         return
+      }
 
-      // if (isUpdated) {
-      //    setModalMessage(updateData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      // }
+      if (isUpdated) {
+         handleSetSuccessMessage(updateData.message)
+         handleOpenSuccessMessageModal()
+         resetUpdateData()
+         return
+      }
 
-      // if (isDeleted) {
-      //    setModalMessage(deleteData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      // }
+      if (isDeleted) {
+         handleSetSuccessMessage(deleteData.message)
+         handleOpenSuccessMessageModal()
+         resetDeleteData()
+         return
+      }
 
-      // if (isFailToUpdate) {
-      //    setModalMessage((updateError as Error)?.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(false)
-      // }
+      if (isFailToAdd) {
+         handleSetErrorMessage((addError as Error).message)
+         handleOpenErrorMessageModal()
+         resetAddData()
+         return
+      }
+
+      if (isFailToUpdate) {
+         handleSetErrorMessage((updateError as Error).message)
+         handleOpenErrorMessageModal()
+         resetUpdateData()
+         return
+      }
+
+      if (isFailToDelete) {
+         handleSetErrorMessage((deleteError as Error).message)
+         handleOpenErrorMessageModal()
+         resetDeleteData()
+         return
+      }
 
       return () => clearTimeout(timeout)
-      // }, [isAdded, isUpdated, isDeleted, isFailToUpdate])
-   }, [])
+   }, [isAdded, isDeleted, isFailToUpdate])
 
    return (
       <Container>
@@ -225,12 +252,20 @@ export default function CustomerPage() {
             open={openDeleteModal}
             onClose={handleOnCloseDeleteModal}
          />
-         {/* <MessageModal
-            onClose={handleOnCloseMessageModal}
-            message={modalMessage}
-            open={openMessageModal}
-            isSuccessMessage={isSuccessMessage}
-         /> */}
+
+         <MessageModal
+            variant="success"
+            onClose={handleCloseSuccessMessageModal}
+            message={successMessage}
+            open={openSuccessMessageModal}
+         />
+
+         <MessageModal
+            variant="error"
+            onClose={handleCloseErrorMessageModal}
+            message={errorMessage}
+            open={openErrorMessageModal}
+         />
 
          <ToolbarWrapper>
             <Button

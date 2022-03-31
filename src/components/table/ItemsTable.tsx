@@ -13,7 +13,7 @@ interface Props {
    setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setItemCode: React.Dispatch<React.SetStateAction<string>>
    setItemName: React.Dispatch<React.SetStateAction<string>>
-   setCategoryName: React.Dispatch<React.SetStateAction<string | null>>
+   setCategoryName: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -97,7 +97,7 @@ const ItemsTable = memo(function ItemsTable({
       setSelectedId(data.id)
       setItemCode(data.row.code)
       setItemName(data.row.name)
-      setCategoryName(data.row.category)
+      setCategoryName(data.row.category ? data.row.category : 'Others')
    }
 
    return (

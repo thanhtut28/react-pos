@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import { Button, ButtonBase, Typography } from '@mui/material'
 import { useLayoutContext } from '../../contexts/LayoutContext'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -8,11 +7,9 @@ import { useAuth } from '../../contexts/AuthContext'
 export default function header() {
    const { handleToggleSidebar } = useLayoutContext()
    const { signOut } = useAuth()
-   const navigate = useNavigate()
 
    const handleLogout = () => {
       signOut(() => {
-         navigate('/login')
          localStorage.removeItem('user')
       })
    }

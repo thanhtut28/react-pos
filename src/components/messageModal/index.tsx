@@ -1,13 +1,13 @@
-import { Snackbar, Alert } from '@mui/material'
+import { Snackbar, Alert, AlertColor } from '@mui/material'
 
 interface Props {
    open: boolean
    onClose: () => void
    message: string
-   isSuccessMessage: boolean
+   variant: AlertColor
 }
 
-export default function SuccessModal({ open, onClose, message, isSuccessMessage }: Props) {
+export default function MessageModal({ open, onClose, message, variant }: Props) {
    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
          return
@@ -17,8 +17,17 @@ export default function SuccessModal({ open, onClose, message, isSuccessMessage 
    }
 
    return (
-      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-         <Alert variant="filled" severity={isSuccessMessage ? 'success' : 'error'}>
+      <Snackbar
+         open={open}
+         autoHideDuration={6000}
+         onClose={handleClose}
+         sx={{
+            '&.MuiSnackbar-root': {
+               bottom: variant === 'success' ? 24 : 90,
+            },
+         }}
+      >
+         <Alert variant="filled" severity={variant} onClose={handleClose}>
             {message}
          </Alert>
       </Snackbar>

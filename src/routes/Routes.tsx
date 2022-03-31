@@ -23,7 +23,7 @@ type RoutesProps = (isLoggedIn: boolean) => RouteObject[]
 const Routes: RoutesProps = (isLoggedIn: boolean) => [
    {
       path: '/',
-      element: isLoggedIn ? <Layout /> : <Navigate to="/login" />,
+      element: isLoggedIn ? <Layout /> : <Navigate to="/login" replace />,
       children: [
          {
             index: true,
@@ -44,6 +44,12 @@ const Routes: RoutesProps = (isLoggedIn: boolean) => [
          {
             path: '/products/items',
             element: <Items />,
+            children: [
+               {
+                  path: '/products/items/haha',
+                  element: <h1>haha</h1>,
+               },
+            ],
          },
          {
             path: '/products/items/:itemId',
@@ -57,7 +63,7 @@ const Routes: RoutesProps = (isLoggedIn: boolean) => [
    },
    {
       path: '/login',
-      element: !isLoggedIn ? <Login /> : <Navigate to="/" />,
+      element: !isLoggedIn ? <Login /> : <Navigate to="/" replace />,
       children: [{ index: true, element: <h1>Hello User</h1> }],
    },
 

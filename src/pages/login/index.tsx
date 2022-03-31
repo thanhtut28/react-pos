@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useAuth } from '../../contexts/AuthContext'
-import { useNavigate } from 'react-router-dom'
 import Login from '../../components/login'
 import useInput from '../../hooks/useInput'
 
@@ -22,7 +21,6 @@ export default function LoginPage() {
    } = useInput()
 
    const auth = useAuth()
-   const navigate = useNavigate()
 
    const formIsValid = usernameIsValid && passwordIsValid
 
@@ -31,7 +29,6 @@ export default function LoginPage() {
 
       if (!formIsValid) return
       auth.signIn(() => {
-         navigate('/', { replace: true })
          localStorage.setItem('user', 'isAuthenticated')
       })
    }

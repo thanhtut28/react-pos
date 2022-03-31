@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useInput from '../../hooks/useInput'
+import useMessageModal from '../../hooks/useMessageModal'
 import SuppliersTable from '../../components/table/SuppliersTable'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
 import { useAddSupplier, useUpdateSupplier, useDeleteSupplier } from '../../api/mutations/supplier'
@@ -13,17 +14,29 @@ import {
    StyledButton,
 } from '../../components/toolbar/Elements'
 import DeleteModal from '../../components/deleteModal'
-// import MessageModal from '../../components/messageModal'
+import MessageModal from '../../components/messageModal'
 
 export default function SupplierPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
-   // const [openMessageModal, setOpenMessageModal] = useState<boolean>(false)
-   // const [isSuccessMessage, setIsSuccessMessage] = useState<boolean>(false)
-   // const [modalMessage, setModalMessage] = useState<string>('')
-
    const [selectedId, setSelectedId] = useState<string>('')
+
+   const {
+      message: successMessage,
+      openMessageModal: openSuccessMessageModal,
+      handleOpenMessageModal: handleOpenSuccessMessageModal,
+      handleCloseMessageModal: handleCloseSuccessMessageModal,
+      handleSetMessage: handleSetSuccessMessage,
+   } = useMessageModal()
+
+   const {
+      message: errorMessage,
+      openMessageModal: openErrorMessageModal,
+      handleOpenMessageModal: handleOpenErrorMessageModal,
+      handleSetMessage: handleSetErrorMessage,
+      handleCloseMessageModal: handleCloseErrorMessageModal,
+   } = useMessageModal()
 
    const {
       value: supplierCode,
@@ -51,6 +64,7 @@ export default function SupplierPage() {
       error: addError,
       isLoading: addingSupplier,
       isSuccess: isAdded,
+      reset: resetAddData,
       isError: isFailToAdd,
    } = useAddSupplier()
 
@@ -60,6 +74,7 @@ export default function SupplierPage() {
       isLoading: updatingSupplier,
       error: updateError,
       isSuccess: isUpdated,
+      reset: resetUpdateData,
       isError: isFailToUpdate,
    } = useUpdateSupplier()
 
@@ -69,6 +84,7 @@ export default function SupplierPage() {
       isLoading: deletingSupplier,
       error: deleteError,
       isSuccess: isDeleted,
+      reset: resetDeleteData,
       isError: isFailToDelete,
    } = useDeleteSupplier()
 
@@ -119,45 +135,55 @@ export default function SupplierPage() {
       setOpenDeleteModal(false)
    }
 
-   // const handleOnCloseMessageModal = () => {
-   //    setOpenMessageModal(false)
-   //    setModalMessage('')
-   //    setIsSuccessMessage(false)
-   // }
-
    /***
     * @description
     * needs to fix
     */
    useEffect(() => {
-      // if (isAdded) {
-      //    setModalMessage(addData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      //    return
-      // }
+      if (isAdded) {
+         handleSetSuccessMessage(addData.message)
+         handleOpenSuccessMessageModal()
+         resetAddData()
+         return
+      }
 
-      // if (isUpdated) {
-      //    setModalMessage(updateData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      // }
+      if (isUpdated) {
+         handleSetSuccessMessage(updateData.message)
+         handleOpenSuccessMessageModal()
+         resetUpdateData()
+         return
+      }
 
-      // if (isDeleted) {
-      //    setModalMessage(deleteData.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(true)
-      // }
+      if (isDeleted) {
+         handleSetSuccessMessage(deleteData.message)
+         handleOpenSuccessMessageModal()
+         resetDeleteData()
+         return
+      }
 
-      // if (isFailToUpdate) {
-      //    setModalMessage((updateError as Error)?.message)
-      //    setOpenMessageModal(true)
-      //    setIsSuccessMessage(false)
-      // }
+      if (isFailToAdd) {
+         handleSetErrorMessage((addError as Error).message)
+         handleOpenErrorMessageModal()
+         resetAddData()
+         return
+      }
+
+      if (isFailToUpdate) {
+         handleSetErrorMessage((updateError as Error).message)
+         handleOpenErrorMessageModal()
+         resetUpdateData()
+         return
+      }
+
+      if (isFailToDelete) {
+         handleSetErrorMessage((deleteError as Error).message)
+         handleOpenErrorMessageModal()
+         resetDeleteData()
+         return
+      }
 
       return () => clearTimeout(timeout)
-      // }, [isAdded, isUpdated, isDeleted, isFailToUpdate])
-   }, [])
+   }, [isAdded, isDeleted, isFailToUpdate])
 
    return (
       <Container>
@@ -226,12 +252,20 @@ export default function SupplierPage() {
             open={openDeleteModal}
             onClose={handleOnCloseDeleteModal}
          />
-         {/* <MessageModal
-            onClose={handleOnCloseMessageModal}
-            message={modalMessage}
-            open={openMessageModal}
-            isSuccessMessage={isSuccessMessage}
-         /> */}
+
+         <MessageModal
+            variant="success"
+            onClose={handleCloseSuccessMessageModal}
+            message={successMessage}
+            open={openSuccessMessageModal}
+         />
+
+         <MessageModal
+            variant="error"
+            onClose={handleCloseErrorMessageModal}
+            message={errorMessage}
+            open={openErrorMessageModal}
+         />
 
          <ToolbarWrapper>
             <Button
