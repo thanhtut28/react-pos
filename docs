@@ -195,6 +195,12 @@ Request body: {
     "fromDate": DateString,
     "toDate": DateString,
 }
+
+Method: GET
+Endpoint: '/supply/supplyNum'
+Authorization: admin
+description: get supply num
+Request body: {}
 **End of Supply routes**
 
 **Transfer Routes**
@@ -235,6 +241,12 @@ Request body: {
     "fromDate": DateString,
     "toDate": DateString,
 }
+
+Method: GET
+Endpoint: '/transfer/transferNum'
+Authorization: admin
+description: get transfer num
+Request body: {}
 **End of Transfer routes**
 
 **Receipt Routes**
@@ -277,4 +289,9 @@ Request body: {
     "fromDate": DateString,
     "toDate": DateString,
 }
-**End of Supply routes**
+Method: GET
+Endpoint: '/receipt/receiptNum'
+Authorization: admin, seller
+description: get receipt num
+Request body: {}
+**End of Receipt routes**
