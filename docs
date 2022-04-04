@@ -44,76 +44,81 @@ Request body: {
 }
 **End of User Routes**
 
-**Category Routes**
+**Item Routes**
 Method: POST
-Endpoint: '/category'
+Endpoint: '/item'
 Authorization: admin
-description: create category
+description: create item
 Request body: {
-    "categoryName": String
+    "itemCode": String,
+    "itemName": String,
+    "lowestQty": Number,
+    "unitPrice": Number,
+    "unitPercent": Number,
 }
 
 Method: GET
-Endpoint: '/categories'
+Endpoint: '/items'
 Authorization: admin
-description: get all categories
+description: get all items
 Request body: {}
 
 Method: PUT
-Endpoint: '/category'
+Endpoint: '/item'
 Authorization: admin
-description: update category
+description: update item
 Request body: {
-    "categoryId": String,
-    "categoryName": String,
+    "itemId": String,
+    "itemCode": String,
+    "itemName": String,
+    "lowestQty": Number,
+    "unitPrice": Number,
+    "unitPercent": Number,
 }
 
 Method: DELETE
-Endpoint: '/category'
+Endpoint: '/item'
 Authorization: admin
-description: delete category
+description: delete item
 Request body: {
-    "categoryId": String
+    "itemId": String
 }
-**End of Category routes**
+**End of Item routes**
 
 **Customer Routes**
 Method: POST
 Endpoint: '/customer'
-Authorization: admin
+Authorization: admin, seller
 description: create customer
 Request body: {
     "customerCode": String,
     "customerName": String,
-    "customerType": String
 }
 
 Method: GET
 Endpoint: '/customers'
-Authorization: admin
+Authorization: admin, seller
 description: get all customers
 Request body: {}
 
 Method: PUT
 Endpoint: '/customer'
-Authorization: admin
+Authorization: admin, seller
 description: update customer
 Request body: {
     "customerId": String,
     "customerCode": String,
     "customerName": String,
-    "customerType": String
 }
 
 Method: DELETE
 Endpoint: '/customer'
-Authorization: admin
+Authorization: admin, seller
 description: delete customer
 Request body: {
     "customerId": String
 }
 **End of Customer routes**
-
 
 **Supplier Routes**
 Method: POST
@@ -156,7 +161,23 @@ Endpoint: '/supply'
 Authorization: admin
 description: create supply
 Request body: {
-    "supplyType": Enum ['credit','cash','return'],
+    "supplyType": Enum ['cash','return','cancel'],
+    "supplierName": String,
+    "items": [
+        "itemId": String,
+        "qty": Number,
+        "unitPrice": Number,
+        "unitPercent": Number,
+    ]
+}
+
+Method: PUT
+Endpoint: '/supply'
+Authorization: admin
+description: update supply
+Request body: {
+    "supplyId": String,
+    "supplyType": Enum ['cash','return','cancel'],
     "supplierName": String,
     "items": [
         "itemId": String,
@@ -174,6 +195,12 @@ Request body: {
     "fromDate": DateString,
     "toDate": DateString,
 }
+
+Method: GET
+Endpoint: '/supply/supplyNum'
+Authorization: admin
+description: get supply num
+Request body: {}
 **End of Supply routes**
 
 **Transfer Routes**
@@ -182,7 +209,22 @@ Endpoint: '/transfer'
 Authorization: admin
 description: create transfer
 Request body: {
-    "transferType": Enum ['give', 'take'],
+    "transferType": Enum ['give', 'take', 'cancel'],
+    "userId": String,
+    "username": String,
+    "items": [
+        "itemId": String,
+        "qty": Number
+    ]
+}
+
+Method: PUT
+Endpoint: '/transfer'
+Authorization: admin
+description: update transfer
+Request body: {
+    "transferId": String,
+    "transferType": Enum ['give', 'take', 'cancel'],
     "userId": String,
     "username": String,
     "items": [
@@ -199,12 +241,57 @@ Request body: {
     "fromDate": DateString,
     "toDate": DateString,
 }
+
+Method: GET
+Endpoint: '/transfer/transferNum'
+Authorization: admin
+description: get transfer num
+Request body: {}
 **End of Transfer routes**
 
-**Stock routes**
+**Receipt Routes**
+Method: POST
+Endpoint: '/receipt'
+Authorization: admin, seller
+description: create receipt
+Request body: {
+    "receiptType": Enum ['cash','credit', 'return','cancel'],
+    "customerName": String,
+    "items": [
+        "itemId": String,
+        "qty": Number,
+        "unitPrice": Number,
+        "unitPercent": Number,
+    ]
+}
+
+Method: PUT
+Endpoint: '/receipt'
+Authorization: admin, seller
+description: update receipt
+Request body: {
+    "receiptId": String,
+    "receiptType": Enum ['cash','credit', 'return','cancel'],
+    "customerName": String,
+    "items": [
+        "itemId": String,
+        "qty": Number,
+        "unitPrice": Number,
+        "unitPercent": Number,
+    ]
+}
+
 Method: GET
-Endpoint: '/stocks/summary'
-Authorization: admin
-description: get the stock summary
+Endpoint: '/receipts'
+Authorization: admin, seller
+description: get all supplies
+Request body: {
+    "fromDate": DateString,
+    "toDate": DateString,
+}
+Method: GET
+Endpoint: '/receipt/receiptNum'
+Authorization: admin, seller
+description: get receipt num
 Request body: {}
-**End of Stock routes**
+**End of Receipt routes**
