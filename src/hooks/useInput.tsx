@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 
-export default function useInput() {
+export default function useInput(validate: (value: string, items?: any) => boolean) {
    const [value, setValue] = useState<string>('')
    const [isTouched, setIsTouched] = useState<boolean>(false)
 
-   const valueIsValid = value.trim() !== ''
+   const valueIsValid = validate(value)
    const inputError = !valueIsValid && isTouched
 
    const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

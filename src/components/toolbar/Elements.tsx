@@ -24,13 +24,12 @@ export const StyledButton = styled(Button)(() => ({
 export const DialogBody = styled('form')(({ theme }) => ({
    display: 'flex',
    flexDirection: 'column',
-   padding: theme.spacing(5),
+   padding: `${theme.spacing(3)} ${theme.spacing(5)}`,
    alignItems: 'center',
 }))
 
 export const TextFieldWrapper = styled(Box)(({ theme }) => ({
-   paddingTop: theme.spacing(2),
-   paddingBottom: theme.spacing(2),
+   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
    width: '100%',
 }))
 
@@ -42,6 +41,5 @@ export const ActionsWrapper = styled(Box)(({ theme }) => ({
    display: 'flex',
    width: '100%',
    justifyContent: 'flex-end',
-   padding: theme.spacing(3),
-   paddingRight: 0,
+   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
 }))

@@ -15,6 +15,7 @@ import {
 } from '../../components/toolbar/Elements'
 import DeleteModal from '../../components/deleteModal'
 import MessageModal from '../../components/messageModal'
+import { isNotEmpty } from '../../helpers/isNotEmpty'
 
 export default function CustomerPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -46,7 +47,7 @@ export default function CustomerPage() {
       inputChangeHandler: codeChangeHandler,
       inputBlurHandler: codeBlurHandler,
       reset: resetCode,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    const {
       value: customerName,
@@ -56,7 +57,7 @@ export default function CustomerPage() {
       inputChangeHandler: nameChangeHandler,
       inputBlurHandler: nameBlurHandler,
       reset: resetName,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    const {
       mutate: addCustomer,

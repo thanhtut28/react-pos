@@ -18,6 +18,7 @@ import {
 } from '../../components/toolbar/Elements'
 import DeleteModal from '../../components/deleteModal'
 import MessageModal from '../../components/messageModal'
+import { isNotEmpty } from '../../helpers/isNotEmpty'
 
 const categories = [{ name: 'Water' }, { name: 'snacks' }, { name: 'Waffle' }, { name: 'Others' }]
 
@@ -52,7 +53,7 @@ export default function ItemPage() {
       inputChangeHandler: codeChangeHandler,
       inputBlurHandler: codeBlurHandler,
       reset: resetCode,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    const {
       value: itemName,
@@ -62,7 +63,7 @@ export default function ItemPage() {
       inputChangeHandler: nameChangeHandler,
       inputBlurHandler: nameBlurHandler,
       reset: resetName,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    // const { data: categoriesData, isFetching: fetchingCategories } = useGetCategories()
 

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import Login from '../../components/login'
 import useInput from '../../hooks/useInput'
+import { isNotEmpty } from '../../helpers/isNotEmpty'
 
 export default function LoginPage() {
    const {
@@ -10,7 +11,7 @@ export default function LoginPage() {
       inputBlurHandler: onBlurUsername,
       valueIsValid: usernameIsValid,
       inputError: usernameError,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    const {
       value: password,
@@ -18,7 +19,7 @@ export default function LoginPage() {
       inputBlurHandler: onBlurPassword,
       valueIsValid: passwordIsValid,
       inputError: passwordError,
-   } = useInput()
+   } = useInput(isNotEmpty)
 
    const auth = useAuth()
 
