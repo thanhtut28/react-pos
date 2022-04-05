@@ -3,6 +3,9 @@ import { useAuth } from '../../contexts/AuthContext'
 import Login from '../../components/login'
 import useInput from '../../hooks/useInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
+import useLoginMutation from '../../api/login'
+import { setAccessToken } from '../../helpers/accessToken'
+import jwtDecode from 'jwt-decode'
 
 export default function LoginPage() {
    const {
@@ -21,17 +24,24 @@ export default function LoginPage() {
       inputError: passwordError,
    } = useInput(isNotEmpty)
 
+   const { mutateAsync: login, error } = useLoginMutation()
+
    const auth = useAuth()
 
    const formIsValid = usernameIsValid && passwordIsValid
 
-   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault()
 
       if (!formIsValid) return
-      auth.signIn(() => {
-         localStorage.setItem('user', 'isAuthenticated')
-      })
+      const response = await login({ username, password })
+      const token = response.data.token
+
+      auth.signIn(token)
+   }
+
+   if (error) {
+      return <h1>{(error as Error).message}</h1>
    }
 
    return (

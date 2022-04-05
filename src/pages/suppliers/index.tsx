@@ -141,7 +141,7 @@ export default function SupplierPage() {
    }
 
    const handleOnCloseModal = () => {
-      timeout = setTimeout(() => resetAll(), 200)
+      setTimeout(() => resetAll(), 200)
       setOpenModal(false)
    }
 
@@ -196,11 +196,29 @@ export default function SupplierPage() {
          resetDeleteData()
          return
       }
+   }, [
+      addData?.message,
+      addError,
+      deleteData?.message,
+      deleteError,
+      handleOpenErrorMessageModal,
+      handleOpenSuccessMessageModal,
+      handleSetErrorMessage,
+      handleSetSuccessMessage,
+      isAdded,
+      isDeleted,
+      isFailToAdd,
+      isFailToDelete,
+      isFailToUpdate,
+      isUpdated,
+      resetAddData,
+      resetDeleteData,
+      resetUpdateData,
+      updateData?.message,
+      updateError,
+   ])
 
-      return () => clearTimeout(timeout)
-   }, [isAdded, isDeleted, isFailToUpdate])
-
-   console.log(supplierCodeIsValid)
+   console.log('rendering')
 
    return (
       <Container>

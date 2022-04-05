@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query'
-import { apiClient } from '../..'
+import { apiClient } from '../../index'
 import { GET_SUPPLIERS_QUERY } from '../../queries/queries'
 import { URL } from './mutations'
 import { SupplierMutation, UpdateSupplierMutationVariables } from './types'

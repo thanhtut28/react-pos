@@ -1,8 +1,8 @@
 import Card from '../../../components/utils/card'
 import { CardsWrapper, CardWrapper, Container, Heading } from './Elements'
-import { CustomerInterface } from '../../../dummy'
+// import { CustomerInterface } from '../../../dummy'
 
-export default function CustomerCards({ customers }: { customers: CustomerInterface[] }) {
+export default function CustomerCards({ customers }: { customers: any[] }) {
    const calcExpDate = (date: Date) => {
       const today = new Date().getTime()
       const exceedingDays = Math.abs(today - date.getTime())
@@ -12,7 +12,7 @@ export default function CustomerCards({ customers }: { customers: CustomerInterf
    return (
       <Container>
          <Heading>Credits</Heading>
-         <CardsWrapper>
+         {/* <CardsWrapper>
             {customers.map((customer) => (
                <CardWrapper key={customer.code}>
                   <Card
@@ -23,7 +23,7 @@ export default function CustomerCards({ customers }: { customers: CustomerInterf
                   />
                </CardWrapper>
             ))}
-         </CardsWrapper>
+         </CardsWrapper> */}
       </Container>
    )
 }

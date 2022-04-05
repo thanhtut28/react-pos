@@ -1,9 +1,9 @@
 import Card from '../../../components/utils/card'
 import { CardsWrapper, CardWrapper, Container, Heading } from './Elements'
-import { ItemInterface } from '../../../dummy'
+// import { ItemInterface } from '../../../dummy'
 import SeeAllCard from '../../../components/utils/card/SeeAllCard'
 
-export default function ProductCard({ items }: { items: ItemInterface[] }) {
+export default function ProductCard({ items }: { items: any[] }) {
    return (
       <Container>
          <Heading>Low Stocks</Heading>

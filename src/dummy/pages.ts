@@ -53,7 +53,7 @@ export const pages: PageInterface[] = [
       title: 'Dashboard',
       icon: Icons.DashboardIcon,
       type: Type.item,
-      url: '/',
+      url: '/create/receipts',
    },
    {
       id: 'Sales',

@@ -4,14 +4,12 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { StyledAppBar, StyledAvatar, StyledToolbar, ToggleBarWrapper, ToolbarWrapper } from './Elements'
 import { useAuth } from '../../contexts/AuthContext'
 
-export default function header() {
+export default function Header() {
    const { handleToggleSidebar } = useLayoutContext()
    const { signOut } = useAuth()
 
    const handleLogout = () => {
-      signOut(() => {
-         localStorage.removeItem('user')
-      })
+      signOut()
    }
 
    return (

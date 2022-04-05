@@ -7,6 +7,7 @@ import Stocks from '../pages/stocks'
 import Items from '../pages/items'
 import Suppliers from '../pages/suppliers'
 import Login from '../pages/login'
+import CreateReceipts from '../pages/create/receipts'
 import Layout from '../components/layout'
 import { Navigate } from 'react-router-dom'
 
@@ -18,49 +19,66 @@ function Item() {
    return <h1>Item</h1>
 }
 
-type RoutesProps = (isLoggedIn: boolean) => RouteObject[]
+type RoutesProps = (isLoggedIn: boolean, role?: string) => RouteObject[]
 
-const Routes: RoutesProps = (isLoggedIn: boolean) => [
+const Routes: RoutesProps = (isLoggedIn, role) => [
    {
       path: '/',
       element: isLoggedIn ? <Layout /> : <Navigate to="/login" replace />,
-      children: [
-         {
-            index: true,
-            element: <Dashboard />,
-         },
-         {
-            path: '/customers',
-            element: <Customers />,
-         },
-         {
-            path: '/categories',
-            element: <Category />,
-         },
-         {
-            path: '/stocks',
-            element: <Stocks />,
-         },
-         {
-            path: '/products/items',
-            element: <Items />,
-            children: [
-               {
-                  path: '/products/items/haha',
-                  element: <h1>haha</h1>,
-               },
-            ],
-         },
-         {
-            path: '/products/items/:itemId',
-            element: <Item />,
-         },
-         {
-            path: '/supplies/suppliers',
-            element: <Suppliers />,
-         },
-      ],
+      children:
+         role === 'admin'
+            ? [
+                 {
+                    index: true,
+                    element: <Dashboard />,
+                 },
+                 {
+                    path: '/customers',
+                    element: <Customers />,
+                 },
+                 {
+                    path: '/categories',
+                    element: <Category />,
+                 },
+                 {
+                    path: '/stocks',
+                    element: <Stocks />,
+                 },
+                 {
+                    path: '/products/items',
+                    element: <Items />,
+                    children: [
+                       {
+                          path: '/products/items/haha',
+                          element: <h1>haha</h1>,
+                       },
+                    ],
+                 },
+                 {
+                    path: '/products/items/:itemId',
+                    element: <Item />,
+                 },
+                 {
+                    path: '/supplies/suppliers',
+                    element: <Suppliers />,
+                 },
+                 {
+                    path: '/create/receipts',
+                    element: <CreateReceipts />,
+                 },
+              ]
+            : [
+                 {
+                    index: true,
+                    element: <Dashboard />,
+                 },
+                 {
+                    path: '/customers',
+                    element: <Customers />,
+                 },
+              ],
    },
+
    {
       path: '/login',
       element: !isLoggedIn ? <Login /> : <Navigate to="/" replace />,

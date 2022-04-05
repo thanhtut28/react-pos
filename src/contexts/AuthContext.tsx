@@ -1,9 +1,14 @@
+import jwtDecode from 'jwt-decode'
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { getAccessToken, setAccessToken } from 'src/helpers/accessToken'
 
+interface User {
+   role: string
+}
 interface AuthContextInterface {
-   isAuthenticated: boolean
-   signIn: (callback: () => void) => void
-   signOut: (callback: () => void) => void
+   user: User | null
+   signIn: (token: string) => void
+   signOut: () => void
 }
 
 const AuthContext = createContext({} as AuthContextInterface)
@@ -13,26 +18,31 @@ export const useAuth = () => {
 }
 
 export default function AuthContextProvider({ children }: { children: React.ReactNode }) {
-   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+   const [user, setUser] = useState<User | null>(null)
 
-   const signIn = (callback: () => void) => {
-      setIsAuthenticated(true)
-      callback()
+   const signIn = (token: string) => {
+      setAccessToken(token)
+      const user: User = jwtDecode(token)
+      if (user) {
+         setUser(user)
+      }
    }
 
-   const signOut = (callback: () => void) => {
-      setIsAuthenticated(false)
-      callback()
+   const signOut = () => {
+      setAccessToken('')
+      setUser(null)
    }
 
    useEffect(() => {
-      if (localStorage.getItem('user')) {
-         setIsAuthenticated(true)
+      const token = getAccessToken()
+      if (token) {
+         const user: User = jwtDecode(token)
+         setUser(user)
       }
    }, [])
 
    const authContext = {
-      isAuthenticated,
+      user,
       signIn,
       signOut,
    }

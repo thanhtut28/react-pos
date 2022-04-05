@@ -6,5 +6,5 @@ import { useAuth } from '../contexts/AuthContext'
 export default function Routes() {
    const auth = useAuth()
 
-   return useRoutes(MainRoutes(auth.isAuthenticated))
+   return useRoutes(MainRoutes(!!auth.user, auth.user?.role))
 }

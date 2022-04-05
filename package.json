@@ -3,9 +3,11 @@
    "version": "0.1.0",
    "private": true,
    "dependencies": {
+      "@date-io/date-fns": "^2.13.1",
       "@emotion/react": "^11.8.1",
       "@emotion/styled": "^11.8.1",
       "@mui/icons-material": "^5.5.0",
+      "@mui/lab": "^5.0.0-alpha.75",
       "@mui/material": "^5.5.2",
       "@mui/x-data-grid": "^5.6.1",
       "@mui/x-data-grid-generator": "^5.6.1",
@@ -17,7 +19,8 @@
       "@types/react": "^17.0.20",
       "@types/react-dom": "^17.0.9",
       "axios": "^0.26.1",
-      "notistack": "^2.0.3",
+      "date-fns": "^2.28.0",
+      "jwt-decode": "^3.1.2",
       "react": "^17.0.2",
       "react-dom": "^17.0.2",
       "react-query": "^3.34.16",
@@ -51,13 +54,16 @@
       ]
    },
    "devDependencies": {
+      "@types/jwt-decode": "^3.1.0",
       "@typescript-eslint/eslint-plugin": "^5.14.0",
       "@typescript-eslint/parser": "^5.14.0",
       "eslint": "^8.10.0",
       "eslint-config-prettier": "^8.5.0",
       "eslint-config-react": "^1.1.7",
+      "eslint-plugin-jsx-a11y": "^6.5.1",
       "eslint-plugin-prettier": "^4.0.0",
       "eslint-plugin-react": "^7.29.3",
+      "eslint-plugin-react-hooks": "^4.4.0",
       "prettier": "^2.5.1"
    }
 }
