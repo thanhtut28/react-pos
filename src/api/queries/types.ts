@@ -43,17 +43,20 @@ export interface GetSuppliersQuery {
 }
 
 export interface Items {
-   _id: string
-   code: string
-   name: string
+   itemId: string
+   itemCode: string
+   itemName: string
    lowest_qty: number
-   category: string
-   // selling_price: [],
-   // selling_percent: [],
-   __v: 0
+   unitPrice: number
+   unitPercent: number
 }
 
 export interface GetItemsQuery {
    status: string
    data: Items[]
+}
+
+export interface GetReceiptNumQuery {
+   status: string
+   data: number
 }

@@ -9,3 +9,6 @@ export const SUPPLIERS_URL = '/suppliers'
 
 export const GET_ITEMS_QUERY = 'GET_ITEMS_QUERY'
 export const ITEMS_URL = '/items'
+
+export const GET_RECEIPT_NUM = 'GET_RECEIPT_NUM'
+export const RECEIPT_NUM_URL = '/receipt/receiptNum'

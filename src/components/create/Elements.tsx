@@ -10,8 +10,6 @@ export const Container = styled(Box)(({ theme }) => ({
 }))
 
 export const InputsWrapper = styled(Box)(({ theme }) => ({
-   //    width: 1000,
-   margin: `0 auto`,
    display: 'flex',
    flexDirection: 'column',
    paddingBottom: theme.spacing(3),
@@ -20,32 +18,40 @@ export const InputsWrapper = styled(Box)(({ theme }) => ({
 export const StyledRow = styled(Box)(({ theme }) => ({
    display: 'flex',
    justifyContent: 'space-between',
-   [theme.breakpoints.down('sm')]: {
-      flexDirection: 'column',
-      //   justifyContent: 'flex-start',
-   },
+   // [theme.breakpoints.down('sm')]: {
+   //    flexDirection: 'column',
+   //    //   justifyContent: 'flex-start',
+   // },
    alignItems: 'center',
 }))
 
 export const TextFieldWrapper = styled(Box)(({ theme }) => ({
-   padding: `${theme.spacing(1)} ${theme.spacing(4)}`,
-   [theme.breakpoints.down('sm')]: {
-      padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
-   },
-   width: 250,
+   padding: theme.spacing(1),
 }))
 
 export const ItemsWrapper = styled(Box)(({ theme }) => ({
+   width: '100%',
+   maxWidth: 500,
+   margin: '0 auto',
    display: 'flex',
-   //    justifyContent: 'center',
-   paddingTop: theme.spacing(3),
+   flexDirection: 'column',
    alignItems: 'center',
+   paddingTop: theme.spacing(3),
+}))
+
+export const Row = styled(Box)(({ theme }) => ({
+   display: 'flex',
+   width: '100%',
 }))
 
 export const StyledButton = styled(Button)(({ theme }) => ({
-   width: 120,
+   width: '100%',
 }))
 
 export const ActionsWrapper = styled(Box)(({ theme }) => ({
-   padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
+   width: '100%',
+   flex: 1,
+   padding: theme.spacing(1),
+   display: 'flex',
+   justifyContent: 'flex-end',
 }))
