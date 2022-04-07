@@ -23,9 +23,7 @@ export default function AuthContextProvider({ children }: { children: React.Reac
    const signIn = (token: string) => {
       setAccessToken(token)
       const user: User = jwtDecode(token)
-      if (user) {
-         setUser(user)
-      }
+      setUser(user)
    }
 
    const signOut = () => {

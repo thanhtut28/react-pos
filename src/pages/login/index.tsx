@@ -34,9 +34,9 @@ export default function LoginPage() {
       event.preventDefault()
 
       if (!formIsValid) return
+
       const response = await login({ username, password })
       const token = response.data.token
-
       auth.signIn(token)
    }
 

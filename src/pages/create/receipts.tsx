@@ -19,10 +19,96 @@ import {
 import DatePicker from '../../components/datePicker'
 import { receiptTypes } from '../../dummy'
 import { ConstructionOutlined } from '@mui/icons-material'
-import { isGreaterThanOne } from 'src/helpers/isGreaterThanOne'
-import { isBetweenZeroAndOne } from 'src/helpers/isBetweenZeroAndOne'
+import { isGreaterThanOne } from '../../helpers/isGreaterThanOne'
+import { isBetweenZeroAndOne } from '../../helpers/isBetweenZeroAndOne'
+import StyledTable from '../../components/table'
+import { GridRowProps, GridColumns, GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+
+const calcNetAmount = (qty: number, price: number, percent = 0) => {
+   const total = qty * price
+   const discount = qty * price * percent
+   return total - discount
+}
 
 export default function CreateReceipts() {
+   const [rows, setRows] = useState<any>([])
+   const columns: GridColumns = [
+      {
+         field: 'itemName',
+         headerName: 'Item Name',
+         flex: 1,
+         headerClassName: 'table--header',
+         // editable: true
+      },
+      {
+         field: 'qty',
+         headerName: 'Quantity',
+         flex: 1,
+         headerClassName: 'table--header',
+         // editable: true
+         type: 'number',
+      },
+      {
+         field: 'unitPrice',
+         headerName: 'Unit Price',
+         flex: 1,
+         headerClassName: 'table--header',
+         type: 'number',
+         // editable: true
+      },
+      {
+         field: 'unitPercent',
+         headerName: 'Unit Percent',
+         flex: 1,
+         headerClassName: 'table--header',
+         type: 'number',
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number((params.value as number) * 100).toLocaleString()
+            return `${valueFormatted} %`
+            // editable: true
+         },
+      },
+      {
+         field: 'netAmount',
+         headerName: 'Net Amount',
+         flex: 1,
+         headerClassName: 'table--header',
+         type: 'number',
+      },
+      // {
+      //    field: '__v',
+      //    headerName: 'Item Value',
+      //    flex: 1,
+      //    headerClassName: 'table--header',
+      //    // editable: true
+      // },
+      {
+         field: 'actions',
+         type: 'actions',
+         headerName: 'Actions',
+         width: 200,
+         getActions: (data: any) => [
+            <GridActionsCellItem
+               key="edit"
+               icon={<EditIcon />}
+               label="Edit"
+               // onClick={() => handleUpdate(data)}
+               disabled={false}
+            />,
+            <GridActionsCellItem
+               key="delete"
+               icon={<DeleteIcon />}
+               label="Delete"
+               // onClick={() => handleDelete(data.id)}
+               disabled={false}
+            />,
+         ],
+         headerClassName: 'table--header-actions table--header',
+      },
+   ]
+
    const {
       value: customerCode,
       valueIsValid: customerCodeIsValid,
@@ -40,7 +126,14 @@ export default function CreateReceipts() {
       inputChangeHandler: itemCodeChangeHandler,
    } = useInput(isNotEmpty)
 
+   const { value: itemId, valueIsValid: itemIdIsValid, setValue: setId } = useInput(isNotEmpty)
+
    const { value: qty, valueIsValid: qtyIsValid, setValue: setQty } = useInput(isGreaterThanOne)
+   const {
+      value: netAmount,
+      valueIsValid: netAmountIsValid,
+      setValue: setNetAmount,
+   } = useInput(isGreaterThanOne)
 
    const {
       value: unitPrice,
@@ -88,11 +181,14 @@ export default function CreateReceipts() {
 
    const handleAddItem = () => {
       if (formIsValid) {
-         console.log('form is submitting')
+         const row = rows.find((item: any) => item.itemId === itemId)
+         if (row) return
+         setRows((prev: any) => [...prev, { itemId, itemName, qty, unitPrice, unitPercent, netAmount }])
          return
       }
-      console.log('invalid submit')
    }
+
+   console.log(rows)
 
    useEffect(() => {
       const customer = customers?.find((customer) => customer.code === customerCode)
@@ -110,13 +206,21 @@ export default function CreateReceipts() {
          setItemName(item.itemName)
          setUnitPrice(item.unitPrice.toString())
          setUnitPercent(item.unitPercent.toString())
+         setId(item.itemId)
          return
       }
       setItemName('')
       setUnitPrice('')
       setUnitPercent('')
+      setId('')
       return
-   }, [items, itemCode, setUnitPrice, setUnitPercent])
+   }, [items, itemCode, setUnitPrice, setUnitPercent, setId])
+
+   useEffect(() => {
+      if (qty && unitPrice) {
+         setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent).toString())
+      }
+   }, [qty, unitPrice, unitPercent, setNetAmount])
 
    useEffect(() => {
       if (receiptNumber) {
@@ -298,6 +402,8 @@ export default function CreateReceipts() {
                </StyledButton>
             </ActionsWrapper>
          </ItemsWrapper>
+         <Divider />
+         <StyledTable rows={rows} columns={columns} loading={false} getRowId={(row) => row.itemId} />
       </Container>
    )
 }
