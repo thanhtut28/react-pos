@@ -1,0 +1,15 @@
+1. history replaces
+2. log out -> r u sure u want to logout?
+3. remove all stars
+   enable customer name input
+   enter key enable for add button in create receipt
+   enable customer name and code when item is added
+   remove table pagination
+   add save button, print button, and discard button	-> are u sure u want to discard?
+   can add same items multiple times
+   edit modal, and remove button -> no modal
+
+4. pagination number 10,20, 25
+5. receipts table -> No, date, receipt num, receipt type, customer name, total amount 
+6. supplies table -> No, date, supply num, supply type, supplier name, total amount
+7. transfer table -> No, date, transfer num, transfer type, transfer to
