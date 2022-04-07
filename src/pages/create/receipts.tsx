@@ -40,6 +40,8 @@ export default function CreateReceipts() {
          headerName: 'Item Name',
          flex: 1,
          headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
          // editable: true
       },
       {
@@ -49,6 +51,8 @@ export default function CreateReceipts() {
          headerClassName: 'table--header',
          // editable: true
          type: 'number',
+         hideSortIcons: true,
+         disableColumnMenu: true,
       },
       {
          field: 'unitPrice',
@@ -56,6 +60,8 @@ export default function CreateReceipts() {
          flex: 1,
          headerClassName: 'table--header',
          type: 'number',
+         hideSortIcons: true,
+         disableColumnMenu: true,
          // editable: true
       },
       {
@@ -64,6 +70,8 @@ export default function CreateReceipts() {
          flex: 1,
          headerClassName: 'table--header',
          type: 'number',
+         hideSortIcons: true,
+         disableColumnMenu: true,
          valueFormatter: (params: GridValueFormatterParams) => {
             const valueFormatted = Number((params.value as number) * 100).toLocaleString()
             return `${valueFormatted} %`
@@ -76,6 +84,8 @@ export default function CreateReceipts() {
          flex: 1,
          headerClassName: 'table--header',
          type: 'number',
+         hideSortIcons: true,
+         disableColumnMenu: true,
       },
       // {
       //    field: '__v',
@@ -115,10 +125,21 @@ export default function CreateReceipts() {
       inputChangeHandler: customerCodeChangeHandler,
    } = useInput(isNotEmpty)
 
-   const [receiptNum, setReceiptNum] = useState<string>('')
+   const {
+      value: customerName,
+      valueIsValid: customerNameIsValid,
+      setValue: setCustomerName,
+   } = useInput(isNotEmpty)
+
+   const {
+      value: receiptNum,
+      setValue: setReceiptNum,
+      valueIsValid: receiptNumIsValid,
+   } = useInput(isGreaterThanOne)
+
    const today = new Date()
+
    const [type, setType] = useState<string>(receiptTypes[0])
-   const [customerName, setCustomerName] = useState<string>('')
 
    const {
       value: itemCode,
@@ -162,21 +183,21 @@ export default function CreateReceipts() {
    const handleDateChange = (value: string | null) => {}
 
    const handleUnitPercentChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (isBetweenZeroAndOne(e.target.value)) {
-         setUnitPercent(e.target.value)
-      }
+      // if (isBetweenZeroAndOne(e.target.value)) {
+      setUnitPercent(e.target.value)
+      // }
    }
 
    const handleQtyChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (isGreaterThanOne(e.target.value)) {
-         setQty(e.target.value)
-      }
+      // if (isGreaterThanOne(e.target.value)) {
+      setQty(e.target.value)
+      // }
    }
 
    const handleUnitPriceChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      if (isGreaterThanOne(e.target.value)) {
-         setUnitPrice(e.target.value)
-      }
+      // if (isGreaterThanOne(e.target.value)) {
+      setUnitPrice(e.target.value)
+      // }
    }
 
    const handleAddItem = () => {
@@ -186,6 +207,7 @@ export default function CreateReceipts() {
          setRows((prev: any) => [...prev, { itemId, itemName, qty, unitPrice, unitPercent, netAmount }])
          return
       }
+      console.log('invalid input')
    }
 
    console.log(rows)
@@ -198,7 +220,7 @@ export default function CreateReceipts() {
       }
       setCustomerName('')
       return
-   }, [customers, customerCode])
+   }, [customers, customerCode, setCustomerName])
 
    useEffect(() => {
       const item = items?.find((item) => item.itemCode === itemCode)
@@ -226,7 +248,7 @@ export default function CreateReceipts() {
       if (receiptNumber) {
          setReceiptNum(receiptNumber.toString())
       }
-   }, [receiptNumber])
+   }, [receiptNumber, setReceiptNum])
 
    return (
       <Container>
@@ -242,6 +264,7 @@ export default function CreateReceipts() {
                         value={customerCode}
                         onChange={customerCodeChangeHandler}
                         fullWidth
+                        disabled={rows.length > 0}
                      />
                   </TextFieldWrapper>
                   <TextFieldWrapper flex={1.5}>
@@ -289,6 +312,7 @@ export default function CreateReceipts() {
                         value={type}
                         label="Receipt Type"
                         onChange={(e) => setType(e.target.value as string)}
+                        disabled={rows.length > 0}
                      >
                         {receiptTypes.map((type) => (
                            <MenuItem key={type} value={type}>
