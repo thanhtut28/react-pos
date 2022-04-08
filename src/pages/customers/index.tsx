@@ -207,7 +207,6 @@ export default function CustomerPage() {
                      error={customerCodeError}
                      helperText={customerCodeError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <TextFieldWrapper>
@@ -221,7 +220,6 @@ export default function CustomerPage() {
                      error={customerNameError}
                      helperText={customerNameError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <ActionsWrapper>

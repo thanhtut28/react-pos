@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import { TextField, FormControl, MenuItem, InputLabel, Divider, Button } from '@mui/material'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { useEffect, useState, useCallback } from 'react'
+import { TextField, FormControl, MenuItem, InputLabel, Divider, Button, Box } from '@mui/material'
+import Select from '@mui/material/Select'
 import useInput from '../../hooks/useInput'
+import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 import useGetCustomers from '../../api/queries/useGetCustomers'
 import useGetReceiptNum from '../../api/queries/useGetReceiptNum'
 import useGetItems from '../../api/queries/useGetItems'
+import { useCreateReceipt } from '../../api/mutations/receipt'
 import {
    Container,
    InputsWrapper,
@@ -18,15 +20,15 @@ import {
 } from '../../components/create/Elements'
 import DatePicker from '../../components/datePicker'
 import { receiptTypes } from '../../dummy'
-import { ConstructionOutlined } from '@mui/icons-material'
-import { isGreaterThanOne } from '../../helpers/isGreaterThanOne'
-import { isBetweenZeroAndOne } from '../../helpers/isBetweenZeroAndOne'
-import StyledTable from '../../components/table'
-import { GridRowProps, GridColumns, GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
+import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
+import { isPercentage } from '../../helpers/isPercentage'
+import ReceiptItemsTable from '../../components/table/ReceiptItemsTable'
+import { GridColumns, GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import { isValidQty } from '../../helpers/isValidQty'
 
-const calcNetAmount = (qty: number, price: number, percent = 0) => {
+const calcNetAmount = (qty: number, price: number, percent = 0): number => {
    const total = qty * price
    const discount = qty * price * percent
    return total - discount
@@ -34,183 +36,138 @@ const calcNetAmount = (qty: number, price: number, percent = 0) => {
 
 export default function CreateReceipts() {
    const [rows, setRows] = useState<any>([])
-   const columns: GridColumns = [
-      {
-         field: 'itemName',
-         headerName: 'Item Name',
-         flex: 1,
-         headerClassName: 'table--header',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         // editable: true
-      },
-      {
-         field: 'qty',
-         headerName: 'Quantity',
-         flex: 1,
-         headerClassName: 'table--header',
-         // editable: true
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-      },
-      {
-         field: 'unitPrice',
-         headerName: 'Unit Price',
-         flex: 1,
-         headerClassName: 'table--header',
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         // editable: true
-      },
-      {
-         field: 'unitPercent',
-         headerName: 'Unit Percent',
-         flex: 1,
-         headerClassName: 'table--header',
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         valueFormatter: (params: GridValueFormatterParams) => {
-            const valueFormatted = Number((params.value as number) * 100).toLocaleString()
-            return `${valueFormatted} %`
-            // editable: true
-         },
-      },
-      {
-         field: 'netAmount',
-         headerName: 'Net Amount',
-         flex: 1,
-         headerClassName: 'table--header',
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-      },
-      // {
-      //    field: '__v',
-      //    headerName: 'Item Value',
-      //    flex: 1,
-      //    headerClassName: 'table--header',
-      //    // editable: true
-      // },
-      {
-         field: 'actions',
-         type: 'actions',
-         headerName: 'Actions',
-         width: 200,
-         getActions: (data: any) => [
-            <GridActionsCellItem
-               key="edit"
-               icon={<EditIcon />}
-               label="Edit"
-               // onClick={() => handleUpdate(data)}
-               disabled={false}
-            />,
-            <GridActionsCellItem
-               key="delete"
-               icon={<DeleteIcon />}
-               label="Delete"
-               // onClick={() => handleDelete(data.id)}
-               disabled={false}
-            />,
-         ],
-         headerClassName: 'table--header-actions table--header',
-      },
-   ]
+
+   const [total, setTotal] = useState<number>(0)
+   const [netAmount, setNetAmount] = useState<number>(0)
+   const [itemId, setItemId] = useState<string>('')
+   const today = new Date()
+   const [receiptType, setReceiptType] = useState<string>(receiptTypes[0])
+   const [openModal, setOpenModal] = useState<boolean>(false)
 
    const {
       value: customerCode,
       valueIsValid: customerCodeIsValid,
       inputChangeHandler: customerCodeChangeHandler,
+      inputBlurHandler: customerCodeBlurHandler,
+      inputError: customerCodeError,
    } = useInput(isNotEmpty)
 
    const {
       value: customerName,
       valueIsValid: customerNameIsValid,
       setValue: setCustomerName,
+      inputChangeHandler: customerNameChangeHandler,
+      inputBlurHandler: customerNameBlurHandler,
+      inputError: customerNameError,
    } = useInput(isNotEmpty)
 
    const {
       value: receiptNum,
       setValue: setReceiptNum,
       valueIsValid: receiptNumIsValid,
-   } = useInput(isGreaterThanOne)
-
-   const today = new Date()
-
-   const [type, setType] = useState<string>(receiptTypes[0])
+   } = useDisableInput(isGreaterThanZero)
 
    const {
       value: itemCode,
       valueIsValid: itemCodeIsValid,
       inputChangeHandler: itemCodeChangeHandler,
+      inputBlurHandler: itemCodeBlurHandler,
+      inputError: itemCodeError,
+      reset: resetItemCode,
    } = useInput(isNotEmpty)
 
-   const { value: itemId, valueIsValid: itemIdIsValid, setValue: setId } = useInput(isNotEmpty)
-
-   const { value: qty, valueIsValid: qtyIsValid, setValue: setQty } = useInput(isGreaterThanOne)
    const {
-      value: netAmount,
-      valueIsValid: netAmountIsValid,
-      setValue: setNetAmount,
-   } = useInput(isGreaterThanOne)
+      value: itemName,
+      valueIsValid: itemNameIsValid,
+      setValue: setItemName,
+      inputError: itemNameError,
+      reset: resetItemName,
+   } = useDisableInput(isNotEmpty)
+
+   const {
+      value: qty,
+      valueIsValid: qtyIsValid,
+      inputChangeHandler: qtyChangeHandler,
+      inputBlurHandler: qtyBlurHandler,
+      inputError: qtyError,
+      reset: resetQty,
+   } = useInput(isValidQty)
 
    const {
       value: unitPrice,
       valueIsValid: unitPriceIsValid,
       setValue: setUnitPrice,
-   } = useInput(isGreaterThanOne)
+      inputChangeHandler: unitPriceChangeHandler,
+      inputBlurHandler: unitPriceBlurHandler,
+      inputError: unitPriceError,
+      reset: resetUnitPrice,
+   } = useInput(isGreaterThanZero)
 
    const {
       value: unitPercent,
       valueIsValid: unitPercentIsValid,
       setValue: setUnitPercent,
-   } = useInput(isBetweenZeroAndOne)
-
-   const [itemName, setItemName] = useState<string>('')
+      inputChangeHandler: unitPercentChangeHandler,
+      inputBlurHandler: unitPercentBlurHandler,
+      inputError: unitPercentError,
+      reset: resetUnitPercent,
+   } = useInput(isPercentage)
 
    const { data: customersData } = useGetCustomers()
-   const { data: receiptNumData } = useGetReceiptNum()
+   const { data: receiptNumData, refetch: refetchReceiptNum } = useGetReceiptNum()
    const { data: itemsData } = useGetItems()
+   const { mutate: createReceipt, isLoading: isCreatingReceipt } = useCreateReceipt(refetchReceiptNum)
    const customers = customersData?.data
    const receiptNumber = receiptNumData?.data
    const items = itemsData?.data
 
+   const resetItemInputs = () => {
+      resetItemCode()
+      resetItemName()
+      resetQty()
+      resetUnitPrice()
+      resetUnitPercent()
+      setNetAmount(0)
+   }
+
    const formIsValid =
-      customerCodeIsValid && itemCodeIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
+      itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
+
+   const handleUpdate = useCallback((data) => {
+      console.log(data.row)
+   }, [])
 
    const handleDateChange = (value: string | null) => {}
 
-   const handleUnitPercentChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      // if (isBetweenZeroAndOne(e.target.value)) {
-      setUnitPercent(e.target.value)
-      // }
-   }
-
-   const handleQtyChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      // if (isGreaterThanOne(e.target.value)) {
-      setQty(e.target.value)
-      // }
-   }
-
-   const handleUnitPriceChangeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      // if (isGreaterThanOne(e.target.value)) {
-      setUnitPrice(e.target.value)
-      // }
-   }
-
    const handleAddItem = () => {
       if (formIsValid) {
-         const row = rows.find((item: any) => item.itemId === itemId)
-         if (row) return
-         setRows((prev: any) => [...prev, { itemId, itemName, qty, unitPrice, unitPercent, netAmount }])
-         return
+         setRows((prev: any) => [
+            ...prev,
+            {
+               id: prev.length + 1,
+               itemId,
+               itemName,
+               qty,
+               unitPrice,
+               unitPercent: +unitPercent / 100,
+               netAmount,
+            },
+         ])
+         resetItemInputs()
       }
-      console.log('invalid input')
    }
 
-   console.log(rows)
+   const handleCreateReceipt = () => {
+      if (customerCodeIsValid && customerNameIsValid && rows.length > 0) {
+         const items = rows.map((row: any) => ({
+            itemId: row.itemId,
+            qty: +row.qty,
+            unitPrice: +row.unitPrice,
+            unitPercent: +row.unitPercent,
+         }))
+         createReceipt({ customerName, receiptType, items })
+      }
+   }
 
    useEffect(() => {
       const customer = customers?.find((customer) => customer.code === customerCode)
@@ -218,8 +175,6 @@ export default function CreateReceipts() {
          setCustomerName(customer.name)
          return
       }
-      setCustomerName('')
-      return
    }, [customers, customerCode, setCustomerName])
 
    useEffect(() => {
@@ -227,20 +182,20 @@ export default function CreateReceipts() {
       if (item) {
          setItemName(item.itemName)
          setUnitPrice(item.unitPrice.toString())
-         setUnitPercent(item.unitPercent.toString())
-         setId(item.itemId)
+         setUnitPercent((item.unitPercent * 100).toString())
+         setItemId(item.itemId)
          return
       }
       setItemName('')
       setUnitPrice('')
       setUnitPercent('')
-      setId('')
+      setItemId('')
       return
-   }, [items, itemCode, setUnitPrice, setUnitPercent, setId])
+   }, [items, itemCode, setUnitPrice, setUnitPercent, setItemId, setItemName])
 
    useEffect(() => {
       if (qty && unitPrice) {
-         setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent).toString())
+         setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent / 100))
       }
    }, [qty, unitPrice, unitPercent, setNetAmount])
 
@@ -249,6 +204,15 @@ export default function CreateReceipts() {
          setReceiptNum(receiptNumber.toString())
       }
    }, [receiptNumber, setReceiptNum])
+
+   useEffect(() => {
+      if (rows.length > 0) {
+         const total = rows
+            .map((row: any) => +row.netAmount)
+            .reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0)
+         setTotal(total)
+      }
+   }, [rows])
 
    return (
       <Container>
@@ -260,11 +224,12 @@ export default function CreateReceipts() {
                         variant="outlined"
                         label="Customer code"
                         size="small"
-                        required
                         value={customerCode}
                         onChange={customerCodeChangeHandler}
+                        onBlur={customerCodeBlurHandler}
+                        error={customerCodeError}
+                        helperText={customerCodeError && `This field is required`}
                         fullWidth
-                        disabled={rows.length > 0}
                      />
                   </TextFieldWrapper>
                   <TextFieldWrapper flex={1.5}>
@@ -272,9 +237,11 @@ export default function CreateReceipts() {
                         variant="outlined"
                         label="Customer name"
                         size="small"
-                        required
                         value={customerName}
-                        disabled
+                        onChange={customerNameChangeHandler}
+                        onBlur={customerNameBlurHandler}
+                        error={customerNameError}
+                        helperText={customerNameError && `This field is required`}
                         fullWidth
                      />
                   </TextFieldWrapper>
@@ -309,10 +276,9 @@ export default function CreateReceipts() {
                      <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={type}
+                        value={receiptType}
                         label="Receipt Type"
-                        onChange={(e) => setType(e.target.value as string)}
-                        disabled={rows.length > 0}
+                        onChange={(e) => setReceiptType(e.target.value as string)}
                      >
                         {receiptTypes.map((type) => (
                            <MenuItem key={type} value={type}>
@@ -348,9 +314,11 @@ export default function CreateReceipts() {
                      variant="outlined"
                      label="Item Code"
                      size="small"
-                     required
                      value={itemCode}
                      onChange={itemCodeChangeHandler}
+                     onBlur={itemCodeBlurHandler}
+                     error={itemCodeError}
+                     helperText={itemCodeError && 'This field is required'}
                      fullWidth
                   />
                </TextFieldWrapper>
@@ -359,8 +327,9 @@ export default function CreateReceipts() {
                      variant="outlined"
                      label="Item Name"
                      size="small"
-                     required
                      value={itemName}
+                     error={itemNameError && itemCodeError}
+                     helperText={itemNameError && itemCodeError && 'This field is required'}
                      fullWidth
                      disabled
                   />
@@ -372,11 +341,13 @@ export default function CreateReceipts() {
                      variant="outlined"
                      label="Quantity"
                      size="small"
-                     required
                      value={qty}
                      type="number"
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                     onChange={handleQtyChangeHandler}
+                     onChange={qtyChangeHandler}
+                     onBlur={qtyBlurHandler}
+                     error={qtyError}
+                     helperText={qtyError && 'This field is required'}
                      fullWidth
                   />
                </TextFieldWrapper>
@@ -385,11 +356,13 @@ export default function CreateReceipts() {
                      variant="outlined"
                      label="Unit Price"
                      size="small"
-                     required
                      type="number"
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                      value={unitPrice}
-                     onChange={handleUnitPriceChangeHandler}
+                     onChange={unitPriceChangeHandler}
+                     onBlur={unitPriceBlurHandler}
+                     error={unitPriceError}
+                     helperText={unitPriceError && 'Please Fill a valid price'}
                      fullWidth
                   />
                </TextFieldWrapper>
@@ -398,17 +371,18 @@ export default function CreateReceipts() {
                      variant="outlined"
                      label="Unit Percent"
                      size="small"
-                     required
                      type="number"
                      inputProps={{
                         inputMode: 'numeric',
                         pattern: '[0-9]*',
-                        step: '0.01',
                         min: '0',
-                        max: '1',
+                        max: '100',
                      }}
                      value={unitPercent}
-                     onChange={handleUnitPercentChangeHandler}
+                     onChange={unitPercentChangeHandler}
+                     onBlur={unitPercentBlurHandler}
+                     error={unitPercentError}
+                     helperText={unitPercentError && 'Must be between 0 and 100'}
                      fullWidth
                   />
                </TextFieldWrapper>
@@ -427,7 +401,19 @@ export default function CreateReceipts() {
             </ActionsWrapper>
          </ItemsWrapper>
          <Divider />
-         <StyledTable rows={rows} columns={columns} loading={false} getRowId={(row) => row.itemId} />
+         <ReceiptItemsTable
+            onUpdate={handleUpdate}
+            rows={rows}
+            setRows={setRows}
+            total={total}
+            loading={false}
+            setOpenModal={setOpenModal}
+         />
+         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'flex-end', pr: 4 }}>
+            <Button variant="contained" size="small" color="primary" onClick={handleCreateReceipt}>
+               Save
+            </Button>
+         </Box>
       </Container>
    )
 }

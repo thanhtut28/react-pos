@@ -216,7 +216,6 @@ export default function ItemPage() {
                      error={itemCodeError}
                      helperText={itemCodeError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <TextFieldWrapper>
@@ -230,7 +229,6 @@ export default function ItemPage() {
                      error={itemNameError}
                      helperText={itemNameError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <TextFieldWrapper>

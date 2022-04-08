@@ -40,7 +40,6 @@ export default function Login({
             <Form onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                <TextField
                   margin="normal"
-                  required
                   fullWidth
                   id="username"
                   label="Username"
@@ -55,7 +54,6 @@ export default function Login({
                />
                <TextField
                   margin="normal"
-                  required
                   fullWidth
                   name="password"
                   label="Password"

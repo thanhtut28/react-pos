@@ -1,5 +1,5 @@
 import { useMutation } from 'react-query'
-import { apiClient } from '../'
+import { apiClient } from '../..'
 import { URL } from './url'
 import { LoginMutation, LoginMutationVariables } from './types'
 

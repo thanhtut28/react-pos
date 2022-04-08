@@ -241,7 +241,6 @@ export default function SupplierPage() {
                      error={supplierCodeError}
                      helperText={supplierCodeError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <TextFieldWrapper>
@@ -255,7 +254,6 @@ export default function SupplierPage() {
                      error={supplierNameError}
                      helperText={supplierNameError && 'Please fill correct value'}
                      size="small"
-                     required
                   />
                </TextFieldWrapper>
                <ActionsWrapper>

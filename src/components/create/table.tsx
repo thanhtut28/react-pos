@@ -1,7 +1,7 @@
 import React from 'react'
-import { LinearProgress } from '@mui/material'
+import { Box, LinearProgress } from '@mui/material'
 import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter } from '@mui/x-data-grid'
-import { StyledContainer, StyledTableWrapper } from './Elements'
+import { StyledContainer, StyledTableWrapper } from '../table/Elements'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
@@ -17,10 +17,29 @@ interface Props {
    rows: GridRowsProp
    columns: GridColumns
    loading: boolean
-   getRowId: GridRowIdGetter
+   getRowId?: GridRowIdGetter
+   total: number
 }
 
-const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
+export function CustomFooter(props: { total: number }) {
+   return (
+      <Box
+         sx={{
+            padding: '10px',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            p: 5,
+            mt: 2,
+            pr: { lg: 10 },
+            borderTop: (theme) => `1px solid ${theme.palette.grey[300]}`,
+         }}
+      >
+         Total Amount: {props.total}
+      </Box>
+   )
+}
+
+const StyledTable = ({ rows, columns, loading, getRowId, total }: Props) => {
    console.log('table rendering')
 
    return (
@@ -35,6 +54,10 @@ const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
                   LoadingOverlay: LinearProgress,
                   ColumnSortedDescendingIcon: SortedDescendingIcon,
                   ColumnSortedAscendingIcon: SortedAscendingIcon,
+                  Footer: CustomFooter,
+               }}
+               componentsProps={{
+                  footer: { total },
                }}
                rows={rows}
                columns={columns}
