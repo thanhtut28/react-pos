@@ -21,7 +21,7 @@ const MenuItem: React.FC<Props> = ({ item, level }: Props) => {
       <SidebarListItem
          selected={active}
          sx={{ pl: level > 0 ? level * 4 : 2 }}
-         onClick={() => navigate(item.url as string)}
+         onClick={() => navigate(item.url as string, { replace: true })}
       >
          <ListItemIcon>{itemIcon}</ListItemIcon>
 

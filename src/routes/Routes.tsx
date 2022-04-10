@@ -1,4 +1,3 @@
-// import { lazy } from 'react'
 import type { RouteObject } from 'react-router-dom'
 import Dashboard from '../pages/dashboard'
 import Customers from '../pages/customers'
@@ -8,6 +7,7 @@ import Items from '../pages/items'
 import Suppliers from '../pages/suppliers'
 import Login from '../pages/login'
 import CreateReceipts from '../pages/create/receipts'
+import CreateSupplies from '../pages/create/supplies'
 import Layout from '../components/layout'
 import { Navigate } from 'react-router-dom'
 
@@ -66,6 +66,10 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     path: '/create/receipts',
                     element: <CreateReceipts />,
                  },
+                 {
+                    path: '/create/supplies',
+                    element: <CreateSupplies />,
+                 },
               ]
             : [
                  {
@@ -75,6 +79,10 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                  {
                     path: '/customers',
                     element: <Customers />,
+                 },
+                 {
+                    path: '/create/receipts',
+                    element: <CreateReceipts />,
                  },
               ],
    },

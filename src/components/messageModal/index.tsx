@@ -19,7 +19,7 @@ export default function MessageModal({ open, onClose, message, variant }: Props)
    return (
       <Snackbar
          open={open}
-         autoHideDuration={6000}
+         autoHideDuration={2000}
          onClose={handleClose}
          sx={{
             '&.MuiSnackbar-root': {
@@ -27,7 +27,7 @@ export default function MessageModal({ open, onClose, message, variant }: Props)
             },
          }}
       >
-         <Alert variant="filled" severity={variant} onClose={handleClose}>
+         <Alert variant="filled" severity={variant}>
             {message}
          </Alert>
       </Snackbar>

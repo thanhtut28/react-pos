@@ -88,7 +88,7 @@ export const pages: PageInterface[] = [
             title: 'Supplies',
             type: Type.item,
             icon: Icons.HandymanIcon,
-            url: '/supplies/supplies',
+            url: '/create/supply',
          },
          {
             id: 'Suppliers',
@@ -100,26 +100,11 @@ export const pages: PageInterface[] = [
       ],
    },
    {
-      id: 'Products',
-      title: 'Products',
-      type: Type.collapse,
-      icon: Icons.LocalMallIcon,
-      children: [
-         {
-            id: 'Items',
-            title: 'Items',
-            type: Type.item,
-            icon: Icons.InventoryIcon,
-            url: '/products/items',
-         },
-         {
-            id: 'Category',
-            title: 'Category',
-            type: Type.item,
-            icon: Icons.CategoryIcon,
-            url: '/categories',
-         },
-      ],
+      id: 'Items',
+      title: 'Items',
+      type: Type.item,
+      url: '/items',
+      icon: Icons.InventoryIcon,
    },
    {
       id: 'Stocks',
@@ -135,5 +120,22 @@ export const pages: PageInterface[] = [
             url: '/login',
          },
       ],
+   },
+]
+
+export const sellerPages: PageInterface[] = [
+   {
+      id: 'Customers',
+      title: 'Customers',
+      type: Type.item,
+      icon: Icons.PersonIcon,
+      url: '/customers',
+   },
+   {
+      id: 'Receipts',
+      title: 'Receipts',
+      type: Type.item,
+      icon: Icons.ReceiptIcon,
+      url: '/create/receipts',
    },
 ]

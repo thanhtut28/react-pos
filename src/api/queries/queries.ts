@@ -12,3 +12,6 @@ export const ITEMS_URL = '/items'
 
 export const GET_RECEIPT_NUM = 'GET_RECEIPT_NUM'
 export const RECEIPT_NUM_URL = '/receipt/receiptNum'
+
+export const GET_SUPPLY_NUM = 'GET_SUPPLY_NUM'
+export const SUPPLY_NUM_URL = '/supply/supplyNum'

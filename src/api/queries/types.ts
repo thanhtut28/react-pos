@@ -34,7 +34,7 @@ export interface GetCustomersQuery {
 export interface Suppliers {
    supplierId: string
    supplierCode: string
-   supplierName: number
+   supplierName: string
 }
 
 export interface GetSuppliersQuery {
@@ -57,6 +57,11 @@ export interface GetItemsQuery {
 }
 
 export interface GetReceiptNumQuery {
+   status: string
+   data: number
+}
+
+export interface GetSupplyNumQuery {
    status: string
    data: number
 }

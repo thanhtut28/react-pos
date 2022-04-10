@@ -14,16 +14,18 @@ interface Props {
    open: boolean
    onClose: () => void
    onSubmit: (e: React.FormEvent<HTMLFormElement>) => void
+   action: string
+   proceedTitle: string
 }
 
-export default function DeleteModal({ open, onClose, onSubmit }: Props) {
+export default function DeleteModal({ open, onClose, onSubmit, action, proceedTitle }: Props) {
    return (
       <Dialog open={open} onClose={onClose}>
          <StyledDialogTitle>Please Confirm</StyledDialogTitle>
          <DialogWrapper noValidate autoComplete="off" onSubmit={onSubmit}>
             <DialogBody>
                <ReportProblemIcon color="error" />
-               <WarningText>Are you sure want to delete this entry?</WarningText>
+               <WarningText>{`Are you sure want to ${action}?`}</WarningText>
             </DialogBody>
             <DialogFooter>
                <ActionsWrapper>
@@ -31,7 +33,7 @@ export default function DeleteModal({ open, onClose, onSubmit }: Props) {
                      Cancel
                   </StyledButton>
                   <StyledButton disableElevation color="error" size="small" variant="contained" type="submit">
-                     Confirm
+                     {proceedTitle}
                   </StyledButton>
                </ActionsWrapper>
             </DialogFooter>

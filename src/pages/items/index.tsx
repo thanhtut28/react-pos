@@ -16,7 +16,7 @@ import {
    StyledButton,
    StyledAutocomplete,
 } from '../../components/toolbar/Elements'
-import DeleteModal from '../../components/deleteModal'
+import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 
@@ -266,7 +266,13 @@ export default function ItemPage() {
                </ActionsWrapper>
             </DialogBody>
          </Dialog>
-         <DeleteModal onSubmit={handleDeleteItem} open={openDeleteModal} onClose={handleOnCloseDeleteModal} />
+         <WarningModal
+            onSubmit={handleDeleteItem}
+            open={openDeleteModal}
+            onClose={handleOnCloseDeleteModal}
+            action="delete this entry"
+            proceedTitle="Delete"
+         />
 
          <MessageModal
             variant="success"

@@ -13,7 +13,7 @@ import {
    StyledDialogTitle,
    StyledButton,
 } from '../../components/toolbar/Elements'
-import DeleteModal from '../../components/deleteModal'
+import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 
@@ -246,10 +246,12 @@ export default function CustomerPage() {
                </ActionsWrapper>
             </DialogBody>
          </Dialog>
-         <DeleteModal
+         <WarningModal
             onSubmit={handleDeleteCustomer}
             open={openDeleteModal}
             onClose={handleOnCloseDeleteModal}
+            action="delete this entry"
+            proceedTitle="Delete"
          />
 
          <MessageModal

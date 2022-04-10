@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import StyledTable from '../create/table'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
@@ -7,25 +7,32 @@ import { GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
 interface Props {
    rows: any
    loading: boolean
+   isEditing: boolean
+   editId: number
    setRows: React.Dispatch<React.SetStateAction<any>>
-   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
+   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    onUpdate: (data: any) => void
    total: number
+   resetItemInputs: () => void
 }
 
 const ReceiptItemsTable = memo(function ReceiptItemsTable({
    rows,
+   editId,
    setRows,
    loading,
-   setOpenModal,
+   isEditing,
+   setIsEditing,
    onUpdate,
    total,
+   resetItemInputs,
 }: Props) {
    const columns = [
       {
          field: 'id',
          headerName: 'id',
          flex: 1,
+         minWidth: 50,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -35,6 +42,7 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          field: 'itemName',
          headerName: 'Item Name',
          flex: 1,
+         minWidth: 100,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -44,6 +52,7 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          field: 'qty',
          headerName: 'Quantity',
          flex: 1,
+         minWidth: 80,
          headerClassName: 'table--header',
          type: 'number',
          hideSortIcons: true,
@@ -54,16 +63,22 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          field: 'unitPrice',
          headerName: 'Unit Price',
          flex: 1,
+         minWidth: 150,
          headerClassName: 'table--header',
          type: 'number',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number(params.value as number).toLocaleString()
+            return `${valueFormatted} Ks`
+         },
       },
       {
          field: 'unitPercent',
          headerName: 'Unit Percent',
          flex: 1,
+         minWidth: 100,
          headerClassName: 'table--header',
          type: 'number',
          hideSortIcons: true,
@@ -80,17 +95,15 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          flex: 1,
          headerClassName: 'table--header',
          type: 'number',
+         minWidth: 150,
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number(params.value as number).toLocaleString()
+            return `${valueFormatted} Ks`
+         },
       },
-      // {
-      //    field: '__v',
-      //    headerName: 'Item Value',
-      //    flex: 1,
-      //    headerClassName: 'table--header',
-      //    // editable: true
-      // },
       {
          field: 'actions',
          type: 'actions',
@@ -99,9 +112,9 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          getActions: (data: any) => [
             <GridActionsCellItem
                key="edit"
-               icon={<EditIcon />}
+               icon={<EditIcon color={isEditing && data.id === editId ? 'primary' : 'action'} />}
                label="Edit"
-               onClick={() => handleUpdate(data)}
+               onClick={() => (isEditing && data.id === editId ? handleCancelUpdate() : handleUpdate(data))}
                disabled={loading}
             />,
             <GridActionsCellItem
@@ -116,13 +129,25 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
       },
    ]
 
-   const handleDelete = (id: number) => {
-      setRows((prev: any) => prev.filter((row: any) => row.id === id))
-   }
+   const handleDelete = useCallback(
+      (id: number) => {
+         if (editId === id) {
+            setIsEditing(false)
+            resetItemInputs()
+         }
+         setTimeout(() => setRows((prev: any) => prev.filter((row: any) => row.id !== id)))
+      },
+      [editId, resetItemInputs, setIsEditing, setRows]
+   )
 
    const handleUpdate = (data: any) => {
-      setOpenModal(true)
+      setIsEditing(true)
       onUpdate(data)
+   }
+
+   const handleCancelUpdate = () => {
+      setIsEditing(false)
+      resetItemInputs()
    }
 
    return (

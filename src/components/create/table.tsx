@@ -34,7 +34,7 @@ export function CustomFooter(props: { total: number }) {
             borderTop: (theme) => `1px solid ${theme.palette.grey[300]}`,
          }}
       >
-         Total Amount: {props.total}
+         Total Amount:&nbsp;<strong> {Number(props.total as number).toLocaleString()} Ks</strong>
       </Box>
    )
 }
