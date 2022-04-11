@@ -2,7 +2,7 @@ import { memo, useCallback } from 'react'
 import StyledTable from '../create/transferTable'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { GridActionsCellItem } from '@mui/x-data-grid'
+import { GridActionsCellItem, GridColumns } from '@mui/x-data-grid'
 import { Row } from '../../pages/create/transfers'
 
 interface Props {
@@ -26,16 +26,16 @@ const TransferItemsTable = memo(function TransferItemsTable({
    onUpdate,
    resetItemInputs,
 }: Props) {
-   const columns = [
+   const columns: GridColumns = [
       {
          field: 'id',
          headerName: 'id',
-         flex: 1,
-         minWidth: 50,
+         minWidth: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         sortable: false,
       },
       {
          field: 'itemName',
@@ -46,6 +46,7 @@ const TransferItemsTable = memo(function TransferItemsTable({
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         sortable: false,
       },
       {
          field: 'qty',
@@ -57,6 +58,7 @@ const TransferItemsTable = memo(function TransferItemsTable({
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         sortable: false,
       },
       {
          field: 'actions',

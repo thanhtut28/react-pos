@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import useInput from '../../hooks/useInput'
 import useMessageModal from '../../hooks/useMessageModal'
 import CustomersTable from '../../components/table/CustomersTable'
+import useGetCustomers from '../../api/queries/useGetCustomers'
 import { useAddCustomer, useUpdateCustomer, useDeleteCustomer } from '../../api/mutations/customer'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
 import {
@@ -22,6 +23,18 @@ export default function CustomerPage() {
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
    const [selectedId, setSelectedId] = useState<string>('')
+
+   const {
+      data: customersData,
+      isFetching: fetchingCustomers,
+      error: errorFetchingCustomers,
+   } = useGetCustomers()
+
+   const customers = customersData?.data
+
+   const codeIsNotCreated = (customerCode: string) => !customers?.find(({ code }) => code === customerCode)
+
+   const nameIsNotCreated = (customerName: string) => !customers?.find(({ name }) => name === customerName)
 
    const {
       message: successMessage,
@@ -89,12 +102,10 @@ export default function CustomerPage() {
       isError: isFailToDelete,
    } = useDeleteCustomer()
 
-   const sameValues = customerCode === customerName
-   const isValid = customerCodeIsValid && customerNameIsValid && !sameValues
+   const isValidToUpdate = customerCodeIsValid && customerNameIsValid
+   const isValidToAdd = isValidToUpdate && codeIsNotCreated(customerCode) && nameIsNotCreated(customerName)
 
-   const loading = addingCustomer || updatingCustomer || deletingCustomer
-
-   let timeout: NodeJS.Timeout
+   const loading = addingCustomer || updatingCustomer || deletingCustomer || fetchingCustomers
 
    const resetAll = () => {
       setIsEditing(false)
@@ -105,7 +116,7 @@ export default function CustomerPage() {
 
    const handleAddCustomer = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValid) return
+      if (!isValidToAdd) return
       addCustomer({ customerCode, customerName })
       setOpenModal(false)
       resetAll()
@@ -113,7 +124,7 @@ export default function CustomerPage() {
 
    const handleUpdateCustomer = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValid) return
+      if (!isValidToUpdate) return
       updateCustomer({ customerId: selectedId, customerCode, customerName })
       setOpenModal(false)
       resetAll()
@@ -127,7 +138,7 @@ export default function CustomerPage() {
    }
 
    const handleOnCloseModal = () => {
-      timeout = setTimeout(() => resetAll(), 200)
+      setTimeout(() => resetAll(), 200)
       setOpenModal(false)
    }
 
@@ -182,9 +193,27 @@ export default function CustomerPage() {
          resetDeleteData()
          return
       }
-
-      return () => clearTimeout(timeout)
-   }, [isAdded, isDeleted, isFailToUpdate])
+   }, [
+      addData?.message,
+      addError,
+      deleteData?.message,
+      deleteError,
+      handleOpenErrorMessageModal,
+      handleOpenSuccessMessageModal,
+      handleSetErrorMessage,
+      handleSetSuccessMessage,
+      isAdded,
+      isDeleted,
+      isFailToAdd,
+      isFailToDelete,
+      isFailToUpdate,
+      isUpdated,
+      resetAddData,
+      resetDeleteData,
+      resetUpdateData,
+      updateData?.message,
+      updateError,
+   ])
 
    return (
       <Container>
@@ -239,7 +268,6 @@ export default function CustomerPage() {
                      size="small"
                      disableElevation
                      type="submit"
-                     disabled={!isValid}
                   >
                      {isEditing ? 'Update' : 'Add'}
                   </StyledButton>

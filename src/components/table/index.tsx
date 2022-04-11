@@ -17,7 +17,7 @@ interface Props {
    rows: GridRowsProp
    columns: GridColumns
    loading: boolean
-   getRowId: GridRowIdGetter
+   getRowId?: GridRowIdGetter
 }
 
 const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {

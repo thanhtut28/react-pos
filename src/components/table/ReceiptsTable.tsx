@@ -66,49 +66,15 @@ const SuppliersTable = memo(function SuppliersTable({
          filterable: false,
          sortable: false,
       },
-      {
-         field: 'actions',
-         type: 'actions',
-         headerName: 'Actions',
-         width: 200,
-         getActions: (data: any) => [
-            <GridActionsCellItem
-               key="edit"
-               icon={<EditIcon />}
-               label="Edit"
-               onClick={() => handleUpdate(data)}
-               disabled={loading}
-            />,
-            <GridActionsCellItem
-               key="delete"
-               icon={<DeleteIcon />}
-               label="Delete"
-               onClick={() => handleDelete(data.id)}
-               disabled={loading}
-            />,
-         ],
-         headerClassName: 'table--header-actions table--header',
-      },
    ]
-
-   const handleDelete = (supplierId: string) => {
-      setOpenDeleteModal(true)
-      setSelectedId(supplierId)
-   }
-
-   const handleUpdate = (data: any) => {
-      setIsEditing(true)
-      setOpenModal(true)
-      setSelectedId(data.id)
-      setSupplierCode(data.row.supplierCode)
-      setSupplierName(data.row.supplierName)
-   }
 
    useEffect(() => {
       if (suppliers) {
          setRows([...suppliers.map((supplier, index) => ({ ...supplier, id: index + 1 }))])
       }
    }, [suppliers])
+
+   console.log()
 
    return (
       <>

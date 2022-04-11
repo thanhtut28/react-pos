@@ -1,10 +1,10 @@
 import { memo, useEffect, useState } from 'react'
-import useGetCustomers from '../../api/queries/useGetCustomers'
+import useGetUsers from '../../api/queries/useGetUsers'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { GridActionsCellItem, GridColumns } from '@mui/x-data-grid'
-import { Customer } from '../../api/queries/types'
+import { User } from '../../api/queries/types'
 
 interface Props {
    loading: boolean
@@ -12,29 +12,25 @@ interface Props {
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>
    setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
-   setCustomerCode: React.Dispatch<React.SetStateAction<string>>
-   setCustomerName: React.Dispatch<React.SetStateAction<string>>
+   setUsername: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
 }
 
-type Row = Customer & { id: number }
+type Row = User & { id: number }
 
-const CustomersTable = memo(function CustomersTable({
+const UsersTable = memo(function UsersTable({
    loading,
    setIsEditing,
    setOpenModal,
    setOpenDeleteModal,
-   setCustomerCode,
-   setCustomerName,
+   setUsername,
    setSelectedId,
 }: Props) {
    const [rows, setRows] = useState<Row[]>([])
-   const { data, isFetching, error } = useGetCustomers()
+   const { data, isFetching, error } = useGetUsers()
 
-   const customers = data?.data
-   // const customer = customers?.[0]
+   const users = data?.data
 
-   // const columnFields = customer ? Object.entries(customer) : []
    const columns: GridColumns = [
       {
          field: 'id',
@@ -47,9 +43,10 @@ const CustomersTable = memo(function CustomersTable({
          sortable: false,
       },
       {
-         field: 'code',
-         headerName: 'Customer Code',
+         field: 'userId',
+         headerName: 'User Id',
          flex: 1,
+         minWidth: 150,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -57,16 +54,27 @@ const CustomersTable = memo(function CustomersTable({
          sortable: false,
       },
       {
-         field: 'name',
-         headerName: 'Customer Name',
+         field: 'username',
+         headerName: 'Username',
          flex: 1,
+         minWidth: 150,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
       },
-
+      {
+         field: 'role',
+         headerName: 'Role',
+         flex: 1,
+         minWidth: 150,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+      },
       {
          field: 'actions',
          type: 'actions',
@@ -92,24 +100,25 @@ const CustomersTable = memo(function CustomersTable({
       },
    ]
 
-   const handleDelete = (customerId: string) => {
+   const handleDelete = (userId: string) => {
       setOpenDeleteModal(true)
-      setSelectedId(customerId)
+      setSelectedId(userId)
    }
 
    const handleUpdate = (data: any) => {
       setIsEditing(true)
       setOpenModal(true)
       setSelectedId(data.id)
-      setCustomerCode(data.row.code)
-      setCustomerName(data.row.name)
+      setUsername(data.row.username)
    }
 
    useEffect(() => {
-      if (customers) {
-         setRows([...customers.map((customer, index) => ({ ...customer, id: index + 1 }))])
+      if (users) {
+         setRows([...users.map((user, index) => ({ ...user, id: index + 1 }))])
       }
-   }, [customers])
+   }, [users])
+
+   console.log()
 
    return (
       <>
@@ -117,10 +126,10 @@ const CustomersTable = memo(function CustomersTable({
             rows={rows}
             columns={columns}
             loading={loading || isFetching}
-            getRowId={(row) => row._id}
+            getRowId={(row) => row.userId}
          />
       </>
    )
 })
 
-export default CustomersTable
+export default UsersTable

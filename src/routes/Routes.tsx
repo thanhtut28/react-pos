@@ -4,6 +4,7 @@ import Customers from '../pages/customers'
 import Category from '../pages/category'
 import Stocks from '../pages/stocks'
 import Items from '../pages/items'
+import Receipts from '../pages/receipts'
 import Suppliers from '../pages/suppliers'
 import Login from '../pages/login'
 import CreateReceipts from '../pages/create/receipts'
@@ -11,6 +12,7 @@ import CreateSupplies from '../pages/create/supplies'
 import CreateTransfers from '../pages/create/transfers'
 import Layout from '../components/layout'
 import { Navigate } from 'react-router-dom'
+import UserPage from '../pages/users'
 
 function ErrorPage() {
    return <h1>Error</h1>
@@ -64,6 +66,10 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     element: <Suppliers />,
                  },
                  {
+                    path: '/receipts',
+                    element: <Receipts />,
+                 },
+                 {
                     path: '/create/receipts',
                     element: <CreateReceipts />,
                  },
@@ -74,6 +80,10 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                  {
                     path: '/create/transfers',
                     element: <CreateTransfers />,
+                 },
+                 {
+                    path: '/users',
+                    element: <UserPage />,
                  },
               ]
             : [

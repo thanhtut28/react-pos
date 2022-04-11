@@ -31,13 +31,13 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
    const columns = [
       {
          field: 'id',
-         headerName: 'id',
-         flex: 1,
-         minWidth: 50,
+         headerName: 'Id',
+         width: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         sortable: false,
       },
       {
          field: 'itemName',

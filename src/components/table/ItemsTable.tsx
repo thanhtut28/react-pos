@@ -43,22 +43,25 @@ const ItemsTable = memo(function ItemsTable({
       //      editable: true,
       //   })),
       {
-         field: 'code',
+         field: 'id',
+         headerName: 'Id',
+         width: 80,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+      },
+      {
+         field: 'itemCode',
          headerName: 'Item Code',
          flex: 1,
          headerClassName: 'table--header',
          // editable: true
       },
       {
-         field: 'name',
+         field: 'itemName',
          headerName: 'Item Name',
-         flex: 1,
-         headerClassName: 'table--header',
-         // editable: true
-      },
-      {
-         field: 'category',
-         headerName: 'Category',
          flex: 1,
          headerClassName: 'table--header',
          // editable: true
@@ -107,7 +110,7 @@ const ItemsTable = memo(function ItemsTable({
                rows={items}
                columns={columns}
                loading={loading || isFetching}
-               getRowId={(row) => row._id}
+               getRowId={(row) => row.itemId}
             />
          ) : (
             <h1>Loading...</h1>

@@ -13,6 +13,9 @@ export const ITEMS_URL = '/items'
 export const GET_USERS_QUERY = 'GET_USERS_QUERY'
 export const USERS_URL = '/users'
 
+export const GET_RECEIPTS_QUERY = 'GET_RECEIPTS_QUERY'
+export const RECEIPTS_URL = '/receipts'
+
 export const GET_RECEIPT_NUM = 'GET_RECEIPT_NUM'
 export const RECEIPT_NUM_URL = '/receipt/receiptNum'
 
