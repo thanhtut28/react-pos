@@ -39,8 +39,19 @@ const calcNetAmount = (qty: number, price: number, percent = 0): number => {
    return total - discount
 }
 
+export interface Row {
+   id: number
+   itemId: string
+   itemName: string
+   itemCode: string
+   qty: string
+   unitPrice: string
+   unitPercent: number
+   netAmount: number
+}
+
 export default function CreateSupplies() {
-   const [rows, setRows] = useState<any>([])
+   const [rows, setRows] = useState<Row[]>([])
    const [total, setTotal] = useState<number>(0)
    const [netAmount, setNetAmount] = useState<number>(0)
    const [itemId, setItemId] = useState<string>('')
@@ -228,7 +239,7 @@ export default function CreateSupplies() {
    const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (formIsValid) {
-         setRows((prev: any) => [
+         setRows((prev) => [
             ...prev,
             {
                id: prev.length + 1,
@@ -248,8 +259,8 @@ export default function CreateSupplies() {
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (formIsValid) {
-         setRows((prev: any) =>
-            prev.map((row: any) =>
+         setRows((prev) =>
+            prev.map((row) =>
                row.id === editId
                   ? {
                        id: editId,
@@ -271,7 +282,7 @@ export default function CreateSupplies() {
 
    const handleCreateSupply = () => {
       if (isValidToCreate) {
-         const items = rows.map((row: any) => ({
+         const items = rows.map((row) => ({
             itemId: row.itemId,
             qty: +row.qty,
             unitPrice: +row.unitPrice,
@@ -306,7 +317,7 @@ export default function CreateSupplies() {
    useEffect(() => {
       if (rows.length > 0) {
          const total = rows
-            .map((row: any) => +row.netAmount)
+            .map((row) => +row.netAmount)
             .reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0)
          setTotal(total)
          return

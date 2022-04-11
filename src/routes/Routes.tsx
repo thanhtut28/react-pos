@@ -8,6 +8,7 @@ import Suppliers from '../pages/suppliers'
 import Login from '../pages/login'
 import CreateReceipts from '../pages/create/receipts'
 import CreateSupplies from '../pages/create/supplies'
+import CreateTransfers from '../pages/create/transfers'
 import Layout from '../components/layout'
 import { Navigate } from 'react-router-dom'
 
@@ -45,11 +46,11 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     element: <Stocks />,
                  },
                  {
-                    path: '/products/items',
+                    path: '/items',
                     element: <Items />,
                     children: [
                        {
-                          path: '/products/items/haha',
+                          path: '/items/haha',
                           element: <h1>haha</h1>,
                        },
                     ],
@@ -69,6 +70,10 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                  {
                     path: '/create/supplies',
                     element: <CreateSupplies />,
+                 },
+                 {
+                    path: '/create/transfers',
+                    element: <CreateTransfers />,
                  },
               ]
             : [

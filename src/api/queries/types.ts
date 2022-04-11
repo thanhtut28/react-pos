@@ -31,7 +31,7 @@ export interface GetCustomersQuery {
  * @Suppliers
  */
 
-export interface Suppliers {
+export interface Supplier {
    supplierId: string
    supplierCode: string
    supplierName: string
@@ -39,10 +39,14 @@ export interface Suppliers {
 
 export interface GetSuppliersQuery {
    status: string
-   data: Suppliers[]
+   data: Supplier[]
 }
 
-export interface Items {
+/**
+ * @Items
+ */
+
+export interface Item {
    itemId: string
    itemCode: string
    itemName: string
@@ -53,8 +57,28 @@ export interface Items {
 
 export interface GetItemsQuery {
    status: string
-   data: Items[]
+   data: Item[]
 }
+
+/**
+ * @Users
+ *
+ */
+
+export interface User {
+   userId: string
+   username: string
+   role: string
+}
+
+export interface GetUsersQuery {
+   status: string
+   data: User[]
+}
+
+/**
+ * @ReceiptNum
+ */
 
 export interface GetReceiptNumQuery {
    status: string
@@ -62,6 +86,11 @@ export interface GetReceiptNumQuery {
 }
 
 export interface GetSupplyNumQuery {
+   status: string
+   data: number
+}
+
+export interface GetTransferNumQuery {
    status: string
    data: number
 }

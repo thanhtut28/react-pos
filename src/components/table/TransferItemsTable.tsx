@@ -1,9 +1,9 @@
 import { memo, useCallback } from 'react'
-import StyledTable from '../create/table'
+import StyledTable from '../create/transferTable'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
-import { Row } from '../../pages/create/receipts'
+import { GridActionsCellItem } from '@mui/x-data-grid'
+import { Row } from '../../pages/create/transfers'
 
 interface Props {
    rows: Row[]
@@ -13,11 +13,10 @@ interface Props {
    setRows: React.Dispatch<React.SetStateAction<Row[]>>
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    onUpdate: (data: any) => void
-   total: number
    resetItemInputs: () => void
 }
 
-const ReceiptItemsTable = memo(function ReceiptItemsTable({
+const TransferItemsTable = memo(function TransferItemsTable({
    rows,
    editId,
    setRows,
@@ -25,7 +24,6 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
    isEditing,
    setIsEditing,
    onUpdate,
-   total,
    resetItemInputs,
 }: Props) {
    const columns = [
@@ -59,51 +57,6 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
-      },
-      {
-         field: 'unitPrice',
-         headerName: 'Unit Price',
-         flex: 1,
-         minWidth: 150,
-         headerClassName: 'table--header',
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         filterable: false,
-         valueFormatter: (params: GridValueFormatterParams) => {
-            const valueFormatted = Number(params.value as number).toLocaleString()
-            return `${valueFormatted} Ks`
-         },
-      },
-      {
-         field: 'unitPercent',
-         headerName: 'Unit Percent',
-         flex: 1,
-         minWidth: 100,
-         headerClassName: 'table--header',
-         type: 'number',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         filterable: false,
-         valueFormatter: (params: GridValueFormatterParams) => {
-            const valueFormatted = Number((params.value as number) * 100).toLocaleString()
-            return `${valueFormatted} %`
-         },
-      },
-      {
-         field: 'netAmount',
-         headerName: 'Net Amount',
-         flex: 1,
-         headerClassName: 'table--header',
-         type: 'number',
-         minWidth: 150,
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         filterable: false,
-         valueFormatter: (params: GridValueFormatterParams) => {
-            const valueFormatted = Number(params.value as number).toLocaleString()
-            return `${valueFormatted} Ks`
-         },
       },
       {
          field: 'actions',
@@ -153,9 +106,9 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
 
    return (
       <>
-         <StyledTable rows={rows} columns={columns} loading={loading} total={total} />
+         <StyledTable rows={rows} columns={columns} loading={loading} />
       </>
    )
 })
 
-export default ReceiptItemsTable
+export default TransferItemsTable

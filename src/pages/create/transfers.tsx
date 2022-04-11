@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
+import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
 import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
-import useGetCustomers from '../../api/queries/useGetCustomers'
-import useGetReceiptNum from '../../api/queries/useGetReceiptNum'
+import useGetUsers from '../../api/queries/useGetUsers'
+import useGetTransferNum from '../../api/queries/useGetTransferNum'
 import useGetItems from '../../api/queries/useGetItems'
-import { useCreateReceipt } from '../../api/mutations/receipt'
+import { useCreateTransfer } from '../../api/mutations/transfer'
 import {
    Container,
    InputsWrapper,
@@ -25,38 +25,28 @@ import {
    TableWrapper,
 } from '../../components/create/Elements'
 import DatePicker from '../../components/datePicker'
-import { receiptTypes } from '../../dummy'
+import { transferTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
-import { isPercentage } from '../../helpers/isPercentage'
-import ReceiptItemsTable from '../../components/table/ReceiptItemsTable'
+import TransferItemsTable from '../../components/table/TransferItemsTable'
 import { isValidQty } from '../../helpers/isValidQty'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
 
-const calcNetAmount = (qty: number, price: number, percent = 0): number => {
-   const total = qty * price
-   const discount = qty * price * percent
-   return total - discount
-}
-
 export interface Row {
    id: number
-   itemId: string
-   itemName: string
    itemCode: string
+   itemName: string
+   itemId: string
    qty: string
-   unitPrice: string
-   unitPercent: number
-   netAmount: number
 }
 
-export default function CreateReceipts() {
+export default function CreateTransfers() {
    const [rows, setRows] = useState<Row[]>([])
-   const [total, setTotal] = useState<number>(0)
-   const [netAmount, setNetAmount] = useState<number>(0)
+   const [username, setUsername] = useState<string | null>(null)
    const [itemId, setItemId] = useState<string>('')
+   const [userId, setUserId] = useState<string>('')
    const today = new Date()
-   const [receiptType, setReceiptType] = useState<string>(receiptTypes[0])
+   const [transferType, setTransferType] = useState<string>(transferTypes[0])
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
@@ -77,24 +67,7 @@ export default function CreateReceipts() {
       handleCloseMessageModal: handleCloseErrorMessageModal,
    } = useMessageModal()
 
-   const {
-      value: customerCode,
-      valueIsValid: customerCodeIsValid,
-      inputChangeHandler: customerCodeChangeHandler,
-      inputBlurHandler: customerCodeBlurHandler,
-      inputError: customerCodeError,
-   } = useInput(isNotEmpty)
-
-   const {
-      value: customerName,
-      valueIsValid: customerNameIsValid,
-      setValue: setCustomerName,
-      inputChangeHandler: customerNameChangeHandler,
-      inputBlurHandler: customerNameBlurHandler,
-      inputError: customerNameError,
-   } = useInput(isNotEmpty)
-
-   const { value: receiptNum, setValue: setReceiptNum } = useDisableInput(isGreaterThanZero)
+   const { value: transferNum, setValue: setTransferNum } = useDisableInput(isGreaterThanZero)
 
    const {
       value: itemCode,
@@ -125,46 +98,26 @@ export default function CreateReceipts() {
    } = useInput(isValidQty)
 
    const {
-      value: unitPrice,
-      valueIsValid: unitPriceIsValid,
-      setValue: setUnitPrice,
-      inputChangeHandler: unitPriceChangeHandler,
-      inputBlurHandler: unitPriceBlurHandler,
-      inputError: unitPriceError,
-      reset: resetUnitPrice,
-   } = useInput(isGreaterThanZero)
+      data: transferNumData,
+      isFetching: fetchingTransferNum,
+      refetch: refetchTransferNum,
+   } = useGetTransferNum()
 
-   const {
-      value: unitPercent,
-      valueIsValid: unitPercentIsValid,
-      setValue: setUnitPercent,
-      inputChangeHandler: unitPercentChangeHandler,
-      inputBlurHandler: unitPercentBlurHandler,
-      inputError: unitPercentError,
-      reset: resetUnitPercent,
-   } = useInput(isPercentage)
-
-   const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
-
-   const {
-      data: receiptNumData,
-      isFetching: fetchingReceiptNum,
-      refetch: refetchReceiptNum,
-   } = useGetReceiptNum()
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
+   const { data: usersData, isFetching: fetchingUsers } = useGetUsers()
 
    const {
-      data: createReceiptData,
-      mutate: createReceipt,
-      isLoading: isCreatingReceipt,
-      reset: resetCreateReceipt,
-      isSuccess: isCreatedReceipt,
+      data: createTransferData,
+      mutate: createTransfer,
+      isLoading: isCreatingTransfer,
+      reset: resetCreateTransfer,
+      isSuccess: isCreatedTransfer,
       isError: isFailToCreate,
-      error: createReceiptError,
-   } = useCreateReceipt(refetchReceiptNum)
+      error: createTransferError,
+   } = useCreateTransfer(refetchTransferNum)
 
-   const customers = customersData?.data
-   const receiptNumber = receiptNumData?.data
+   const users = usersData?.data
+   const transferNumber = transferNumData?.data
    const items = itemsData?.data
 
    const resetItemInputs = useCallback(() => {
@@ -173,30 +126,25 @@ export default function CreateReceipts() {
       resetItemCode()
       resetItemName()
       resetQty()
-      resetUnitPrice()
-      resetUnitPercent()
-      setNetAmount(0)
    }, [])
 
-   const loading = fetchingCustomers || fetchingReceiptNum || fetchingItems || isCreatingReceipt
+   const loading = fetchingUsers || fetchingTransferNum || fetchingItems || isCreatingTransfer
 
-   const isValidToCreate = customerCodeIsValid && customerNameIsValid && rows.length > 0
+   const usernameIsValid = username && username.trim() !== ''
+   const userIdIsValid = userId.trim() !== ''
 
-   const formIsValid =
-      itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
+   const isValidToCreate = usernameIsValid && userIdIsValid && rows.length > 0
+
+   const formIsValid = itemCodeIsValid && itemNameIsValid && qtyIsValid
 
    const checkItemValues = (value: string) => {
       const item = items?.find((item) => item.itemCode === value)
       if (item) {
          setItemName(item.itemName)
-         setUnitPrice(item.unitPrice.toString())
-         setUnitPercent((item.unitPercent * 100).toString())
          setItemId(item.itemId)
          return
       }
       setItemName('')
-      setUnitPrice('')
-      setUnitPercent('')
       setItemId('')
       return
    }
@@ -221,22 +169,16 @@ export default function CreateReceipts() {
                itemCode: editItemCode,
                itemName: editItemName,
                itemId: editItemId,
-               netAmount: editNetAmount,
                qty: editQty,
-               unitPercent: editUnitPercent,
-               unitPrice: editUnitPrice,
             },
          } = data
-         setItemCode(editItemCode)
          setEditId(editId)
+         setItemCode(editItemCode)
          setItemName(editItemName)
          setItemId(editItemId)
-         setNetAmount(editNetAmount)
          setQty(editQty)
-         setUnitPrice(editUnitPrice)
-         setUnitPercent((editUnitPercent * 100).toString())
       },
-      [setItemCode, setItemName, setQty, setUnitPercent, setUnitPrice]
+      [setItemCode, setItemName, setQty]
    )
 
    const handleDateChange = (value: string | null) => {}
@@ -252,9 +194,6 @@ export default function CreateReceipts() {
                itemCode,
                itemName,
                qty,
-               unitPrice,
-               unitPercent: +unitPercent / 100,
-               netAmount,
             },
          ])
          resetItemInputs()
@@ -273,9 +212,6 @@ export default function CreateReceipts() {
                        itemCode,
                        itemName,
                        qty,
-                       unitPrice,
-                       unitPercent: +unitPercent / 100,
-                       netAmount,
                     }
                   : row
             )
@@ -285,78 +221,58 @@ export default function CreateReceipts() {
       }
    }
 
-   const handleCreateReceipt = () => {
-      if (isValidToCreate) {
+   const handleCreateTransfer = () => {
+      if (username && isValidToCreate) {
          const items = rows.map((row) => ({
             itemId: row.itemId,
             qty: +row.qty,
-            unitPrice: +row.unitPrice,
-            unitPercent: +row.unitPercent,
          }))
-         createReceipt({ customerName, receiptType, items })
+         createTransfer({ userId, username, transferType, items })
          resetItemInputs()
          setRows([])
       }
    }
 
    useEffect(() => {
-      const customer = customers?.find((customer) => customer.code === customerCode)
-      if (customer) {
-         setCustomerName(customer.name)
+      const user = users?.find((user) => user.username === username)
+      if (user) {
+         setUserId(user.userId)
          return
       }
-   }, [customers, customerCode, setCustomerName])
+      setUserId('')
+   }, [username, users])
 
    useEffect(() => {
-      if (qty && unitPrice) {
-         setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent / 100))
+      if (transferNumber) {
+         setTransferNum(transferNumber.toString())
       }
-   }, [qty, unitPrice, unitPercent, setNetAmount])
+   }, [transferNumber, setTransferNum])
 
    useEffect(() => {
-      if (receiptNumber) {
-         setReceiptNum(receiptNumber.toString())
-      }
-   }, [receiptNumber, setReceiptNum])
-
-   useEffect(() => {
-      if (rows.length > 0) {
-         const total = rows
-            .map((row) => +row.netAmount)
-            .reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0)
-         setTotal(total)
-         return
-      }
-      setTotal(0)
-   }, [rows])
-
-   useEffect(() => {
-      if (isCreatedReceipt) {
-         handleSetSuccessMessage(createReceiptData.message)
+      if (isCreatedTransfer) {
+         handleSetSuccessMessage(createTransferData.message)
          handleOpenSuccessMessageModal()
-         resetCreateReceipt()
+         resetCreateTransfer()
          return
       }
 
       if (isFailToCreate) {
-         handleSetErrorMessage((createReceiptError as Error).message)
+         handleSetErrorMessage((createTransferError as Error).message)
          handleOpenErrorMessageModal()
-         resetCreateReceipt()
+         resetCreateTransfer()
          return
       }
    }, [
-      createReceiptData?.message,
-      createReceiptError,
+      createTransferData?.message,
+      createTransferError,
       handleOpenErrorMessageModal,
       handleOpenSuccessMessageModal,
       handleSetErrorMessage,
       handleSetSuccessMessage,
-      isCreatedReceipt,
+      isCreatedTransfer,
       isFailToCreate,
-      resetCreateReceipt,
+      resetCreateTransfer,
    ])
-
-   console.log(createReceiptData)
 
    return (
       <Container>
@@ -364,29 +280,14 @@ export default function CreateReceipts() {
             <StyledRow>
                <Row width={1} maxWidth={400}>
                   <TextFieldWrapper flex={1}>
-                     <TextField
-                        variant="outlined"
-                        label="Customer code"
-                        size="small"
-                        value={customerCode}
-                        onChange={customerCodeChangeHandler}
-                        onBlur={customerCodeBlurHandler}
-                        error={customerCodeError}
-                        helperText={customerCodeError && `This field is required`}
-                        fullWidth
-                     />
-                  </TextFieldWrapper>
-                  <TextFieldWrapper flex={1.5}>
-                     <TextField
-                        variant="outlined"
-                        label="Customer name"
-                        size="small"
-                        value={customerName}
-                        onChange={customerNameChangeHandler}
-                        onBlur={customerNameBlurHandler}
-                        error={customerNameError}
-                        helperText={customerNameError && `This field is required`}
-                        fullWidth
+                     <Autocomplete
+                        key="username"
+                        value={username}
+                        onChange={(event: any, newValue: any) => {
+                           setUsername(newValue as string)
+                        }}
+                        options={users ? users.map((user) => user.username) : [null]}
+                        renderInput={(params: any) => <TextField {...params} label="Username" />}
                      />
                   </TextFieldWrapper>
                </Row>
@@ -402,11 +303,11 @@ export default function CreateReceipts() {
                >
                   <TextField
                      variant="outlined"
-                     label="Receipt Num"
+                     label="Transfer Num"
                      size="small"
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                     value={receiptNum}
-                     onChange={(e) => setReceiptNum(e.target.value)}
+                     value={transferNum}
+                     onChange={(e) => setTransferNum(e.target.value)}
                      disabled
                      fullWidth
                   />
@@ -416,15 +317,15 @@ export default function CreateReceipts() {
             <StyledRow>
                <TextFieldWrapper width={1} maxWidth={400}>
                   <FormControl fullWidth>
-                     <InputLabel id="demo-simple-select-label">Receipt Type</InputLabel>
+                     <InputLabel id="demo-simple-select-label">Transfer Type</InputLabel>
                      <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={receiptType}
-                        label="Receipt Type"
-                        onChange={(e) => setReceiptType(e.target.value as string)}
+                        value={transferType}
+                        label="Transfer Type"
+                        onChange={(e) => setTransferType(e.target.value as string)}
                      >
-                        {receiptTypes.map((type) => (
+                        {transferTypes.map((type) => (
                            <MenuItem key={type} value={type}>
                               {type}
                            </MenuItem>
@@ -498,42 +399,6 @@ export default function CreateReceipts() {
                         />
                      </TextFieldWrapper>
 
-                     <TextFieldWrapper sx={{ flex: 1 }}>
-                        <TextField
-                           variant="outlined"
-                           label="Price"
-                           size="small"
-                           type="number"
-                           inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                           value={unitPrice}
-                           onChange={unitPriceChangeHandler}
-                           onBlur={unitPriceBlurHandler}
-                           error={unitPriceError}
-                           helperText={unitPriceError && 'Please Fill a valid price'}
-                           fullWidth
-                        />
-                     </TextFieldWrapper>
-
-                     <TextFieldWrapper sx={{ flex: 1 }}>
-                        <TextField
-                           variant="outlined"
-                           label="Percent"
-                           size="small"
-                           type="number"
-                           inputProps={{
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*',
-                              min: '0',
-                              max: '100',
-                           }}
-                           value={unitPercent}
-                           onChange={unitPercentChangeHandler}
-                           onBlur={unitPercentBlurHandler}
-                           error={unitPercentError}
-                           helperText={unitPercentError && 'Must be between 0 and 100'}
-                           fullWidth
-                        />
-                     </TextFieldWrapper>
                      <ActionsWrapper>
                         <StyledButton
                            variant="contained"
@@ -550,11 +415,10 @@ export default function CreateReceipts() {
             </Row>
          </ItemsWrapper>
          <TableWrapper>
-            <ReceiptItemsTable
+            <TransferItemsTable
                onUpdate={handleEdit}
                rows={rows}
                setRows={setRows}
-               total={total}
                loading={loading}
                setIsEditing={setIsEditing}
                editId={editId}
@@ -570,7 +434,7 @@ export default function CreateReceipts() {
                      variant="outlined"
                      size="small"
                      color="success"
-                     onClick={handleCreateReceipt}
+                     onClick={handleCreateTransfer}
                      fullWidth
                      disabled={!isValidToCreate}
                   >

@@ -10,6 +10,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import HandymanIcon from '@mui/icons-material/Handyman'
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
 import SummarizeIcon from '@mui/icons-material/Summarize'
+import SendIcon from '@mui/icons-material/Send'
 
 const Icons = {
    DashboardIcon,
@@ -24,6 +25,7 @@ const Icons = {
    HandymanIcon,
    PlaylistAddCheckIcon,
    SummarizeIcon,
+   SendIcon,
 }
 
 export enum Type {
@@ -53,7 +55,7 @@ export const pages: PageInterface[] = [
       title: 'Dashboard',
       icon: Icons.DashboardIcon,
       type: Type.item,
-      url: '/create/receipts',
+      url: '/',
    },
    {
       id: 'Sales',
@@ -66,7 +68,7 @@ export const pages: PageInterface[] = [
             title: 'Receipts',
             type: Type.item,
             icon: Icons.ReceiptIcon,
-            url: '/receipts',
+            url: 'create/receipts',
          },
          {
             id: 'Customers',
@@ -88,7 +90,7 @@ export const pages: PageInterface[] = [
             title: 'Supplies',
             type: Type.item,
             icon: Icons.HandymanIcon,
-            url: '/create/supply',
+            url: '/create/supplies',
          },
          {
             id: 'Suppliers',
@@ -105,6 +107,13 @@ export const pages: PageInterface[] = [
       type: Type.item,
       url: '/items',
       icon: Icons.InventoryIcon,
+   },
+   {
+      id: 'Transfer',
+      title: 'Transfer',
+      type: Type.item,
+      url: '/create/transfers',
+      icon: Icons.SendIcon,
    },
    {
       id: 'Stocks',
