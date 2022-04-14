@@ -16,12 +16,14 @@ export function SortedAscendingIcon() {
 interface Props {
    rows: GridRowsProp
    columns: GridColumns
-   loading: boolean
-   getRowId: GridRowIdGetter
+   loading?: boolean
+   getRowId?: GridRowIdGetter
 }
 
 const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
-   console.log('table rendering')
+   const [pageSize, setPageSize] = React.useState<number>(10)
+
+   console.log('table is rendering')
 
    return (
       <StyledContainer>
@@ -29,13 +31,15 @@ const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
             <DataGrid
                getRowId={getRowId}
                autoHeight
-               //    pageSize={15}
-               // loading={loading}
                components={{
                   LoadingOverlay: LinearProgress,
                   ColumnSortedDescendingIcon: SortedDescendingIcon,
                   ColumnSortedAscendingIcon: SortedAscendingIcon,
                }}
+               pageSize={pageSize}
+               onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+               rowsPerPageOptions={[10, 20, 25]}
+               pagination
                rows={rows}
                columns={columns}
                loading={loading}

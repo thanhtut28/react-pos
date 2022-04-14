@@ -77,6 +77,39 @@ export interface GetUsersQuery {
 }
 
 /**
+ * @Receipts
+ */
+
+export interface ReceiptItem {
+   itemId: string
+   itemName: string
+   qty: number
+   unitPrice: number
+   unitPercent: number
+}
+
+export interface Receipt {
+   receiptId: string
+   receiptNum: number
+   receiptType: string
+   receiptDate: Date
+   username: string
+   customerName: string
+   totalAmount: number
+   items: ReceiptItem[]
+}
+
+export interface GetReceiptsQuery {
+   status: string
+   data: Receipt[]
+}
+
+export interface Params {
+   from: string
+   to: string
+}
+
+/**
  * @ReceiptNum
  */
 

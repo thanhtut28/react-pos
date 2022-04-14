@@ -1,9 +1,10 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import useGetSuppliers from '../../api/queries/useGetSuppliers'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { GridActionsCellItem } from '@mui/x-data-grid'
+import { GridActionsCellItem, GridColumns } from '@mui/x-data-grid'
+import { Supplier } from '../../api/queries/types'
 
 interface Props {
    loading: boolean
@@ -16,6 +17,8 @@ interface Props {
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
 }
 
+type Row = Supplier & { id: number }
+
 const SuppliersTable = memo(function SuppliersTable({
    loading,
    setIsEditing,
@@ -25,34 +28,44 @@ const SuppliersTable = memo(function SuppliersTable({
    setSupplierName,
    setSelectedId,
 }: Props) {
+   const [rows, setRows] = useState<Row[]>([])
    const { data, isFetching, error } = useGetSuppliers()
 
    const suppliers = data?.data
-   // const customer = customers?.[0]
 
-   // const columnFields = customer ? Object.entries(customer) : []
-   const columns = [
+   const columns: GridColumns = [
+      {
+         field: 'id',
+         headerName: 'Id',
+         width: 80,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+      },
       {
          field: 'supplierCode',
          headerName: 'Supplier Code',
          flex: 1,
+         minWidth: 150,
          headerClassName: 'table--header',
-         // editable: true
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
       },
       {
          field: 'supplierName',
          headerName: 'Supplier Name',
          flex: 1,
+         minWidth: 150,
          headerClassName: 'table--header',
-         // editable: true
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
       },
-      // {
-      //    field: '__v',
-      //    headerName: 'Item Value',
-      //    flex: 1,
-      //    headerClassName: 'table--header',
-      //    // editable: true
-      // },
       {
          field: 'actions',
          type: 'actions',
@@ -91,18 +104,20 @@ const SuppliersTable = memo(function SuppliersTable({
       setSupplierName(data.row.supplierName)
    }
 
+   useEffect(() => {
+      if (suppliers) {
+         setRows([...suppliers.map((supplier, index) => ({ ...supplier, id: index + 1 }))])
+      }
+   }, [suppliers])
+
    return (
       <>
-         {suppliers ? (
-            <StyledTable
-               rows={suppliers}
-               columns={columns}
-               loading={loading || isFetching}
-               getRowId={(row) => row.supplierId}
-            />
-         ) : (
-            <h1>Loading...</h1>
-         )}
+         <StyledTable
+            rows={rows}
+            columns={columns}
+            loading={loading || isFetching}
+            getRowId={(row) => row.supplierId}
+         />
       </>
    )
 })

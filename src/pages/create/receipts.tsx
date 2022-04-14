@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
@@ -61,6 +62,16 @@ export default function CreateReceipts() {
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
 
+   useHotkeys(
+      'alt+r',
+      () => {
+         if (rows.length > 0) setOpenDiscardModal(true)
+      },
+      [rows]
+   )
+
+   useHotkeys('alt+p', () => console.log('print'))
+
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -83,6 +94,7 @@ export default function CreateReceipts() {
       inputChangeHandler: customerCodeChangeHandler,
       inputBlurHandler: customerCodeBlurHandler,
       inputError: customerCodeError,
+      submitInputHandler: submitCustomerCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -92,6 +104,7 @@ export default function CreateReceipts() {
       inputChangeHandler: customerNameChangeHandler,
       inputBlurHandler: customerNameBlurHandler,
       inputError: customerNameError,
+      submitInputHandler: submitCustomerNameInput,
    } = useInput(isNotEmpty)
 
    const { value: receiptNum, setValue: setReceiptNum } = useDisableInput(isGreaterThanZero)
@@ -104,6 +117,7 @@ export default function CreateReceipts() {
       inputBlurHandler: itemCodeBlurHandler,
       inputError: itemCodeError,
       reset: resetItemCode,
+      submitInputHandler: submitItemCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -122,6 +136,7 @@ export default function CreateReceipts() {
       inputBlurHandler: qtyBlurHandler,
       inputError: qtyError,
       reset: resetQty,
+      submitInputHandler: submitQtyInput,
    } = useInput(isValidQty)
 
    const {
@@ -132,6 +147,7 @@ export default function CreateReceipts() {
       inputBlurHandler: unitPriceBlurHandler,
       inputError: unitPriceError,
       reset: resetUnitPrice,
+      submitInputHandler: submitUnitPriceInput,
    } = useInput(isGreaterThanZero)
 
    const {
@@ -142,6 +158,7 @@ export default function CreateReceipts() {
       inputBlurHandler: unitPercentBlurHandler,
       inputError: unitPercentError,
       reset: resetUnitPercent,
+      submitInputHandler: submitUnitPercentInput,
    } = useInput(isPercentage)
 
    const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
@@ -178,9 +195,17 @@ export default function CreateReceipts() {
       setNetAmount(0)
    }, [])
 
+   const submitItemInputs = () => {
+      submitItemCodeInput()
+      submitQtyInput()
+      submitUnitPercentInput()
+      submitUnitPriceInput()
+   }
+
    const loading = fetchingCustomers || fetchingReceiptNum || fetchingItems || isCreatingReceipt
 
    const isValidToCreate = customerCodeIsValid && customerNameIsValid && rows.length > 0
+   useHotkeys('alt+s', () => handleCreateReceipt(), [isValidToCreate, rows, customerName, receiptType])
 
    const formIsValid =
       itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
@@ -239,64 +264,72 @@ export default function CreateReceipts() {
       [setItemCode, setItemName, setQty, setUnitPercent, setUnitPrice]
    )
 
-   const handleDateChange = (value: string | null) => {}
+   const handleDateChange = (value: Date | null) => {}
 
    const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) => [
-            ...prev,
-            {
-               id: prev.length + 1,
-               itemId,
-               itemCode,
-               itemName,
-               qty,
-               unitPrice,
-               unitPercent: +unitPercent / 100,
-               netAmount,
-            },
-         ])
-         resetItemInputs()
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+      setRows((prev) => [
+         ...prev,
+         {
+            id: prev.length + 1,
+            itemId,
+            itemCode,
+            itemName,
+            qty,
+            unitPrice,
+            unitPercent: +unitPercent / 100,
+            netAmount,
+         },
+      ])
+      resetItemInputs()
    }
 
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) =>
-            prev.map((row) =>
-               row.id === editId
-                  ? {
-                       id: editId,
-                       itemId,
-                       itemCode,
-                       itemName,
-                       qty,
-                       unitPrice,
-                       unitPercent: +unitPercent / 100,
-                       netAmount,
-                    }
-                  : row
-            )
-         )
-         resetItemInputs()
-         setIsEditing(false)
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+      setRows((prev) =>
+         prev.map((row) =>
+            row.id === editId
+               ? {
+                    id: editId,
+                    itemId,
+                    itemCode,
+                    itemName,
+                    qty,
+                    unitPrice,
+                    unitPercent: +unitPercent / 100,
+                    netAmount,
+                 }
+               : row
+         )
+      )
+      resetItemInputs()
+      setIsEditing(false)
    }
 
    const handleCreateReceipt = () => {
-      if (isValidToCreate) {
-         const items = rows.map((row) => ({
-            itemId: row.itemId,
-            qty: +row.qty,
-            unitPrice: +row.unitPrice,
-            unitPercent: +row.unitPercent,
-         }))
-         createReceipt({ customerName, receiptType, items })
-         resetItemInputs()
-         setRows([])
+      if (!isValidToCreate) {
+         submitCustomerCodeInput()
+         submitCustomerNameInput()
+
+         return
       }
+      const items = rows.map((row) => ({
+         itemId: row.itemId,
+         qty: +row.qty,
+         unitPrice: +row.unitPrice,
+         unitPercent: +row.unitPercent,
+      }))
+      createReceipt({ customerName, receiptType, items })
+      resetItemInputs()
+      setRows([])
    }
 
    useEffect(() => {
@@ -356,7 +389,7 @@ export default function CreateReceipts() {
       resetCreateReceipt,
    ])
 
-   console.log(createReceiptData)
+   console.log(isValidToCreate)
 
    return (
       <Container>
@@ -441,7 +474,7 @@ export default function CreateReceipts() {
                      },
                   }}
                >
-                  <DatePicker value={today.toString()} onChange={handleDateChange} />
+                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -572,7 +605,6 @@ export default function CreateReceipts() {
                      color="success"
                      onClick={handleCreateReceipt}
                      fullWidth
-                     disabled={!isValidToCreate}
                   >
                      Save
                   </StyledButton>

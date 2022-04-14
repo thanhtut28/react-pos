@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
@@ -61,6 +63,16 @@ export default function CreateSupplies() {
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
 
+   useHotkeys(
+      'alt+r',
+      () => {
+         if (rows.length > 0) setOpenDiscardModal(true)
+      },
+      [rows]
+   )
+
+   useHotkeys('alt+p', () => console.log('print'))
+
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -83,6 +95,7 @@ export default function CreateSupplies() {
       inputChangeHandler: supplierCodeChangeHandler,
       inputBlurHandler: supplierCodeBlurHandler,
       inputError: supplierCodeError,
+      submitInputHandler: submitSupplierCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -92,6 +105,7 @@ export default function CreateSupplies() {
       inputChangeHandler: supplierNameChangeHandler,
       inputBlurHandler: supplierNameBlurHandler,
       inputError: supplierNameError,
+      submitInputHandler: submitSupplierNameInput,
    } = useInput(isNotEmpty)
 
    const { value: supplyNum, setValue: setSupplyNum } = useDisableInput(isGreaterThanZero)
@@ -104,6 +118,7 @@ export default function CreateSupplies() {
       inputBlurHandler: itemCodeBlurHandler,
       inputError: itemCodeError,
       reset: resetItemCode,
+      submitInputHandler: submitItemCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -122,6 +137,7 @@ export default function CreateSupplies() {
       inputBlurHandler: qtyBlurHandler,
       inputError: qtyError,
       reset: resetQty,
+      submitInputHandler: submitQtyInput,
    } = useInput(isValidQty)
 
    const {
@@ -132,6 +148,7 @@ export default function CreateSupplies() {
       inputBlurHandler: unitPriceBlurHandler,
       inputError: unitPriceError,
       reset: resetUnitPrice,
+      submitInputHandler: submitUnitPriceInput,
    } = useInput(isGreaterThanZero)
 
    const {
@@ -142,6 +159,7 @@ export default function CreateSupplies() {
       inputBlurHandler: unitPercentBlurHandler,
       inputError: unitPercentError,
       reset: resetUnitPercent,
+      submitInputHandler: submitUnitPercentInput,
    } = useInput(isPercentage)
 
    const { data: suppliersData, isFetching: fetchingSuppliers } = useGetSuppliers()
@@ -173,9 +191,17 @@ export default function CreateSupplies() {
       setNetAmount(0)
    }, [])
 
+   const submitItemInputs = () => {
+      submitItemCodeInput()
+      submitQtyInput()
+      submitUnitPercentInput()
+      submitUnitPriceInput()
+   }
+
    const loading = fetchingSuppliers || fetchingSupplyNum || fetchingItems || isCreatingSupply
 
    const isValidToCreate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
+   useHotkeys('alt+s', () => handleCreateSupply(), [isValidToCreate, rows, supplierName, supplyType])
 
    const formIsValid =
       itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
@@ -234,64 +260,74 @@ export default function CreateSupplies() {
       [setItemCode, setItemName, setQty, setUnitPercent, setUnitPrice]
    )
 
-   const handleDateChange = (value: string | null) => {}
+   const handleDateChange = (value: Date | null) => {}
 
    const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) => [
-            ...prev,
-            {
-               id: prev.length + 1,
-               itemId,
-               itemCode,
-               itemName,
-               qty,
-               unitPrice,
-               unitPercent: +unitPercent / 100,
-               netAmount,
-            },
-         ])
-         resetItemInputs()
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+
+      setRows((prev) => [
+         ...prev,
+         {
+            id: prev.length + 1,
+            itemId,
+            itemCode,
+            itemName,
+            qty,
+            unitPrice,
+            unitPercent: +unitPercent / 100,
+            netAmount,
+         },
+      ])
+      resetItemInputs()
    }
 
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) =>
-            prev.map((row) =>
-               row.id === editId
-                  ? {
-                       id: editId,
-                       itemId,
-                       itemCode,
-                       itemName,
-                       qty,
-                       unitPrice,
-                       unitPercent: +unitPercent / 100,
-                       netAmount,
-                    }
-                  : row
-            )
-         )
-         resetItemInputs()
-         setIsEditing(false)
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+
+      setRows((prev) =>
+         prev.map((row) =>
+            row.id === editId
+               ? {
+                    id: editId,
+                    itemId,
+                    itemCode,
+                    itemName,
+                    qty,
+                    unitPrice,
+                    unitPercent: +unitPercent / 100,
+                    netAmount,
+                 }
+               : row
+         )
+      )
+      resetItemInputs()
+      setIsEditing(false)
    }
 
    const handleCreateSupply = () => {
-      if (isValidToCreate) {
-         const items = rows.map((row) => ({
-            itemId: row.itemId,
-            qty: +row.qty,
-            unitPrice: +row.unitPrice,
-            unitPercent: +row.unitPercent,
-         }))
-         createSupply({ supplierName, supplyType, items })
-         resetItemInputs()
-         setRows([])
+      if (!isValidToCreate) {
+         submitSupplierCodeInput()
+         submitSupplierNameInput()
+         return
       }
+
+      const items = rows.map((row) => ({
+         itemId: row.itemId,
+         qty: +row.qty,
+         unitPrice: +row.unitPrice,
+         unitPercent: +row.unitPercent,
+      }))
+      createSupply({ supplierName, supplyType, items })
+      resetItemInputs()
+      setRows([])
    }
 
    useEffect(() => {
@@ -436,7 +472,7 @@ export default function CreateSupplies() {
                      },
                   }}
                >
-                  <DatePicker value={today.toString()} onChange={handleDateChange} />
+                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -567,7 +603,7 @@ export default function CreateSupplies() {
                      color="success"
                      onClick={handleCreateSupply}
                      fullWidth
-                     disabled={!isValidToCreate}
+                     disabled={isCreatingSupply}
                   >
                      Save
                   </StyledButton>
