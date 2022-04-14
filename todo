@@ -13,3 +13,32 @@
 5. receipts table -> No, date, receipt num, receipt type, customer name, total amount 
 6. supplies table -> No, date, supply num, supply type, supplier name, total amount
 7. transfer table -> No, date, transfer num, transfer type, transfer to
+
+table not id -> No
+
+receipt/:receiptId
+
+user date time picker instead of date picker
+
+move snackbar to bottom left
+
+add validation to customer and supplier
+
+item: {
+	itemCode, itemName, lowestQty, unitPrice, unitPercent
+}
+
+use api error for snackbar to show
+
+add customer name to receipt table
+
+customerName,
+receiptType,
+receiptNum,
+date,
+totalAmount
+items: [
+{
+	itemName, qty, unitPrice, unitPercent, netAmount
+}
+]
