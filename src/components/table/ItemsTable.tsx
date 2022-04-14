@@ -1,9 +1,10 @@
-import { memo } from 'react'
+import { memo, useEffect, useState } from 'react'
 import useGetItems from '../../api/queries/useGetItems'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { GridActionsCellItem } from '@mui/x-data-grid'
+import { Item } from '../../api/queries/types'
 
 interface Props {
    loading: boolean
@@ -13,9 +14,10 @@ interface Props {
    setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setItemCode: React.Dispatch<React.SetStateAction<string>>
    setItemName: React.Dispatch<React.SetStateAction<string>>
-   setCategoryName: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
 }
+
+type Row = Item & { id: number }
 
 const ItemsTable = memo(function ItemsTable({
    loading,
@@ -24,24 +26,14 @@ const ItemsTable = memo(function ItemsTable({
    setOpenDeleteModal,
    setItemCode,
    setItemName,
-   setCategoryName,
    setSelectedId,
 }: Props) {
+   const [rows, setRows] = useState<Item[]>([])
    const { data, isFetching, error } = useGetItems()
 
    const items = data?.data
-   //    const customer = customers?.[0]
 
-   //    const columnFields = customer ? Object.entries(customer) : []
    const columns = [
-      //   ...(columnFields as [string, any][]).map(([key, value]) => ({
-      //      field: key,
-      //      headerName: key,
-      //      flex: 1,
-      //      type: typeof value === 'object' ? 'string' : typeof value,
-      //      headerClassName: 'table--header',
-      //      editable: true,
-      //   })),
       {
          field: 'id',
          headerName: 'Id',
@@ -98,23 +90,24 @@ const ItemsTable = memo(function ItemsTable({
       setIsEditing(true)
       setOpenModal(true)
       setSelectedId(data.id)
-      setItemCode(data.row.code)
-      setItemName(data.row.name)
-      setCategoryName(data.row.category ? data.row.category : 'Others')
+      setItemCode(data.row.itemCode)
+      setItemName(data.row.itemName)
    }
+
+   useEffect(() => {
+      if (items) {
+         setRows([...items.map((item, index) => ({ ...item, id: index + 1 }))])
+      }
+   }, [items])
 
    return (
       <>
-         {items ? (
-            <StyledTable
-               rows={items}
-               columns={columns}
-               loading={loading || isFetching}
-               getRowId={(row) => row.itemId}
-            />
-         ) : (
-            <h1>Loading...</h1>
-         )}
+         <StyledTable
+            rows={rows}
+            columns={columns}
+            loading={loading || isFetching}
+            getRowId={(row) => row.itemId}
+         />
       </>
    )
 })

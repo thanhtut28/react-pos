@@ -17,10 +17,10 @@ export const GET_RECEIPTS_QUERY = 'GET_RECEIPTS_QUERY'
 export const RECEIPTS_URL = '/receipts'
 
 export const GET_RECEIPT_NUM = 'GET_RECEIPT_NUM'
-export const RECEIPT_NUM_URL = '/receipt/receiptNum'
+export const RECEIPT_NUM_URL = '/receiptNum'
 
 export const GET_SUPPLY_NUM = 'GET_SUPPLY_NUM'
-export const SUPPLY_NUM_URL = '/supply/supplyNum'
+export const SUPPLY_NUM_URL = '/supplyNum'
 
 export const GET_TRANSFER_NUM = 'GET_TRANSFER_NUM'
-export const TRANSFER_NUM_URL = '/transfer/transferNum'
+export const TRANSFER_NUM_URL = '/transferNum'

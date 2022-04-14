@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
@@ -51,6 +52,16 @@ export default function CreateTransfers() {
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
 
+   useHotkeys(
+      'alt+r',
+      () => {
+         if (rows.length > 0) setOpenDiscardModal(true)
+      },
+      [rows]
+   )
+
+   useHotkeys('alt+p', () => console.log('print'))
+
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -77,6 +88,7 @@ export default function CreateTransfers() {
       inputBlurHandler: itemCodeBlurHandler,
       inputError: itemCodeError,
       reset: resetItemCode,
+      submitInputHandler: submitItemCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -95,6 +107,7 @@ export default function CreateTransfers() {
       inputBlurHandler: qtyBlurHandler,
       inputError: qtyError,
       reset: resetQty,
+      submitInputHandler: submitQtyInput,
    } = useInput(isValidQty)
 
    const {
@@ -128,13 +141,18 @@ export default function CreateTransfers() {
       resetQty()
    }, [])
 
+   const submitItemInputs = () => {
+      submitItemCodeInput()
+      submitQtyInput()
+   }
+
    const loading = fetchingUsers || fetchingTransferNum || fetchingItems || isCreatingTransfer
 
    const usernameIsValid = username && username.trim() !== ''
    const userIdIsValid = userId.trim() !== ''
 
    const isValidToCreate = usernameIsValid && userIdIsValid && rows.length > 0
-
+   useHotkeys('alt+s', () => handleCreateTransfer(), [isValidToCreate, rows, userId, username, transferType])
    const formIsValid = itemCodeIsValid && itemNameIsValid && qtyIsValid
 
    const checkItemValues = (value: string) => {
@@ -181,44 +199,48 @@ export default function CreateTransfers() {
       [setItemCode, setItemName, setQty]
    )
 
-   const handleDateChange = (value: string | null) => {}
+   const handleDateChange = (value: Date | null) => {}
 
    const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) => [
-            ...prev,
-            {
-               id: prev.length + 1,
-               itemId,
-               itemCode,
-               itemName,
-               qty,
-            },
-         ])
-         resetItemInputs()
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+      setRows((prev) => [
+         ...prev,
+         {
+            id: prev.length + 1,
+            itemId,
+            itemCode,
+            itemName,
+            qty,
+         },
+      ])
+      resetItemInputs()
    }
 
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (formIsValid) {
-         setRows((prev) =>
-            prev.map((row) =>
-               row.id === editId
-                  ? {
-                       id: editId,
-                       itemId,
-                       itemCode,
-                       itemName,
-                       qty,
-                    }
-                  : row
-            )
-         )
-         resetItemInputs()
-         setIsEditing(false)
+      if (!formIsValid) {
+         submitItemInputs()
+         return
       }
+      setRows((prev) =>
+         prev.map((row) =>
+            row.id === editId
+               ? {
+                    id: editId,
+                    itemId,
+                    itemCode,
+                    itemName,
+                    qty,
+                 }
+               : row
+         )
+      )
+      resetItemInputs()
+      setIsEditing(false)
    }
 
    const handleCreateTransfer = () => {
@@ -342,7 +364,7 @@ export default function CreateTransfers() {
                      },
                   }}
                >
-                  <DatePicker value={today.toString()} onChange={handleDateChange} />
+                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -436,7 +458,7 @@ export default function CreateTransfers() {
                      color="success"
                      onClick={handleCreateTransfer}
                      fullWidth
-                     disabled={!isValidToCreate}
+                     disabled={!isValidToCreate || isCreatingTransfer}
                   >
                      Save
                   </StyledButton>

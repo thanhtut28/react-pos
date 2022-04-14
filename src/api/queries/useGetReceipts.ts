@@ -1,14 +1,15 @@
-import { useQuery, QueryKey } from 'react-query'
+import { useQuery } from 'react-query'
 import { apiClient } from '..'
 import { GET_RECEIPTS_QUERY, RECEIPTS_URL } from './queries'
-import { GetReceiptsQuery, GetReceiptsQueryVariables } from './types'
+import { GetReceiptsQuery, Params } from './types'
 
-async function getReceipts({ queryKey }: { queryKey: any }): Promise<GetReceiptsQuery> {
-   const [{ options }] = queryKey
-   const { data } = await apiClient.get(RECEIPTS_URL)
+async function getReceipts(params: Params): Promise<GetReceiptsQuery> {
+   const { data } = await apiClient.get(RECEIPTS_URL, {
+      params,
+   })
    return data
 }
 
-export default function useGetReceipts(options: GetReceiptsQueryVariables) {
-   return useQuery<GetReceiptsQuery, Error>([GET_RECEIPTS_QUERY, options], getReceipts)
+export default function useGetReceipts(params: Params) {
+   return useQuery<GetReceiptsQuery, Error>(GET_RECEIPTS_QUERY, () => getReceipts(params))
 }

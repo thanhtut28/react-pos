@@ -15,6 +15,10 @@ export default function useInput(validate: (value: string, items?: any) => boole
       setIsTouched(true)
    }
 
+   const submitInputHandler = () => {
+      setIsTouched(true)
+   }
+
    const reset = () => {
       setValue('')
       setIsTouched(false)
@@ -27,6 +31,7 @@ export default function useInput(validate: (value: string, items?: any) => boole
       inputError,
       inputChangeHandler,
       inputBlurHandler,
+      submitInputHandler,
       reset,
    }
 }

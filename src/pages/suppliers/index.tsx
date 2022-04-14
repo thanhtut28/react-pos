@@ -62,6 +62,7 @@ export default function SupplierPage() {
       inputChangeHandler: codeChangeHandler,
       inputBlurHandler: codeBlurHandler,
       reset: resetCode,
+      submitInputHandler: submitSupplierCodeInput,
    } = useInput(isNotEmpty)
 
    const {
@@ -71,6 +72,7 @@ export default function SupplierPage() {
       inputError: supplierNameError,
       inputChangeHandler: nameChangeHandler,
       inputBlurHandler: nameBlurHandler,
+      submitInputHandler: submitSupplierNameInput,
       reset: resetName,
    } = useInput(isNotEmpty)
 
@@ -118,7 +120,11 @@ export default function SupplierPage() {
 
    const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToAdd) return
+      if (!isValidToAdd) {
+         submitSupplierCodeInput()
+         submitSupplierNameInput()
+         return
+      }
 
       addSupplier({ supplierCode, supplierName })
       setOpenModal(false)
@@ -127,7 +133,11 @@ export default function SupplierPage() {
 
    const handleUpdateSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToUpdate) return
+      if (!isValidToUpdate) {
+         submitSupplierCodeInput()
+         submitSupplierNameInput()
+         return
+      }
       updateSupplier({ supplierId: selectedId, supplierCode, supplierName })
       setOpenModal(false)
       resetAll()

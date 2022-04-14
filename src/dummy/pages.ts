@@ -70,7 +70,7 @@ export const pages: PageInterface[] = [
             title: 'Receipts',
             type: Type.item,
             icon: Icons.ReceiptIcon,
-            url: 'receipts',
+            url: '/receipts',
          },
          {
             id: 'Customers',

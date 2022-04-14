@@ -1,8 +1,15 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
+import { useMediaQuery } from '@mui/material'
+import { useTheme } from '@mui/material/styles'
 
 interface LayoutContextInterface {
    openSidebar: boolean
+   openWarningModal: boolean
    handleToggleSidebar: () => void
+   handleOpenWarningModal: () => void
+   handleCloseWarningModal: () => void
+   destinationRoute: string | null
+   setDestinationRoute: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const LayoutContext = createContext({} as LayoutContextInterface)
@@ -12,15 +19,38 @@ export const useLayoutContext = () => {
 }
 
 export default function LayoutContextProvider({ children }: { children: React.ReactNode }) {
+   const theme = useTheme()
+   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
    const [openSidebar, setOpenSidebar] = useState<boolean>(true)
+   const [openWarningModal, setOpenWarningModal] = useState<boolean>(false)
+   const [destinationRoute, setDestinationRoute] = useState<string | null>(null)
 
    const handleToggleSidebar = () => {
       setOpenSidebar((prev) => !prev)
    }
 
+   const handleOpenWarningModal = () => {
+      setOpenWarningModal(true)
+   }
+
+   const handleCloseWarningModal = () => {
+      setOpenWarningModal(false)
+   }
+
+   useEffect(() => {
+      if (isMobile) {
+         setOpenSidebar(false)
+      }
+   }, [isMobile])
+
    const layoutContext = {
       openSidebar,
+      openWarningModal,
       handleToggleSidebar,
+      handleCloseWarningModal,
+      handleOpenWarningModal,
+      destinationRoute,
+      setDestinationRoute,
    }
    return <LayoutContext.Provider value={layoutContext}>{children}</LayoutContext.Provider>
 }

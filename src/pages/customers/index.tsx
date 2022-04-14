@@ -59,6 +59,7 @@ export default function CustomerPage() {
       inputError: customerCodeError,
       inputChangeHandler: codeChangeHandler,
       inputBlurHandler: codeBlurHandler,
+      submitInputHandler: submitCodeInput,
       reset: resetCode,
    } = useInput(isNotEmpty)
 
@@ -69,6 +70,7 @@ export default function CustomerPage() {
       inputError: customerNameError,
       inputChangeHandler: nameChangeHandler,
       inputBlurHandler: nameBlurHandler,
+      submitInputHandler: submitNameInput,
       reset: resetName,
    } = useInput(isNotEmpty)
 
@@ -116,7 +118,11 @@ export default function CustomerPage() {
 
    const handleAddCustomer = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToAdd) return
+      if (!isValidToAdd) {
+         submitCodeInput()
+         submitNameInput()
+         return
+      }
       addCustomer({ customerCode, customerName })
       setOpenModal(false)
       resetAll()
@@ -124,7 +130,11 @@ export default function CustomerPage() {
 
    const handleUpdateCustomer = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToUpdate) return
+      if (!isValidToUpdate) {
+         submitCodeInput()
+         submitNameInput()
+         return
+      }
       updateCustomer({ customerId: selectedId, customerCode, customerName })
       setOpenModal(false)
       resetAll()

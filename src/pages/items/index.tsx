@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import useInput from '../../hooks/useInput'
 import useMessageModal from '../../hooks/useMessageModal'
 import ItemsTable from '../../components/table/ItemsTable'
 import { Typography, Button, TextField, Dialog } from '@mui/material'
 import { useAddItem, useUpdateItem, useDeleteItem } from '../../api/mutations/item'
-import useGetCategories from '../../api/queries/useGetCategories'
 import {
    Container,
    ActionsWrapper,
@@ -14,19 +12,15 @@ import {
    ToolbarWrapper,
    StyledDialogTitle,
    StyledButton,
-   StyledAutocomplete,
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 
-const categories = [{ name: 'Water' }, { name: 'snacks' }, { name: 'Waffle' }, { name: 'Others' }]
-
 export default function ItemPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
-   const [categoryName, setCategoryName] = useState<string>(categories[0].name)
    const [selectedId, setSelectedId] = useState<string>('')
 
    const {
@@ -65,10 +59,6 @@ export default function ItemPage() {
       reset: resetName,
    } = useInput(isNotEmpty)
 
-   // const { data: categoriesData, isFetching: fetchingCategories } = useGetCategories()
-
-   // const categories = categoriesData?.data
-
    const {
       mutate: addItem,
       data: addData,
@@ -99,25 +89,21 @@ export default function ItemPage() {
       isError: isFailToDelete,
    } = useDeleteItem()
 
-   const sameValues = itemCode === itemName
-   const isValid = itemCodeIsValid && itemNameIsValid && !sameValues
+   const isValid = itemCodeIsValid && itemNameIsValid
 
    const loading = addingItem || updatingItem || deletingItem
-
-   let timeout: NodeJS.Timeout
 
    const resetAll = () => {
       setIsEditing(false)
       setSelectedId('')
       resetCode()
       resetName()
-      setCategoryName(categories[0].name)
    }
 
    const handleAddItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (!isValid) return
-      categoryName ? addItem({ itemCode, itemName, category: categoryName }) : addItem({ itemCode, itemName })
+      addItem({ itemCode, itemName })
       setOpenModal(false)
       resetAll()
    }
@@ -125,9 +111,7 @@ export default function ItemPage() {
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
       if (!isValid) return
-      categoryName
-         ? updateItem({ itemId: selectedId, itemCode, itemName, category: categoryName })
-         : updateItem({ itemId: selectedId, itemCode, itemName })
+      updateItem({ itemId: selectedId, itemCode, itemName })
       setOpenModal(false)
       resetAll()
    }
@@ -140,7 +124,7 @@ export default function ItemPage() {
    }
 
    const handleOnCloseModal = () => {
-      timeout = setTimeout(() => resetAll(), 200)
+      setTimeout(() => resetAll(), 200)
       setOpenModal(false)
    }
 
@@ -195,9 +179,27 @@ export default function ItemPage() {
          resetDeleteData()
          return
       }
-
-      return () => clearTimeout(timeout)
-   }, [isAdded, isDeleted, isFailToUpdate])
+   }, [
+      addData?.message,
+      addError,
+      deleteData?.message,
+      deleteError,
+      handleOpenErrorMessageModal,
+      handleOpenSuccessMessageModal,
+      handleSetErrorMessage,
+      handleSetSuccessMessage,
+      isAdded,
+      isDeleted,
+      isFailToAdd,
+      isFailToDelete,
+      isFailToUpdate,
+      isUpdated,
+      resetAddData,
+      resetDeleteData,
+      resetUpdateData,
+      updateData?.message,
+      updateError,
+   ])
 
    return (
       <Container>
@@ -229,17 +231,6 @@ export default function ItemPage() {
                      error={itemNameError}
                      helperText={itemNameError && 'Please fill correct value'}
                      size="small"
-                  />
-               </TextFieldWrapper>
-               <TextFieldWrapper>
-                  <StyledAutocomplete
-                     key="category-name"
-                     value={categoryName}
-                     onChange={(event: any, newValue: any) => {
-                        setCategoryName(newValue as string)
-                     }}
-                     options={categories ? categories.map((category) => category.name) : []}
-                     renderInput={(params: any) => <TextField {...params} label="category" />}
                   />
                </TextFieldWrapper>
                <ActionsWrapper>
@@ -295,7 +286,6 @@ export default function ItemPage() {
                size="small"
                disabled={loading}
                disableElevation
-               // sx={{ borderRadius: 0 }}
                onClick={() => setOpenModal(true)}
             >
                Add Item
@@ -304,7 +294,6 @@ export default function ItemPage() {
          <ItemsTable
             setItemCode={setItemCode}
             setItemName={setItemName}
-            setCategoryName={setCategoryName}
             setSelectedId={setSelectedId}
             setIsEditing={setIsEditing}
             setOpenModal={setOpenModal}

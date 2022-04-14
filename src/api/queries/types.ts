@@ -88,23 +88,25 @@ export interface ReceiptItem {
    unitPercent: number
 }
 
-export interface GetReceiptsQuery {
-   status: string
-   data: {
-      receiptId: string
-      receiptNum: number
-      receiptType: string
-      receiptDate: Date
-      username: string
-      customerName: string
-      totalAmount: number
-      items: ReceiptItem[]
-   }
+export interface Receipt {
+   receiptId: string
+   receiptNum: number
+   receiptType: string
+   receiptDate: Date
+   username: string
+   customerName: string
+   totalAmount: number
+   items: ReceiptItem[]
 }
 
-export interface GetReceiptsQueryVariables {
-   fromDate: string
-   toDate: string
+export interface GetReceiptsQuery {
+   status: string
+   data: Receipt[]
+}
+
+export interface Params {
+   from: string
+   to: string
 }
 
 /**

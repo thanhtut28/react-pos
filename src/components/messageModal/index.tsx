@@ -21,11 +21,7 @@ export default function MessageModal({ open, onClose, message, variant }: Props)
          open={open}
          autoHideDuration={2000}
          onClose={handleClose}
-         sx={{
-            '&.MuiSnackbar-root': {
-               bottom: variant === 'success' ? 24 : 90,
-            },
-         }}
+         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
          <Alert variant="filled" severity={variant}>
             {message}
