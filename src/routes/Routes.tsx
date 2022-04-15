@@ -50,12 +50,6 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                  {
                     path: '/items',
                     element: <Items />,
-                    children: [
-                       {
-                          path: '/items/haha',
-                          element: <h1>haha</h1>,
-                       },
-                    ],
                  },
                  {
                     path: '/products/items/:itemId',

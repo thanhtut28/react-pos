@@ -17,12 +17,7 @@ export default function MessageModal({ open, onClose, message, variant }: Props)
    }
 
    return (
-      <Snackbar
-         open={open}
-         autoHideDuration={2000}
-         onClose={handleClose}
-         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
+      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
          <Alert variant="filled" severity={variant}>
             {message}
          </Alert>

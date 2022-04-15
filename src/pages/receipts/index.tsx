@@ -21,7 +21,7 @@ export default function ReceiptsPage() {
 
    const receipts = data?.data
 
-   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() < new Date().getTime()
+   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
 
    console.log(dateIsValid)
 
