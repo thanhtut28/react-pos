@@ -41,7 +41,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          type: 'date',
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
-            const dateString = (params.value) ? (params.value.toString()) : '';
+            const dateString = params.value ? params.value.toString() : ''
             const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
             return formattedValue
          },
