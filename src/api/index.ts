@@ -9,6 +9,7 @@ export const client = new QueryClient({
       queries: {
          //  refetchInterval: Infinity,
          staleTime: Infinity,
+         cacheTime: 0,
       },
    },
 })

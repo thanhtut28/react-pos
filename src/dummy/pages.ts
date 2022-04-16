@@ -99,7 +99,7 @@ export const pages: PageInterface[] = [
             title: 'Suppliers',
             type: Type.item,
             icon: Icons.SupportAgentIcon,
-            url: '/supplies/suppliers',
+            url: '/suppliers',
          },
       ],
    },
