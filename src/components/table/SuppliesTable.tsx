@@ -41,7 +41,8 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          type: 'date',
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
-            const formattedValue = params.value.split('T')[0].split('-').reverse().join('-')
+            const dateString = (params.value) ? (params.value.toString()) : '';
+            const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
             return formattedValue
          },
       },
