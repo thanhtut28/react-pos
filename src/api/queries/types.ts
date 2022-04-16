@@ -174,8 +174,8 @@ export interface Transfer {
    transferNum: number
    transferType: string
    transferDate: Date
-   toUserId: string
-   toUsername: string
+   userId: string
+   username: string
    items: TransferItem[]
 }
 
