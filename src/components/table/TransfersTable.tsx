@@ -69,7 +69,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'toUsername',
+         field: 'username',
          headerName: 'Transfer To',
          flex: 1,
          minWidth: 150,
