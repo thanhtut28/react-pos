@@ -262,7 +262,7 @@ export default function EditTransfer() {
    useEffect(() => {
       if (transferData) {
          const {
-            data: { items: editItems, transferDate, transferNum, transferType, toUsername, toUserId },
+            data: { items: editItems, transferDate, transferNum, transferType, username, userId },
          } = transferData
 
          setTransferNum(transferNum.toString())
@@ -277,8 +277,8 @@ export default function EditTransfer() {
          setRows(newItems)
          setTransferType(transferType)
          setDate(transferDate)
-         setUserId(toUserId)
-         setUsername(toUsername)
+         setUserId(userId)
+         setUsername(username)
       }
    }, [items, setTransferNum, transferData])
 

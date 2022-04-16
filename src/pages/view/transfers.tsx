@@ -52,7 +52,7 @@ export default function ViewTransfer() {
    useEffect(() => {
       if (transferData) {
          const {
-            data: { items: editItems, transferDate, transferNum, transferType, toUsername },
+            data: { items: editItems, transferDate, transferNum, transferType, username },
          } = transferData
 
          setTransferNum(transferNum.toString())
@@ -67,7 +67,7 @@ export default function ViewTransfer() {
          setRows(newItems)
          setTransferType(transferType)
          setDate(transferDate)
-         setUsername(toUsername)
+         setUsername(username)
       }
    }, [items, setTransferNum, transferData])
 

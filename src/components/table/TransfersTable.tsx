@@ -41,7 +41,11 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          type: 'date',
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
+<<<<<<< HEAD
             const dateString = params.value ? params.value.toString() : ''
+=======
+            const dateString = params.value ? params.value.toString() : '';
+>>>>>>> b093eb2aea40ea54c25d39401e9a3ca39d593ca2
             const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
             return formattedValue
          },
@@ -69,7 +73,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'toUsername',
+         field: 'username',
          headerName: 'Transfer To',
          flex: 1,
          minWidth: 150,
