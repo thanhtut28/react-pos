@@ -10,6 +10,8 @@ async function getReceipts(params: Params): Promise<GetReceiptsQuery> {
    return data
 }
 
-export default function useGetReceipts(params: Params) {
-   return useQuery<GetReceiptsQuery, Error>(GET_RECEIPTS_QUERY, () => getReceipts(params))
+export default function useGetReceipts(params: Params, shouldRefetch: boolean) {
+   return useQuery<GetReceiptsQuery, Error>([GET_RECEIPTS_QUERY, params], () => getReceipts(params), {
+      enabled: shouldRefetch,
+   })
 }

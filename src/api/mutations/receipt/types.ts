@@ -15,3 +15,12 @@ export interface CreateReceiptMutationVariables {
    customerName: string
    items: Item[]
 }
+
+export interface UpdateReceiptMutation {
+   message: string
+   status: string
+}
+
+export interface UpdateReceiptMutationVariables extends CreateReceiptMutationVariables {
+   receiptId: string
+}

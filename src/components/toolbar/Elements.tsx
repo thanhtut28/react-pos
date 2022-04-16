@@ -1,4 +1,14 @@
-import { Autocomplete, Box, Button, DialogTitle } from '@mui/material'
+import {
+   Autocomplete,
+   Box,
+   Button,
+   DialogTitle,
+   Avatar,
+   AvatarProps,
+   ButtonBase,
+   Typography,
+   TypographyProps,
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 export const Container = styled(Box)(({ theme }) => ({
@@ -43,3 +53,33 @@ export const ActionsWrapper = styled(Box)(({ theme }) => ({
    justifyContent: 'flex-end',
    padding: `${theme.spacing(2)} ${theme.spacing(4)}`,
 }))
+
+export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(
+   ({ theme }) => ({
+      width: '100%',
+      height: '100%',
+      backgroundColor: theme.palette.primary.dark,
+      color: theme.palette.primary.light,
+      '&:hover': {
+         backgroundColor: theme.palette.primary.main,
+         color: theme.palette.primary.light,
+      },
+   })
+)
+
+export const Flex = styled(Box)(() => ({ display: 'flex', alignItems: 'center' }))
+
+export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
+   height: 56,
+   width: 56,
+   '&.Mui-disabled .MuiAvatar-root': {
+      backgroundColor: theme.palette.action.disabledBackground,
+      color: theme.palette.action.disabled,
+   },
+}))
+
+export const PageTitle = styled((props: TypographyProps) => <Typography {...props} variant="h6" />)(
+   ({ theme }) => ({
+      fontWeight: theme.typography.fontWeightBold,
+   })
+)

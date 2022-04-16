@@ -4,16 +4,16 @@ import StyledTable from './index'
 import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
-import { Receipt } from '../../api/queries/types'
+import { Transfer } from '../../api/queries/types'
 
 interface Props {
    loading?: boolean
-   data: Receipt[] | undefined
+   data: Transfer[] | undefined
 }
 
-type Row = Receipt & { id: number }
+type Row = Transfer & { id: number }
 
-const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
+const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
    const oneDay = 1000 * 60 * 60 * 24
    const navigate = useNavigate()
@@ -30,7 +30,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'receiptDate',
+         field: 'transferDate',
          headerName: 'Date',
          flex: 1,
          minWidth: 150,
@@ -46,8 +46,8 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          },
       },
       {
-         field: 'receiptNum',
-         headerName: 'Receipt Num',
+         field: 'transferNum',
+         headerName: 'Transfer Num',
          flex: 1,
          minWidth: 80,
          headerClassName: 'table--header',
@@ -57,8 +57,8 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'receiptType',
-         headerName: 'Receipt Type',
+         field: 'transferType',
+         headerName: 'Transfer Type',
          flex: 1,
          minWidth: 150,
          headerClassName: 'table--header',
@@ -68,8 +68,8 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'customerName',
-         headerName: 'Customer Name',
+         field: 'toUsername',
+         headerName: 'Transfer To',
          flex: 1,
          minWidth: 150,
          headerClassName: 'table--header',
@@ -77,21 +77,6 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
-      },
-      {
-         field: 'totalAmount',
-         headerName: 'Total Amount',
-         flex: 1,
-         minWidth: 150,
-         headerClassName: 'table--header',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         filterable: false,
-         sortable: false,
-         valueFormatter: (params: GridValueFormatterParams) => {
-            const valueFormatted = Number(params.value as number).toLocaleString()
-            return `${valueFormatted} Ks`
-         },
       },
       {
          field: 'actions',
@@ -99,13 +84,13 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
-            ...(new Date().getTime() - new Date(data.row.receiptDate).getTime() <= oneDay
+            ...(new Date().getTime() - new Date(data.row.transferDate).getTime() <= oneDay
                ? [
                     <GridActionsCellItem
                        key="edit"
                        icon={<EditIcon />}
                        label="Edit"
-                       onClick={() => navigate(`/receipt/edit/${data.id}`, { replace: true })}
+                       onClick={() => navigate(`/transfer/edit/${data.id}`, { replace: true })}
                        disabled={loading}
                     />,
                  ]
@@ -114,7 +99,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
                key="view"
                icon={<RemoveRedEyeIcon />}
                label="View"
-               onClick={() => navigate(`/receipt/view/${data.id}`, { replace: true })}
+               onClick={() => navigate(`/transfer/view/${data.id}`, { replace: true })}
                disabled={loading}
             />,
          ],
@@ -130,9 +115,9 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
 
    return (
       <>
-         <StyledTable rows={rows} columns={columns} loading={loading} getRowId={(row) => row.receiptId} />
+         <StyledTable rows={rows} columns={columns} loading={loading} getRowId={(row) => row.transferId} />
       </>
    )
 })
 
-export default ReceiptsTable
+export default TransfersTable

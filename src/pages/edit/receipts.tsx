@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
-
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
 import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
-import useGetSuppliers from '../../api/queries/useGetSuppliers'
-import useGetSupplyNum from '../../api/queries/useGetSupplyNum'
+import useGetCustomers from '../../api/queries/useGetCustomers'
+import useGetReceiptById from '../../api/queries/useGetReceiptById'
 import useGetItems from '../../api/queries/useGetItems'
-import { useCreateSupply } from '../../api/mutations/supply'
+import { useUpdateReceipt } from '../../api/mutations/receipt'
 import {
    Container,
    InputsWrapper,
@@ -26,11 +26,11 @@ import {
    SubmitActionsWrapper,
    TableWrapper,
 } from '../../components/create/Elements'
-import DatePicker from '../../components/datePicker'
-import { supplyTypes } from '../../dummy'
+import DateTimePicker from '../../components/dateTimePicker'
+import { receiptTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
 import { isPercentage } from '../../helpers/isPercentage'
-import SupplyItemsTable from '../../components/table/create/ReceiptItemsTable'
+import ReceiptItemsTable from '../../components/table/create/ReceiptItemsTable'
 import { isValidQty } from '../../helpers/isValidQty'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -52,16 +52,18 @@ export interface Row {
    netAmount: number
 }
 
-export default function CreateSupplies() {
+export default function EditReceipt() {
    const [rows, setRows] = useState<Row[]>([])
    const [total, setTotal] = useState<number>(0)
    const [netAmount, setNetAmount] = useState<number>(0)
    const [itemId, setItemId] = useState<string>('')
-   const today = new Date()
-   const [supplyType, setSupplyType] = useState<string>(supplyTypes[0])
+   const [date, setDate] = useState<Date | null>(null)
+   const [receiptType, setReceiptType] = useState<string>(receiptTypes[0])
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const { receiptId } = useParams()
+   const navigate = useNavigate()
 
    useHotkeys(
       'alt+r',
@@ -90,25 +92,26 @@ export default function CreateSupplies() {
    } = useMessageModal()
 
    const {
-      value: supplierCode,
-      valueIsValid: supplierCodeIsValid,
-      inputChangeHandler: supplierCodeChangeHandler,
-      inputBlurHandler: supplierCodeBlurHandler,
-      inputError: supplierCodeError,
-      submitInputHandler: submitSupplierCodeInput,
+      value: customerCode,
+      valueIsValid: customerCodeIsValid,
+      setValue: setCustomerCode,
+      inputChangeHandler: customerCodeChangeHandler,
+      inputBlurHandler: customerCodeBlurHandler,
+      inputError: customerCodeError,
+      submitInputHandler: submitCustomerCodeInput,
    } = useInput(isNotEmpty)
 
    const {
-      value: supplierName,
-      valueIsValid: supplierNameIsValid,
-      setValue: setSupplierName,
-      inputChangeHandler: supplierNameChangeHandler,
-      inputBlurHandler: supplierNameBlurHandler,
-      inputError: supplierNameError,
-      submitInputHandler: submitSupplierNameInput,
+      value: customerName,
+      valueIsValid: customerNameIsValid,
+      setValue: setCustomerName,
+      inputChangeHandler: customerNameChangeHandler,
+      inputBlurHandler: customerNameBlurHandler,
+      inputError: customerNameError,
+      submitInputHandler: submitCustomerNameInput,
    } = useInput(isNotEmpty)
 
-   const { value: supplyNum, setValue: setSupplyNum } = useDisableInput(isGreaterThanZero)
+   const { value: receiptNum, setValue: setReceiptNum } = useDisableInput(isGreaterThanZero)
 
    const {
       value: itemCode,
@@ -162,22 +165,23 @@ export default function CreateSupplies() {
       submitInputHandler: submitUnitPercentInput,
    } = useInput(isPercentage)
 
-   const { data: suppliersData, isFetching: fetchingSuppliers } = useGetSuppliers()
-   const { data: supplyNumData, isFetching: fetchingSupplyNum, refetch: refetchSupplyNum } = useGetSupplyNum()
+   const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
+
+   const { data: receiptData, isFetching: fetchingReceipt } = useGetReceiptById(receiptId!)
+
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
 
    const {
-      data: createSupplyData,
-      mutate: createSupply,
-      isLoading: isCreatingSupply,
-      reset: resetCreateSupply,
-      isSuccess: isCreatedSupply,
-      isError: isFailToCreate,
-      error: createSupplyError,
-   } = useCreateSupply(refetchSupplyNum)
+      data: updateReceiptData,
+      mutateAsync: updateReceipt,
+      isLoading: isCreatingReceipt,
+      reset: resetUpdateReceipt,
+      isSuccess: isUpdatedReceipt,
+      isError: isFailToUpdate,
+      error: updateReceiptError,
+   } = useUpdateReceipt()
 
-   const suppliers = suppliersData?.data
-   const supplyNumber = supplyNumData?.data
+   const customers = customersData?.data
    const items = itemsData?.data
 
    const resetItemInputs = useCallback(() => {
@@ -198,10 +202,10 @@ export default function CreateSupplies() {
       submitUnitPriceInput()
    }
 
-   const loading = fetchingSuppliers || fetchingSupplyNum || fetchingItems || isCreatingSupply
+   const loading = fetchingCustomers || fetchingItems || isCreatingReceipt || fetchingReceipt
 
-   const isValidToCreate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
-   useHotkeys('alt+s', () => handleCreateSupply(), [isValidToCreate, rows, supplierName, supplyType])
+   const isValidToUpdate = customerCodeIsValid && customerNameIsValid && rows.length > 0
+   useHotkeys('alt+s', () => handleUpdateReceipt(), [isValidToUpdate, rows, customerName, receiptType])
 
    const formIsValid =
       itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
@@ -268,7 +272,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) => [
          ...prev,
          {
@@ -291,7 +294,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) =>
          prev.map((row) =>
             row.id === editId
@@ -312,43 +314,39 @@ export default function CreateSupplies() {
       setIsEditing(false)
    }
 
-   const handleCreateSupply = () => {
-      if (!isValidToCreate) {
-         submitSupplierCodeInput()
-         submitSupplierNameInput()
+   const handleUpdateReceipt = () => {
+      if (!isValidToUpdate) {
+         submitCustomerCodeInput()
+         submitCustomerNameInput()
+
          return
       }
-
       const items = rows.map((row) => ({
          itemId: row.itemId,
          qty: +row.qty,
          unitPrice: +row.unitPrice,
          unitPercent: +row.unitPercent,
       }))
-      createSupply({ supplierName, supplyType, items })
-      resetItemInputs()
-      setRows([])
+      updateReceipt({ receiptId: receiptId as string, customerName, receiptType, items }).then(() => {
+         setRows([])
+         resetItemInputs()
+         navigate('/receipts', { replace: true })
+      })
    }
 
    useEffect(() => {
-      const supplier = suppliers?.find((supplier) => supplier.supplierCode === supplierCode)
-      if (supplier) {
-         setSupplierName(supplier.supplierName)
+      const customer = customers?.find((customer) => customer.code === customerCode)
+      if (customer) {
+         setCustomerName(customer.name)
          return
       }
-   }, [suppliers, supplierCode, setSupplierName])
+   }, [customers, customerCode, setCustomerName])
 
    useEffect(() => {
       if (qty && unitPrice) {
          setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent / 100))
       }
    }, [qty, unitPrice, unitPercent, setNetAmount])
-
-   useEffect(() => {
-      if (supplyNumber) {
-         setSupplyNum(supplyNumber.toString())
-      }
-   }, [supplyNumber, setSupplyNum])
 
    useEffect(() => {
       if (rows.length > 0) {
@@ -362,32 +360,58 @@ export default function CreateSupplies() {
    }, [rows])
 
    useEffect(() => {
-      if (isCreatedSupply) {
-         handleSetSuccessMessage(createSupplyData.message)
+      if (receiptData) {
+         const {
+            data: { items: editItems, receiptDate, receiptNum, receiptType, customerName },
+         } = receiptData
+
+         setReceiptNum(receiptNum.toString())
+
+         const newItems = editItems.map((item, index) => ({
+            id: index + 1,
+            itemId: item.itemId,
+            itemName: item.itemName,
+            itemCode: items ? items.find((it) => it.itemName === item.itemName)?.itemCode : '',
+            qty: item.qty.toString(),
+            unitPrice: item.unitPrice.toString(),
+            unitPercent: item.unitPercent,
+            netAmount: calcNetAmount(item.qty, item.unitPrice, item.unitPercent),
+         }))
+         setRows(newItems)
+         setReceiptType(receiptType)
+         setDate(receiptDate)
+         const customer = customers?.find((customer) => customer.name === customerName)
+         if (customer) {
+            setCustomerCode(customer.code)
+         }
+      }
+   }, [customers, items, receiptData, setCustomerCode, setCustomerName, setReceiptNum])
+
+   useEffect(() => {
+      if (isUpdatedReceipt) {
+         handleSetSuccessMessage(updateReceiptData.message)
          handleOpenSuccessMessageModal()
-         resetCreateSupply()
+         resetUpdateReceipt()
          return
       }
 
-      if (isFailToCreate) {
-         handleSetErrorMessage((createSupplyError as Error).message)
+      if (isFailToUpdate) {
+         handleSetErrorMessage((updateReceiptError as Error).message)
          handleOpenErrorMessageModal()
-         resetCreateSupply()
+         resetUpdateReceipt()
          return
       }
    }, [
-      createSupplyData?.message,
-      createSupplyError,
+      updateReceiptData?.message,
+      updateReceiptError,
       handleOpenErrorMessageModal,
       handleOpenSuccessMessageModal,
       handleSetErrorMessage,
       handleSetSuccessMessage,
-      isCreatedSupply,
-      isFailToCreate,
-      resetCreateSupply,
+      isUpdatedReceipt,
+      isFailToUpdate,
+      resetUpdateReceipt,
    ])
-
-   console.log(createSupplyData)
 
    return (
       <Container>
@@ -397,26 +421,26 @@ export default function CreateSupplies() {
                   <TextFieldWrapper flex={1}>
                      <TextField
                         variant="outlined"
-                        label="Supplier code"
+                        label="Customer code"
                         size="small"
-                        value={supplierCode}
-                        onChange={supplierCodeChangeHandler}
-                        onBlur={supplierCodeBlurHandler}
-                        error={supplierCodeError}
-                        helperText={supplierCodeError && `This field is required`}
+                        value={customerCode}
+                        onChange={customerCodeChangeHandler}
+                        onBlur={customerCodeBlurHandler}
+                        error={customerCodeError}
+                        helperText={customerCodeError && `This field is required`}
                         fullWidth
                      />
                   </TextFieldWrapper>
                   <TextFieldWrapper flex={1.5}>
                      <TextField
                         variant="outlined"
-                        label="Supplier name"
+                        label="Customer name"
                         size="small"
-                        value={supplierName}
-                        onChange={supplierNameChangeHandler}
-                        onBlur={supplierNameBlurHandler}
-                        error={supplierNameError}
-                        helperText={supplierNameError && `This field is required`}
+                        value={customerName}
+                        onChange={customerNameChangeHandler}
+                        onBlur={customerNameBlurHandler}
+                        error={customerNameError}
+                        helperText={customerNameError && `This field is required`}
                         fullWidth
                      />
                   </TextFieldWrapper>
@@ -426,18 +450,18 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
                   <TextField
                      variant="outlined"
-                     label="Supply Num"
+                     label="Receipt Num"
                      size="small"
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                     value={supplyNum}
-                     onChange={(e) => setSupplyNum(e.target.value)}
+                     value={receiptNum}
+                     onChange={(e) => setReceiptNum(e.target.value)}
                      disabled
                      fullWidth
                   />
@@ -447,15 +471,15 @@ export default function CreateSupplies() {
             <StyledRow>
                <TextFieldWrapper width={1} maxWidth={400}>
                   <FormControl fullWidth>
-                     <InputLabel id="demo-simple-select-label">Supply Type</InputLabel>
+                     <InputLabel id="demo-simple-select-label">Receipt Type</InputLabel>
                      <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={supplyType}
-                        label="Supply Type"
-                        onChange={(e) => setSupplyType(e.target.value as string)}
+                        value={receiptType}
+                        label="Receipt Type"
+                        onChange={(e) => setReceiptType(e.target.value as string)}
                      >
-                        {supplyTypes.map((type) => (
+                        {receiptTypes.map((type) => (
                            <MenuItem key={type} value={type}>
                               {type}
                            </MenuItem>
@@ -467,12 +491,12 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
-                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
+                  <DateTimePicker value={date} onChange={handleDateChange} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -581,7 +605,7 @@ export default function CreateSupplies() {
             </Row>
          </ItemsWrapper>
          <TableWrapper>
-            <SupplyItemsTable
+            <ReceiptItemsTable
                onUpdate={handleEdit}
                rows={rows}
                setRows={setRows}
@@ -601,9 +625,8 @@ export default function CreateSupplies() {
                      variant="outlined"
                      size="small"
                      color="success"
-                     onClick={handleCreateSupply}
+                     onClick={handleUpdateReceipt}
                      fullWidth
-                     disabled={isCreatingSupply}
                   >
                      Save
                   </StyledButton>

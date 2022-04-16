@@ -104,9 +104,11 @@ export interface GetReceiptsQuery {
    data: Receipt[]
 }
 
-export interface Params {
-   from: string
-   to: string
+export type ReceiptId = string
+
+export interface GetReceiptByIdQuery {
+   status: string
+   data: Receipt
 }
 
 /**
@@ -118,12 +120,83 @@ export interface GetReceiptNumQuery {
    data: number
 }
 
+/**
+ * @Supply
+ */
+
+export interface SupplyItem {
+   itemId: string
+   itemName: string
+   qty: number
+   unitPrice: number
+   unitPercent: number
+}
+
+export interface Supply {
+   supplyId: string
+   supplyNum: number
+   supplyType: string
+   supplyDate: Date
+   supplierName: string
+   totalAmount: number
+   items: SupplyItem[]
+}
+
+export interface GetSuppliesQuery {
+   status: string
+   data: Supply[]
+}
+
+export type SupplyId = string
+
+export interface GetSupplyByIdQuery {
+   status: string
+   data: Supply
+}
+
 export interface GetSupplyNumQuery {
    status: string
    data: number
 }
 
+/**
+ * @Transfer
+ */
+
+export interface TransferItem {
+   itemId: string
+   itemName: string
+   qty: number
+}
+
+export interface Transfer {
+   transferId: string
+   transferNum: number
+   transferType: string
+   transferDate: Date
+   toUserId: string
+   toUsername: string
+   items: TransferItem[]
+}
+
+export interface GetTransfersQuery {
+   status: string
+   data: Transfer[]
+}
+
 export interface GetTransferNumQuery {
    status: string
    data: number
+}
+
+export type TransferId = string
+
+export interface GetTransferByIdQuery {
+   status: string
+   data: Transfer
+}
+
+export interface Params {
+   from: string
+   to: string
 }

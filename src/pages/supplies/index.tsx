@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
-import ReceiptsTable from '../../components/table/ReceiptsTable'
-import useGetReceipts from '../../api/queries/useGetReceipts'
+import SuppliesTable from '../../components/table/SuppliesTable'
+import useGetSupplies from '../../api/queries/useGetSupplies'
 import { Typography, Button, Box, ButtonBase } from '@mui/material'
 import { Container, StyledAvatar, Flex, StyledButtonBase, PageTitle } from '../../components/toolbar/Elements'
 import { useNavigate } from 'react-router-dom'
 import DatePicker from '../../components/datePicker'
 import SearchIcon from '@mui/icons-material/Search'
 
-export default function ReceiptsPage() {
+export default function SuppliesPage() {
    const navigate = useNavigate()
    const today = new Date()
    const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
@@ -16,7 +16,7 @@ export default function ReceiptsPage() {
    )
    const [toDate, setToDate] = useState<Date | null>(today)
 
-   const { data, isFetching, refetch } = useGetReceipts(
+   const { data, isFetching, refetch } = useGetSupplies(
       {
          from: fromDate!.toString(),
          to: toDate!.toString(),
@@ -24,7 +24,7 @@ export default function ReceiptsPage() {
       shouldRefetch
    )
 
-   const receipts = data?.data
+   const supplies = data?.data
 
    const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
 
@@ -35,14 +35,14 @@ export default function ReceiptsPage() {
    }
 
    useEffect(() => {
-      if (receipts) {
+      if (supplies) {
          setShouldRefetch(false)
       }
-   }, [receipts])
+   }, [supplies])
 
    return (
       <Container>
-         <PageTitle>Receipts</PageTitle>
+         <PageTitle>Supplies</PageTitle>
          <Flex sx={{ py: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <Flex>
                <Box sx={{ pr: 1 }}>
@@ -79,14 +79,14 @@ export default function ReceiptsPage() {
                   size="small"
                   disableElevation
                   onClick={() => {
-                     navigate(`/create/receipts`, { replace: true })
+                     navigate(`/create/supplies`, { replace: true })
                   }}
                >
-                  Create Receipt
+                  Create Supply
                </Button>
             </Box>
          </Flex>
-         <ReceiptsTable loading={isFetching} data={receipts} />
+         <SuppliesTable loading={isFetching} data={supplies} />
       </Container>
    )
 }

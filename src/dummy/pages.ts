@@ -92,7 +92,7 @@ export const pages: PageInterface[] = [
             title: 'Supplies',
             type: Type.item,
             icon: Icons.HandymanIcon,
-            url: '/create/supplies',
+            url: '/supplies',
          },
          {
             id: 'Suppliers',
@@ -121,7 +121,7 @@ export const pages: PageInterface[] = [
       id: 'Transfer',
       title: 'Transfer',
       type: Type.item,
-      url: '/create/transfers',
+      url: '/transfers',
       icon: Icons.SendIcon,
    },
    {

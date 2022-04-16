@@ -29,7 +29,7 @@ import DatePicker from '../../components/datePicker'
 import { receiptTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
 import { isPercentage } from '../../helpers/isPercentage'
-import ReceiptItemsTable from '../../components/table/ReceiptItemsTable'
+import ReceiptItemsTable from '../../components/table/create/ReceiptItemsTable'
 import { isValidQty } from '../../helpers/isValidQty'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -44,7 +44,7 @@ export interface Row {
    id: number
    itemId: string
    itemName: string
-   itemCode: string
+   itemCode?: string
    qty: string
    unitPrice: string
    unitPercent: number
@@ -161,13 +161,14 @@ export default function CreateReceipts() {
       submitInputHandler: submitUnitPercentInput,
    } = useInput(isPercentage)
 
-   const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
-
    const {
       data: receiptNumData,
       isFetching: fetchingReceiptNum,
       refetch: refetchReceiptNum,
    } = useGetReceiptNum()
+
+   const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
+
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
 
    const {
@@ -604,6 +605,7 @@ export default function CreateReceipts() {
                      size="small"
                      color="success"
                      onClick={handleCreateReceipt}
+                     disabled={isCreatingReceipt}
                      fullWidth
                   >
                      Save

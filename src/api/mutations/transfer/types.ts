@@ -14,3 +14,12 @@ export interface CreateTransferMutationVariables {
    userId: string
    items: Item[]
 }
+
+export interface UpdateTransferMutation {
+   message: string
+   status: string
+}
+
+export interface UpdateTransferMutationVariables extends CreateTransferMutationVariables {
+   transferId: string
+}

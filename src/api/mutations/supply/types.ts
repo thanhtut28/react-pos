@@ -15,3 +15,12 @@ export interface CreateSupplyMutationVariables {
    supplierName: string
    items: Item[]
 }
+
+export interface UpdateSupplyMutation {
+   message: string
+   status: string
+}
+
+export interface UpdateSupplyMutationVariables extends CreateSupplyMutationVariables {
+   supplyId: string
+}

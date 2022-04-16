@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
-
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
@@ -8,9 +8,9 @@ import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 import useGetSuppliers from '../../api/queries/useGetSuppliers'
-import useGetSupplyNum from '../../api/queries/useGetSupplyNum'
+import useGetSupplyById from '../../api/queries/useGetSupplyById'
 import useGetItems from '../../api/queries/useGetItems'
-import { useCreateSupply } from '../../api/mutations/supply'
+import { useUpdateSupply } from '../../api/mutations/supply'
 import {
    Container,
    InputsWrapper,
@@ -26,7 +26,7 @@ import {
    SubmitActionsWrapper,
    TableWrapper,
 } from '../../components/create/Elements'
-import DatePicker from '../../components/datePicker'
+import DateTimePicker from '../../components/dateTimePicker'
 import { supplyTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
 import { isPercentage } from '../../helpers/isPercentage'
@@ -52,16 +52,18 @@ export interface Row {
    netAmount: number
 }
 
-export default function CreateSupplies() {
+export default function EditSupply() {
    const [rows, setRows] = useState<Row[]>([])
    const [total, setTotal] = useState<number>(0)
    const [netAmount, setNetAmount] = useState<number>(0)
    const [itemId, setItemId] = useState<string>('')
-   const today = new Date()
+   const [date, setDate] = useState<Date | null>(null)
    const [supplyType, setSupplyType] = useState<string>(supplyTypes[0])
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const { supplyId } = useParams()
+   const navigate = useNavigate()
 
    useHotkeys(
       'alt+r',
@@ -92,6 +94,7 @@ export default function CreateSupplies() {
    const {
       value: supplierCode,
       valueIsValid: supplierCodeIsValid,
+      setValue: setSupplierCode,
       inputChangeHandler: supplierCodeChangeHandler,
       inputBlurHandler: supplierCodeBlurHandler,
       inputError: supplierCodeError,
@@ -163,21 +166,22 @@ export default function CreateSupplies() {
    } = useInput(isPercentage)
 
    const { data: suppliersData, isFetching: fetchingSuppliers } = useGetSuppliers()
-   const { data: supplyNumData, isFetching: fetchingSupplyNum, refetch: refetchSupplyNum } = useGetSupplyNum()
+
+   const { data: supplyData, isFetching: fetchingSupply } = useGetSupplyById(supplyId!)
+
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
 
    const {
-      data: createSupplyData,
-      mutate: createSupply,
+      data: updateSupplyData,
+      mutateAsync: updateSupply,
       isLoading: isCreatingSupply,
-      reset: resetCreateSupply,
-      isSuccess: isCreatedSupply,
-      isError: isFailToCreate,
-      error: createSupplyError,
-   } = useCreateSupply(refetchSupplyNum)
+      reset: resetUpdateSupply,
+      isSuccess: isUpdatedSupply,
+      isError: isFailToUpdate,
+      error: updateSupplyError,
+   } = useUpdateSupply()
 
    const suppliers = suppliersData?.data
-   const supplyNumber = supplyNumData?.data
    const items = itemsData?.data
 
    const resetItemInputs = useCallback(() => {
@@ -198,10 +202,10 @@ export default function CreateSupplies() {
       submitUnitPriceInput()
    }
 
-   const loading = fetchingSuppliers || fetchingSupplyNum || fetchingItems || isCreatingSupply
+   const loading = fetchingSuppliers || fetchingItems || isCreatingSupply || fetchingSupply
 
-   const isValidToCreate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
-   useHotkeys('alt+s', () => handleCreateSupply(), [isValidToCreate, rows, supplierName, supplyType])
+   const isValidToUpdate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
+   useHotkeys('alt+s', () => handleUpdateSupply(), [isValidToUpdate, rows, supplierName, supplyType])
 
    const formIsValid =
       itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
@@ -268,7 +272,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) => [
          ...prev,
          {
@@ -291,7 +294,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) =>
          prev.map((row) =>
             row.id === editId
@@ -312,22 +314,24 @@ export default function CreateSupplies() {
       setIsEditing(false)
    }
 
-   const handleCreateSupply = () => {
-      if (!isValidToCreate) {
+   const handleUpdateSupply = () => {
+      if (!isValidToUpdate) {
          submitSupplierCodeInput()
          submitSupplierNameInput()
+
          return
       }
-
       const items = rows.map((row) => ({
          itemId: row.itemId,
          qty: +row.qty,
          unitPrice: +row.unitPrice,
          unitPercent: +row.unitPercent,
       }))
-      createSupply({ supplierName, supplyType, items })
-      resetItemInputs()
-      setRows([])
+      updateSupply({ supplyId: supplyId as string, supplierName, supplyType, items }).then(() => {
+         setRows([])
+         resetItemInputs()
+         navigate('/supplies', { replace: true })
+      })
    }
 
    useEffect(() => {
@@ -345,12 +349,6 @@ export default function CreateSupplies() {
    }, [qty, unitPrice, unitPercent, setNetAmount])
 
    useEffect(() => {
-      if (supplyNumber) {
-         setSupplyNum(supplyNumber.toString())
-      }
-   }, [supplyNumber, setSupplyNum])
-
-   useEffect(() => {
       if (rows.length > 0) {
          const total = rows
             .map((row) => +row.netAmount)
@@ -362,32 +360,61 @@ export default function CreateSupplies() {
    }, [rows])
 
    useEffect(() => {
-      if (isCreatedSupply) {
-         handleSetSuccessMessage(createSupplyData.message)
+      if (supplyData) {
+         const {
+            data: { items: editItems, supplyDate, supplyNum, supplyType, supplierName },
+         } = supplyData
+
+         setSupplyNum(supplyNum.toString())
+
+         const newItems = editItems.map((item, index) => ({
+            id: index + 1,
+            itemId: item.itemId,
+            itemName: item.itemName,
+            itemCode: items ? items.find((it) => it.itemName === item.itemName)?.itemCode : '',
+            qty: item.qty.toString(),
+            unitPrice: item.unitPrice.toString(),
+            unitPercent: item.unitPercent,
+            netAmount: calcNetAmount(item.qty, item.unitPrice, item.unitPercent),
+         }))
+         setRows(newItems)
+         setSupplyType(supplyType)
+         setDate(supplyDate)
+         const supplier = suppliers?.find((supplier) => supplier.supplierName === supplierName)
+         console.log(supplierName + 'supplierName')
+         if (supplier) {
+            setSupplierCode(supplier.supplierCode)
+         }
+      }
+   }, [suppliers, items, supplyData, setSupplierCode, setSupplierName, setSupplyNum])
+
+   useEffect(() => {
+      if (isUpdatedSupply) {
+         handleSetSuccessMessage(updateSupplyData.message)
          handleOpenSuccessMessageModal()
-         resetCreateSupply()
+         resetUpdateSupply()
          return
       }
 
-      if (isFailToCreate) {
-         handleSetErrorMessage((createSupplyError as Error).message)
+      if (isFailToUpdate) {
+         handleSetErrorMessage((updateSupplyError as Error).message)
          handleOpenErrorMessageModal()
-         resetCreateSupply()
+         resetUpdateSupply()
          return
       }
    }, [
-      createSupplyData?.message,
-      createSupplyError,
+      updateSupplyData?.message,
+      updateSupplyError,
       handleOpenErrorMessageModal,
       handleOpenSuccessMessageModal,
       handleSetErrorMessage,
       handleSetSuccessMessage,
-      isCreatedSupply,
-      isFailToCreate,
-      resetCreateSupply,
+      isUpdatedSupply,
+      isFailToUpdate,
+      resetUpdateSupply,
    ])
 
-   console.log(createSupplyData)
+   console.log(supplyId)
 
    return (
       <Container>
@@ -426,8 +453,8 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
@@ -467,12 +494,12 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
-                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
+                  <DateTimePicker value={date} onChange={handleDateChange} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -601,9 +628,8 @@ export default function CreateSupplies() {
                      variant="outlined"
                      size="small"
                      color="success"
-                     onClick={handleCreateSupply}
+                     onClick={handleUpdateSupply}
                      fullWidth
-                     disabled={isCreatingSupply}
                   >
                      Save
                   </StyledButton>

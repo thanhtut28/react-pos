@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useCallback } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
-
-import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
+import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
 import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
 import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
-import useGetSuppliers from '../../api/queries/useGetSuppliers'
-import useGetSupplyNum from '../../api/queries/useGetSupplyNum'
+import useGetUsers from '../../api/queries/useGetUsers'
+import useGetTransferById from '../../api/queries/useGetTransferById'
 import useGetItems from '../../api/queries/useGetItems'
-import { useCreateSupply } from '../../api/mutations/supply'
+import { useUpdateTransfer } from '../../api/mutations/transfer'
 import {
    Container,
    InputsWrapper,
@@ -26,20 +26,13 @@ import {
    SubmitActionsWrapper,
    TableWrapper,
 } from '../../components/create/Elements'
-import DatePicker from '../../components/datePicker'
-import { supplyTypes } from '../../dummy'
+import DateTimePicker from '../../components/dateTimePicker'
+import { transferTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
-import { isPercentage } from '../../helpers/isPercentage'
-import SupplyItemsTable from '../../components/table/create/ReceiptItemsTable'
+import TransferItemsTable from '../../components/table/create/TransferItemsTable'
 import { isValidQty } from '../../helpers/isValidQty'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
-
-const calcNetAmount = (qty: number, price: number, percent = 0): number => {
-   const total = qty * price
-   const discount = qty * price * percent
-   return total - discount
-}
 
 export interface Row {
    id: number
@@ -47,21 +40,20 @@ export interface Row {
    itemName: string
    itemCode?: string
    qty: string
-   unitPrice: string
-   unitPercent: number
-   netAmount: number
 }
 
-export default function CreateSupplies() {
+export default function EditTransfer() {
    const [rows, setRows] = useState<Row[]>([])
-   const [total, setTotal] = useState<number>(0)
-   const [netAmount, setNetAmount] = useState<number>(0)
+   const [username, setUsername] = useState<string | null>(null)
    const [itemId, setItemId] = useState<string>('')
-   const today = new Date()
-   const [supplyType, setSupplyType] = useState<string>(supplyTypes[0])
+   const [userId, setUserId] = useState<string>('')
+   const [date, setDate] = useState<Date | null>(null)
+   const [transferType, setTransferType] = useState<string>(transferTypes[0])
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const { transferId } = useParams()
+   const navigate = useNavigate()
 
    useHotkeys(
       'alt+r',
@@ -89,26 +81,7 @@ export default function CreateSupplies() {
       handleCloseMessageModal: handleCloseErrorMessageModal,
    } = useMessageModal()
 
-   const {
-      value: supplierCode,
-      valueIsValid: supplierCodeIsValid,
-      inputChangeHandler: supplierCodeChangeHandler,
-      inputBlurHandler: supplierCodeBlurHandler,
-      inputError: supplierCodeError,
-      submitInputHandler: submitSupplierCodeInput,
-   } = useInput(isNotEmpty)
-
-   const {
-      value: supplierName,
-      valueIsValid: supplierNameIsValid,
-      setValue: setSupplierName,
-      inputChangeHandler: supplierNameChangeHandler,
-      inputBlurHandler: supplierNameBlurHandler,
-      inputError: supplierNameError,
-      submitInputHandler: submitSupplierNameInput,
-   } = useInput(isNotEmpty)
-
-   const { value: supplyNum, setValue: setSupplyNum } = useDisableInput(isGreaterThanZero)
+   const { value: transferNum, setValue: setTransferNum } = useDisableInput(isGreaterThanZero)
 
    const {
       value: itemCode,
@@ -140,44 +113,23 @@ export default function CreateSupplies() {
       submitInputHandler: submitQtyInput,
    } = useInput(isValidQty)
 
-   const {
-      value: unitPrice,
-      valueIsValid: unitPriceIsValid,
-      setValue: setUnitPrice,
-      inputChangeHandler: unitPriceChangeHandler,
-      inputBlurHandler: unitPriceBlurHandler,
-      inputError: unitPriceError,
-      reset: resetUnitPrice,
-      submitInputHandler: submitUnitPriceInput,
-   } = useInput(isGreaterThanZero)
+   const { data: usersData, isFetching: fetchingCustomers } = useGetUsers()
 
-   const {
-      value: unitPercent,
-      valueIsValid: unitPercentIsValid,
-      setValue: setUnitPercent,
-      inputChangeHandler: unitPercentChangeHandler,
-      inputBlurHandler: unitPercentBlurHandler,
-      inputError: unitPercentError,
-      reset: resetUnitPercent,
-      submitInputHandler: submitUnitPercentInput,
-   } = useInput(isPercentage)
+   const { data: transferData, isFetching: fetchingTransfer } = useGetTransferById(transferId!)
 
-   const { data: suppliersData, isFetching: fetchingSuppliers } = useGetSuppliers()
-   const { data: supplyNumData, isFetching: fetchingSupplyNum, refetch: refetchSupplyNum } = useGetSupplyNum()
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
 
    const {
-      data: createSupplyData,
-      mutate: createSupply,
-      isLoading: isCreatingSupply,
-      reset: resetCreateSupply,
-      isSuccess: isCreatedSupply,
-      isError: isFailToCreate,
-      error: createSupplyError,
-   } = useCreateSupply(refetchSupplyNum)
+      data: updateTransferData,
+      mutateAsync: updateTransfer,
+      isLoading: isCreatingTransfer,
+      reset: resetUpdateTransfer,
+      isSuccess: isUpdatedTransfer,
+      isError: isFailToUpdate,
+      error: updateTransferError,
+   } = useUpdateTransfer()
 
-   const suppliers = suppliersData?.data
-   const supplyNumber = supplyNumData?.data
+   const users = usersData?.data
    const items = itemsData?.data
 
    const resetItemInputs = useCallback(() => {
@@ -186,38 +138,31 @@ export default function CreateSupplies() {
       resetItemCode()
       resetItemName()
       resetQty()
-      resetUnitPrice()
-      resetUnitPercent()
-      setNetAmount(0)
    }, [])
 
    const submitItemInputs = () => {
       submitItemCodeInput()
       submitQtyInput()
-      submitUnitPercentInput()
-      submitUnitPriceInput()
    }
 
-   const loading = fetchingSuppliers || fetchingSupplyNum || fetchingItems || isCreatingSupply
+   const loading = fetchingCustomers || fetchingItems || isCreatingTransfer || fetchingTransfer
 
-   const isValidToCreate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
-   useHotkeys('alt+s', () => handleCreateSupply(), [isValidToCreate, rows, supplierName, supplyType])
+   const usernameIsValid = username && username.trim() !== ''
+   const userIdIsValid = userId.trim() !== ''
 
-   const formIsValid =
-      itemCodeIsValid && itemNameIsValid && qtyIsValid && unitPriceIsValid && unitPercentIsValid
+   const isValidToUpdate = usernameIsValid && userIdIsValid && rows.length > 0
+   useHotkeys('alt+s', () => handleUpdateTransfer(), [isValidToUpdate, rows, username, transferType])
+
+   const formIsValid = itemCodeIsValid && itemNameIsValid && qtyIsValid
 
    const checkItemValues = (value: string) => {
       const item = items?.find((item) => item.itemCode === value)
       if (item) {
          setItemName(item.itemName)
-         setUnitPrice(item.unitPrice.toString())
-         setUnitPercent((item.unitPercent * 100).toString())
          setItemId(item.itemId)
          return
       }
       setItemName('')
-      setUnitPrice('')
-      setUnitPercent('')
       setItemId('')
       return
    }
@@ -242,22 +187,16 @@ export default function CreateSupplies() {
                itemCode: editItemCode,
                itemName: editItemName,
                itemId: editItemId,
-               netAmount: editNetAmount,
                qty: editQty,
-               unitPercent: editUnitPercent,
-               unitPrice: editUnitPrice,
             },
          } = data
          setItemCode(editItemCode)
          setEditId(editId)
          setItemName(editItemName)
          setItemId(editItemId)
-         setNetAmount(editNetAmount)
          setQty(editQty)
-         setUnitPrice(editUnitPrice)
-         setUnitPercent((editUnitPercent * 100).toString())
       },
-      [setItemCode, setItemName, setQty, setUnitPercent, setUnitPrice]
+      [setItemCode, setItemName, setQty]
    )
 
    const handleDateChange = (value: Date | null) => {}
@@ -268,7 +207,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) => [
          ...prev,
          {
@@ -277,9 +215,6 @@ export default function CreateSupplies() {
             itemCode,
             itemName,
             qty,
-            unitPrice,
-            unitPercent: +unitPercent / 100,
-            netAmount,
          },
       ])
       resetItemInputs()
@@ -291,7 +226,6 @@ export default function CreateSupplies() {
          submitItemInputs()
          return
       }
-
       setRows((prev) =>
          prev.map((row) =>
             row.id === editId
@@ -301,9 +235,6 @@ export default function CreateSupplies() {
                     itemCode,
                     itemName,
                     qty,
-                    unitPrice,
-                    unitPercent: +unitPercent / 100,
-                    netAmount,
                  }
                : row
          )
@@ -312,112 +243,85 @@ export default function CreateSupplies() {
       setIsEditing(false)
    }
 
-   const handleCreateSupply = () => {
-      if (!isValidToCreate) {
-         submitSupplierCodeInput()
-         submitSupplierNameInput()
-         return
+   const handleUpdateTransfer = () => {
+      if (username && isValidToUpdate) {
+         const items = rows.map((row) => ({
+            itemId: row.itemId,
+            qty: +row.qty,
+         }))
+         updateTransfer({ transferId: transferId as string, username, userId, transferType, items }).then(
+            () => {
+               setRows([])
+               resetItemInputs()
+               navigate('/transfers', { replace: true })
+            }
+         )
       }
-
-      const items = rows.map((row) => ({
-         itemId: row.itemId,
-         qty: +row.qty,
-         unitPrice: +row.unitPrice,
-         unitPercent: +row.unitPercent,
-      }))
-      createSupply({ supplierName, supplyType, items })
-      resetItemInputs()
-      setRows([])
    }
 
    useEffect(() => {
-      const supplier = suppliers?.find((supplier) => supplier.supplierCode === supplierCode)
-      if (supplier) {
-         setSupplierName(supplier.supplierName)
-         return
+      if (transferData) {
+         const {
+            data: { items: editItems, transferDate, transferNum, transferType, toUsername, toUserId },
+         } = transferData
+
+         setTransferNum(transferNum.toString())
+
+         const newItems = editItems.map((item, index) => ({
+            id: index + 1,
+            itemId: item.itemId,
+            itemName: item.itemName,
+            itemCode: items ? items.find((it) => it.itemName === item.itemName)?.itemCode : '',
+            qty: item.qty.toString(),
+         }))
+         setRows(newItems)
+         setTransferType(transferType)
+         setDate(transferDate)
+         setUserId(toUserId)
+         setUsername(toUsername)
       }
-   }, [suppliers, supplierCode, setSupplierName])
+   }, [items, setTransferNum, transferData])
 
    useEffect(() => {
-      if (qty && unitPrice) {
-         setNetAmount(calcNetAmount(+qty, +unitPrice, +unitPercent / 100))
-      }
-   }, [qty, unitPrice, unitPercent, setNetAmount])
-
-   useEffect(() => {
-      if (supplyNumber) {
-         setSupplyNum(supplyNumber.toString())
-      }
-   }, [supplyNumber, setSupplyNum])
-
-   useEffect(() => {
-      if (rows.length > 0) {
-         const total = rows
-            .map((row) => +row.netAmount)
-            .reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0)
-         setTotal(total)
-         return
-      }
-      setTotal(0)
-   }, [rows])
-
-   useEffect(() => {
-      if (isCreatedSupply) {
-         handleSetSuccessMessage(createSupplyData.message)
+      if (isUpdatedTransfer) {
+         handleSetSuccessMessage(updateTransferData.message)
          handleOpenSuccessMessageModal()
-         resetCreateSupply()
+         resetUpdateTransfer()
          return
       }
 
-      if (isFailToCreate) {
-         handleSetErrorMessage((createSupplyError as Error).message)
+      if (isFailToUpdate) {
+         handleSetErrorMessage((updateTransferError as Error).message)
          handleOpenErrorMessageModal()
-         resetCreateSupply()
+         resetUpdateTransfer()
          return
       }
    }, [
-      createSupplyData?.message,
-      createSupplyError,
+      updateTransferData?.message,
+      updateTransferError,
       handleOpenErrorMessageModal,
       handleOpenSuccessMessageModal,
       handleSetErrorMessage,
       handleSetSuccessMessage,
-      isCreatedSupply,
-      isFailToCreate,
-      resetCreateSupply,
+      isUpdatedTransfer,
+      isFailToUpdate,
+      resetUpdateTransfer,
    ])
-
-   console.log(createSupplyData)
 
    return (
       <Container>
          <InputsWrapper>
             <StyledRow>
                <Row width={1} maxWidth={400}>
-                  <TextFieldWrapper flex={1}>
-                     <TextField
-                        variant="outlined"
-                        label="Supplier code"
-                        size="small"
-                        value={supplierCode}
-                        onChange={supplierCodeChangeHandler}
-                        onBlur={supplierCodeBlurHandler}
-                        error={supplierCodeError}
-                        helperText={supplierCodeError && `This field is required`}
-                        fullWidth
-                     />
-                  </TextFieldWrapper>
-                  <TextFieldWrapper flex={1.5}>
-                     <TextField
-                        variant="outlined"
-                        label="Supplier name"
-                        size="small"
-                        value={supplierName}
-                        onChange={supplierNameChangeHandler}
-                        onBlur={supplierNameBlurHandler}
-                        error={supplierNameError}
-                        helperText={supplierNameError && `This field is required`}
-                        fullWidth
+                  <TextFieldWrapper>
+                     <Autocomplete
+                        key="username"
+                        value={username}
+                        onChange={(event: any, newValue: any) => {
+                           setUsername(newValue as string)
+                        }}
+                        options={users ? users.map((user) => user.username) : [null]}
+                        renderInput={(params: any) => <TextField {...params} label="Username" />}
                      />
                   </TextFieldWrapper>
                </Row>
@@ -426,18 +330,18 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
                   <TextField
                      variant="outlined"
-                     label="Supply Num"
+                     label="Transfer Num"
                      size="small"
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                     value={supplyNum}
-                     onChange={(e) => setSupplyNum(e.target.value)}
+                     value={transferNum}
+                     onChange={(e) => setTransferNum(e.target.value)}
                      disabled
                      fullWidth
                   />
@@ -447,15 +351,15 @@ export default function CreateSupplies() {
             <StyledRow>
                <TextFieldWrapper width={1} maxWidth={400}>
                   <FormControl fullWidth>
-                     <InputLabel id="demo-simple-select-label">Supply Type</InputLabel>
+                     <InputLabel id="demo-simple-select-label">Transfer Type</InputLabel>
                      <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={supplyType}
-                        label="Supply Type"
-                        onChange={(e) => setSupplyType(e.target.value as string)}
+                        value={transferType}
+                        label="Transfer Type"
+                        onChange={(e) => setTransferType(e.target.value as string)}
                      >
-                        {supplyTypes.map((type) => (
+                        {transferTypes.map((type) => (
                            <MenuItem key={type} value={type}>
                               {type}
                            </MenuItem>
@@ -467,12 +371,12 @@ export default function CreateSupplies() {
                   width={1}
                   sx={{
                      maxWidth: {
-                        xs: 120,
-                        sm: 200,
+                        xs: 250,
+                        sm: 250,
                      },
                   }}
                >
-                  <DatePicker value={today} onChange={handleDateChange} disabled={true} />
+                  <DateTimePicker value={date} onChange={handleDateChange} />
                </TextFieldWrapper>
             </StyledRow>
          </InputsWrapper>
@@ -529,42 +433,6 @@ export default function CreateSupplies() {
                         />
                      </TextFieldWrapper>
 
-                     <TextFieldWrapper sx={{ flex: 1 }}>
-                        <TextField
-                           variant="outlined"
-                           label="Price"
-                           size="small"
-                           type="number"
-                           inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-                           value={unitPrice}
-                           onChange={unitPriceChangeHandler}
-                           onBlur={unitPriceBlurHandler}
-                           error={unitPriceError}
-                           helperText={unitPriceError && 'Please Fill a valid price'}
-                           fullWidth
-                        />
-                     </TextFieldWrapper>
-
-                     <TextFieldWrapper sx={{ flex: 1 }}>
-                        <TextField
-                           variant="outlined"
-                           label="Percent"
-                           size="small"
-                           type="number"
-                           inputProps={{
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*',
-                              min: '0',
-                              max: '100',
-                           }}
-                           value={unitPercent}
-                           onChange={unitPercentChangeHandler}
-                           onBlur={unitPercentBlurHandler}
-                           error={unitPercentError}
-                           helperText={unitPercentError && 'Must be between 0 and 100'}
-                           fullWidth
-                        />
-                     </TextFieldWrapper>
                      <ActionsWrapper>
                         <StyledButton
                            variant="contained"
@@ -581,11 +449,10 @@ export default function CreateSupplies() {
             </Row>
          </ItemsWrapper>
          <TableWrapper>
-            <SupplyItemsTable
+            <TransferItemsTable
                onUpdate={handleEdit}
                rows={rows}
                setRows={setRows}
-               total={total}
                loading={loading}
                setIsEditing={setIsEditing}
                editId={editId}
@@ -601,9 +468,8 @@ export default function CreateSupplies() {
                      variant="outlined"
                      size="small"
                      color="success"
-                     onClick={handleCreateSupply}
+                     onClick={handleUpdateTransfer}
                      fullWidth
-                     disabled={isCreatingSupply}
                   >
                      Save
                   </StyledButton>

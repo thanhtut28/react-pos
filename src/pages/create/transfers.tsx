@@ -28,14 +28,14 @@ import {
 import DatePicker from '../../components/datePicker'
 import { transferTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
-import TransferItemsTable from '../../components/table/TransferItemsTable'
+import TransferItemsTable from '../../components/table/create/TransferItemsTable'
 import { isValidQty } from '../../helpers/isValidQty'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
 
 export interface Row {
    id: number
-   itemCode: string
+   itemCode?: string
    itemName: string
    itemId: string
    qty: string
@@ -43,8 +43,8 @@ export interface Row {
 
 export default function CreateTransfers() {
    const [rows, setRows] = useState<Row[]>([])
-   const [username, setUsername] = useState<string | null>(null)
    const [itemId, setItemId] = useState<string>('')
+   const [username, setUsername] = useState<string | null>(null)
    const [userId, setUserId] = useState<string>('')
    const today = new Date()
    const [transferType, setTransferType] = useState<string>(transferTypes[0])
@@ -458,7 +458,7 @@ export default function CreateTransfers() {
                      color="success"
                      onClick={handleCreateTransfer}
                      fullWidth
-                     disabled={!isValidToCreate || isCreatingTransfer}
+                     disabled={isCreatingTransfer}
                   >
                      Save
                   </StyledButton>
