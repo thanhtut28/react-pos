@@ -100,7 +100,7 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
-            ...(new Date().getTime() - new Date(data.row.supplyDate).getTime() <= oneDay
+            ...(new Date().toLocaleDateString() === new Date(data.row.supplyDate).toLocaleDateString()
                ? [
                     <GridActionsCellItem
                        key="edit"

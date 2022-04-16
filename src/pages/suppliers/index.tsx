@@ -16,7 +16,7 @@ import {
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
-import { codeValidation, isNotEmpty } from '../../helpers/isNotEmpty'
+import { isNotEmpty } from '../../helpers/isNotEmpty'
 
 export default function SupplierPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
@@ -37,6 +37,14 @@ export default function SupplierPage() {
 
    const nameIsNotCreated = (supplierName: string) =>
       !suppliers?.find((supplier) => supplier.supplierName === supplierName)
+
+   const codeValidate = (codeIsNotCreated: (value: string) => boolean, value: string) => {
+      return isNotEmpty(value) && (codeIsNotCreated(value) || isEditing)
+   }
+
+   const nameValidate = (nameIsNotCreated: (value: string) => boolean, value: string) => {
+      return isNotEmpty(value) && (nameIsNotCreated(value) || isEditing)
+   }
 
    const {
       message: successMessage,
@@ -63,7 +71,7 @@ export default function SupplierPage() {
       inputBlurHandler: codeBlurHandler,
       reset: resetCode,
       submitInputHandler: submitSupplierCodeInput,
-   } = useInput(isNotEmpty)
+   } = useInput(codeValidate.bind(null, codeIsNotCreated))
 
    const {
       value: supplierName,
@@ -74,7 +82,7 @@ export default function SupplierPage() {
       inputBlurHandler: nameBlurHandler,
       submitInputHandler: submitSupplierNameInput,
       reset: resetName,
-   } = useInput(isNotEmpty)
+   } = useInput(nameValidate.bind(null, nameIsNotCreated))
 
    const {
       mutate: addSupplier,
@@ -106,8 +114,7 @@ export default function SupplierPage() {
       isError: isFailToDelete,
    } = useDeleteSupplier()
 
-   const isValidToUpdate = supplierCodeIsValid && supplierNameIsValid
-   const isValidToAdd = isValidToUpdate && codeIsNotCreated(supplierCode) && nameIsNotCreated(supplierName)
+   const isValid = supplierCodeIsValid && supplierNameIsValid
 
    const loading = addingSupplier || updatingSupplier || deletingSupplier || fetchingSuppliers
 
@@ -120,7 +127,7 @@ export default function SupplierPage() {
 
    const handleAddSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToAdd) {
+      if (!isValid) {
          submitSupplierCodeInput()
          submitSupplierNameInput()
          return
@@ -133,7 +140,7 @@ export default function SupplierPage() {
 
    const handleUpdateSupplier = (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
-      if (!isValidToUpdate) {
+      if (!isValid) {
          submitSupplierCodeInput()
          submitSupplierNameInput()
          return
@@ -227,8 +234,6 @@ export default function SupplierPage() {
       updateData?.message,
       updateError,
    ])
-
-   console.log('rendering')
 
    return (
       <Container>

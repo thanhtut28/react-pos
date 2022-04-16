@@ -100,7 +100,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
-            ...(new Date().getTime() - new Date(data.row.receiptDate).getTime() <= oneDay
+            ...(new Date().toLocaleDateString() === new Date(data.row.receiptDate).toLocaleDateString()
                ? [
                     <GridActionsCellItem
                        key="edit"

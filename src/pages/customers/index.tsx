@@ -36,6 +36,14 @@ export default function CustomerPage() {
 
    const nameIsNotCreated = (customerName: string) => !customers?.find(({ name }) => name === customerName)
 
+   const codeValidate = (codeIsNotCreated: (value: string) => boolean, value: string) => {
+      return isNotEmpty(value) && (codeIsNotCreated(value) || isEditing)
+   }
+
+   const nameValidate = (nameIsNotCreated: (value: string) => boolean, value: string) => {
+      return isNotEmpty(value) && (nameIsNotCreated(value) || isEditing)
+   }
+
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -61,7 +69,7 @@ export default function CustomerPage() {
       inputBlurHandler: codeBlurHandler,
       submitInputHandler: submitCodeInput,
       reset: resetCode,
-   } = useInput(isNotEmpty)
+   } = useInput(codeValidate.bind(null, codeIsNotCreated))
 
    const {
       value: customerName,
@@ -72,7 +80,7 @@ export default function CustomerPage() {
       inputBlurHandler: nameBlurHandler,
       submitInputHandler: submitNameInput,
       reset: resetName,
-   } = useInput(isNotEmpty)
+   } = useInput(nameValidate.bind(null, nameIsNotCreated))
 
    const {
       mutate: addCustomer,

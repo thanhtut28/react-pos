@@ -30,6 +30,10 @@ export default function UserPage() {
 
    const nameIsNotCreated = (username: string) => !users?.find((user) => user.username === username)
 
+   const nameValidate = (nameIsNotCreated: (value: string) => boolean, value: string) => {
+      return isNotEmpty(value) && (nameIsNotCreated(value) || isEditing)
+   }
+
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -54,7 +58,7 @@ export default function UserPage() {
       inputChangeHandler: usernameChangeHandler,
       inputBlurHandler: usernameBlurHandler,
       reset: resetUsername,
-   } = useInput(isNotEmpty)
+   } = useInput(nameValidate.bind(null, nameIsNotCreated))
 
    const {
       value: password,

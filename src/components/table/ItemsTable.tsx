@@ -3,7 +3,7 @@ import useGetItems from '../../api/queries/useGetItems'
 import StyledTable from './index'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { GridActionsCellItem } from '@mui/x-data-grid'
+import { GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Item } from '../../api/queries/types'
 
 interface Props {
@@ -14,6 +14,9 @@ interface Props {
    setOpenDeleteModal: React.Dispatch<React.SetStateAction<boolean>>
    setItemCode: React.Dispatch<React.SetStateAction<string>>
    setItemName: React.Dispatch<React.SetStateAction<string>>
+   setQty: React.Dispatch<React.SetStateAction<string>>
+   setUnitPrice: React.Dispatch<React.SetStateAction<string>>
+   setUnitPercent: React.Dispatch<React.SetStateAction<string>>
    setSelectedId: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -26,6 +29,9 @@ const ItemsTable = memo(function ItemsTable({
    setOpenDeleteModal,
    setItemCode,
    setItemName,
+   setQty,
+   setUnitPrice,
+   setUnitPercent,
    setSelectedId,
 }: Props) {
    const [rows, setRows] = useState<Item[]>([])
@@ -36,7 +42,7 @@ const ItemsTable = memo(function ItemsTable({
    const columns = [
       {
          field: 'id',
-         headerName: 'Id',
+         headerName: 'No',
          width: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -48,15 +54,64 @@ const ItemsTable = memo(function ItemsTable({
          field: 'itemCode',
          headerName: 'Item Code',
          flex: 1,
+         minWidth: 100,
          headerClassName: 'table--header',
-         // editable: true
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
       },
       {
          field: 'itemName',
          headerName: 'Item Name',
          flex: 1,
+         minWidth: 120,
          headerClassName: 'table--header',
-         // editable: true
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+      },
+      {
+         field: 'lowestQty',
+         headerName: 'Lowest Qty',
+         flex: 1,
+         minWidth: 100,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+      },
+      {
+         field: 'unitPrice',
+         headerName: 'Unit Price',
+         flex: 1,
+         minWidth: 100,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number(params.value as number).toLocaleString()
+            return `${valueFormatted} Ks`
+         },
+      },
+      {
+         field: 'unitPercent',
+         headerName: 'Unit Percent',
+         flex: 1,
+         minWidth: 100,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         filterable: false,
+         sortable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number((params.value as number) * 100).toLocaleString()
+            return `${valueFormatted} %`
+         },
       },
       {
          field: 'actions',
@@ -92,6 +147,9 @@ const ItemsTable = memo(function ItemsTable({
       setSelectedId(data.id)
       setItemCode(data.row.itemCode)
       setItemName(data.row.itemName)
+      setQty(data.row.lowestQty.toString())
+      setUnitPrice(data.row.unitPrice.toString())
+      setUnitPercent((data.row.unitPercent * 100).toString())
    }
 
    useEffect(() => {
@@ -99,6 +157,8 @@ const ItemsTable = memo(function ItemsTable({
          setRows([...items.map((item, index) => ({ ...item, id: index + 1 }))])
       }
    }, [items])
+
+   console.log(rows)
 
    return (
       <>

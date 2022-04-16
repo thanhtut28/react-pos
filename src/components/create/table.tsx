@@ -48,8 +48,6 @@ const StyledTable = ({ rows, columns, loading, getRowId, total }: Props) => {
             <DataGrid
                getRowId={getRowId}
                autoHeight
-               //    pageSize={15}
-               // loading={loading}
                components={{
                   LoadingOverlay: LinearProgress,
                   ColumnSortedDescendingIcon: SortedDescendingIcon,

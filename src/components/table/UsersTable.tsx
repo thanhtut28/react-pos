@@ -34,7 +34,7 @@ const UsersTable = memo(function UsersTable({
    const columns: GridColumns = [
       {
          field: 'id',
-         headerName: 'Id',
+         headerName: 'No',
          width: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,

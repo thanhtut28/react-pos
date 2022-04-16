@@ -50,7 +50,7 @@ export interface Item {
    itemId: string
    itemCode: string
    itemName: string
-   lowest_qty: number
+   lowestQty: number
    unitPrice: number
    unitPercent: number
 }

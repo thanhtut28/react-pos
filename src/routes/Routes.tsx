@@ -27,10 +27,6 @@ function ErrorPage() {
    return <h1>Error</h1>
 }
 
-function Item() {
-   return <h1>Item</h1>
-}
-
 type RoutesProps = (isLoggedIn: boolean, role?: string) => RouteObject[]
 
 const Routes: RoutesProps = (isLoggedIn, role) => [
@@ -49,10 +45,6 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     element: <Customers />,
                  },
                  {
-                    path: '/categories',
-                    element: <Category />,
-                 },
-                 {
                     path: '/stocks',
                     element: <Stocks />,
                  },
@@ -60,13 +52,14 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     path: '/items',
                     element: <Items />,
                  },
-                 {
-                    path: '/products/items/:itemId',
-                    element: <Item />,
-                 },
+
                  {
                     path: '/suppliers',
                     element: <Suppliers />,
+                 },
+                 {
+                    path: '/users',
+                    element: <UserPage />,
                  },
                  {
                     path: '/receipts',
@@ -115,10 +108,6 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                  {
                     path: '/transfer/view/:transferId',
                     element: <ViewTransfer />,
-                 },
-                 {
-                    path: '/users',
-                    element: <UserPage />,
                  },
               ]
             : [
