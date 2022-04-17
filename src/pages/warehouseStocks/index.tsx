@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import useGetStocks from '../../api/queries/useGetStocks'
-import { Stock } from '../../api/queries/types'
+import useGetStocks from '../../api/queries/useGetWHStocks'
+import { WHStock } from '../../api/queries/types'
 import { Typography, Box } from '@mui/material'
 import { Container, StyledAvatar, Flex, StyledButtonBase, PageTitle } from '../../components/toolbar/Elements'
 import DatePicker from '../../components/datePicker'
@@ -23,7 +23,7 @@ const columns: Column[] = [
    { id: 'itemName', label: 'Item\u00a0Name', minWidth: 170, rowSpan: 2, align: 'center' },
    {
       id: 'openingBalance',
-      label: 'Opening\nBalance',
+      label: 'Opening\u0020Balance',
       minWidth: 100,
       align: 'center',
       rowSpan: 2,
@@ -58,8 +58,8 @@ const columns: Column[] = [
       colSpan: 2,
    },
    {
-      id: 'sale',
-      label: 'Sale',
+      id: 'supply',
+      label: 'Supply',
       isSubColumn: true,
       align: 'center',
       format: (value: number) => value.toLocaleString('en-US'),
@@ -82,7 +82,7 @@ const columns: Column[] = [
 ]
 
 export default function ColumnGroupingTable() {
-   const [rows, setRows] = useState<Stock[]>([])
+   const [rows, setRows] = useState<WHStock[]>([])
    const today = new Date()
    const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
    const [fromDate, setFromDate] = useState<Date | null>(

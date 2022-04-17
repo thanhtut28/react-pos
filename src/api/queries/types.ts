@@ -211,6 +211,21 @@ export interface GetStocksQuery {
    data: Stock[]
 }
 
+export interface WHStock {
+   itemName: string
+   openingBalance: number
+   supply: number
+   return: number
+   give: number
+   take: number
+   closingBalance: number
+}
+
+export interface GetWHStocksQuery {
+   status: string
+   data: WHStock[]
+}
+
 export interface Params {
    from: string
    to: string

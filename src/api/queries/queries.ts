@@ -22,6 +22,9 @@ export const SUPPLIES_URL = '/supplies'
 export const GET_STOCKS_QUERY = 'GET_STOCKS_QUERY'
 export const STOCKS_URL = '/stocks'
 
+export const GET_STOCKS_WH_QUERY = 'GET_STOCKS_WH_QUERY'
+export const STOCKS_WH_URL = '/stocks/wh'
+
 export const GET_TRANSFERS_QUERY = 'GET_TRANSFERS_QUERY'
 export const TRANSFERS_URL = '/transfers'
 

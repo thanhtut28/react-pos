@@ -11,10 +11,10 @@ import {
 
 import { StyledTableRow, StyledTableCell, StyledTable } from './Elements'
 import { Column } from '../../pages/stocks'
-import { Stock } from '../../api/queries/types'
+import { Stock, WHStock } from '../../api/queries/types'
 
 interface Props {
-   rows: Stock[]
+   rows: Stock[] | WHStock[]
    columns: Column[]
 }
 

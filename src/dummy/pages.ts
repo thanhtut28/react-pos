@@ -118,8 +118,8 @@ export const pages: PageInterface[] = [
       icon: Icons.GroupIcon,
    },
    {
-      id: 'Transfer',
-      title: 'Transfer',
+      id: 'Transfers',
+      title: 'Transfers',
       type: Type.item,
       url: '/transfers',
       icon: Icons.SendIcon,
