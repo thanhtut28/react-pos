@@ -1,11 +1,19 @@
 import { useState, useEffect } from 'react'
 import useGetStocks from '../../api/queries/useGetWHStocks'
 import { WHStock } from '../../api/queries/types'
-import { Typography, Box } from '@mui/material'
-import { Container, StyledAvatar, Flex, StyledButtonBase, PageTitle } from '../../components/toolbar/Elements'
+import { Typography, Box, CircularProgress } from '@mui/material'
+import {
+   Container,
+   StyledAvatar,
+   Flex,
+   StyledButtonBase,
+   PageTitle,
+   SearchButtonWrapper,
+} from '../../components/toolbar/Elements'
 import DatePicker from '../../components/datePicker'
 import SearchIcon from '@mui/icons-material/Search'
 import StocksTable from '../../components/stocksTable'
+import { formatDate } from '../../helpers/formatDate'
 
 export interface Column {
    id: string
@@ -81,19 +89,21 @@ const columns: Column[] = [
    },
 ]
 
-export default function ColumnGroupingTable() {
+export default function WarehouseStocks() {
    const [rows, setRows] = useState<WHStock[]>([])
    const today = new Date()
    const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
-   const [fromDate, setFromDate] = useState<Date | null>(
-      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
-   )
+   const [fromDate, setFromDate] = useState<Date | null>(today)
    const [toDate, setToDate] = useState<Date | null>(today)
 
-   const { data: stocksData, refetch } = useGetStocks(
+   const {
+      data: stocksData,
+      refetch,
+      isFetching: fetchingStocks,
+   } = useGetStocks(
       {
-         from: fromDate!.toString(),
-         to: toDate!.toString(),
+         from: formatDate(fromDate!),
+         to: formatDate(toDate!),
       },
       shouldRefetch
    )
@@ -127,7 +137,7 @@ export default function ColumnGroupingTable() {
                <DatePicker value={toDate} onChange={(newValue) => setToDate(newValue)} maxDate={new Date()} />
             </Box>
 
-            <Box sx={{ px: 1 }}>
+            <SearchButtonWrapper>
                <StyledButtonBase
                   aria-label="menu-toggler"
                   onClick={() => {
@@ -139,9 +149,10 @@ export default function ColumnGroupingTable() {
                      <SearchIcon fontSize="large" />
                   </StyledAvatar>
                </StyledButtonBase>
-            </Box>
+            </SearchButtonWrapper>
          </Flex>
-         <StocksTable rows={rows} columns={columns} />
+
+         <StocksTable rows={rows} columns={columns} loading={fetchingStocks} />
       </Container>
    )
 }

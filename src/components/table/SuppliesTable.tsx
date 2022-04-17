@@ -5,6 +5,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Supply } from '../../api/queries/types'
+import { formatDate } from '../../helpers/formatDate'
 
 interface Props {
    loading?: boolean
@@ -41,7 +42,8 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
             const dateString = params.value ? params.value.toString() : ''
-            const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
+            const formattedValue = formatDate(new Date(dateString.split('T')[0]))
+
             return formattedValue
          },
       },

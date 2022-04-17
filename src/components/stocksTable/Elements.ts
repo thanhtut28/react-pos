@@ -19,6 +19,10 @@ export const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+   [`&.${tableCellClasses.root}.${tableCellClasses.head}`]: {
+      paddingTop: 4,
+      paddingBottom: 4,
+   },
    [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.primary.main,
       color: theme.palette.common.white,

@@ -5,6 +5,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Transfer } from '../../api/queries/types'
+import { formatDate } from '../../helpers/formatDate'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface Props {
    loading?: boolean
@@ -16,6 +18,7 @@ type Row = Transfer & { id: number }
 const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
    const navigate = useNavigate()
+   const { isAdmin } = useAuth()
 
    const columns: GridColumns = [
       {
@@ -41,7 +44,8 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
             const dateString = params.value ? params.value.toString() : ''
-            const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
+            const formattedValue = formatDate(new Date(dateString.split('T')[0]))
+
             return formattedValue
          },
       },
@@ -67,24 +71,29 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          filterable: false,
          sortable: false,
       },
-      {
-         field: 'username',
-         headerName: 'Transfer To',
-         flex: 1,
-         minWidth: 150,
-         headerClassName: 'table--header',
-         hideSortIcons: true,
-         disableColumnMenu: true,
-         filterable: false,
-         sortable: false,
-      },
+      ...(isAdmin
+         ? [
+              {
+                 field: 'username',
+                 headerName: 'Transfer To',
+                 flex: 1,
+                 minWidth: 150,
+                 headerClassName: 'table--header',
+                 hideSortIcons: true,
+                 disableColumnMenu: true,
+                 filterable: false,
+                 sortable: false,
+              },
+           ]
+         : []),
       {
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
-            ...(new Date().toLocaleDateString() === new Date(data.row.transferDate).toLocaleDateString()
+            ...(isAdmin &&
+            new Date().toLocaleDateString() === new Date(data.row.transferDate).toLocaleDateString()
                ? [
                     <GridActionsCellItem
                        key="edit"
@@ -109,9 +118,11 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
 
    useEffect(() => {
       if (data) {
-         setRows([...data.map((receipt, index) => ({ ...receipt, id: index + 1 }))])
+         setRows([...data.map((transfer, index) => ({ ...transfer, id: index + 1 }))])
       }
    }, [data])
+
+   console.log(data)
 
    return (
       <>

@@ -4,8 +4,6 @@ import Login from '../../components/login'
 import useInput from '../../hooks/useInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 import useLoginMutation from '../../api/mutations/login'
-import { setAccessToken } from '../../helpers/accessToken'
-import jwtDecode from 'jwt-decode'
 
 export default function LoginPage() {
    const {

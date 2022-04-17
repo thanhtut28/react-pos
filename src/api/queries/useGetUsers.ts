@@ -8,9 +8,10 @@ async function getUsers(): Promise<GetUsersQuery> {
    return data
 }
 
-export default function useGetUsers() {
+export default function useGetUsers(enabled = true) {
    return useQuery<GetUsersQuery, Error>({
       queryKey: GET_USERS_QUERY,
       queryFn: getUsers,
+      enabled,
    })
 }

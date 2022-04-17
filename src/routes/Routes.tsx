@@ -21,37 +21,61 @@ import ViewTransfer from '../pages/view/transfers'
 import Layout from '../components/layout'
 import { Navigate } from 'react-router-dom'
 import UserPage from '../pages/users'
+import WarehouseStocks from '../pages/warehouseStocks'
 
 function ErrorPage() {
    return <h1>Error</h1>
 }
 
-type RoutesProps = (isLoggedIn: boolean, role?: string) => RouteObject[]
+type RoutesProps = (isLoggedIn: boolean, isAdmin?: boolean) => RouteObject[]
 
-const Routes: RoutesProps = (isLoggedIn, role) => [
+const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
    {
       path: '/',
       element: isLoggedIn ? <Layout /> : <Navigate to="/login" replace />,
-      children:
-         role === 'admin'
+      children: [
+         {
+            index: true,
+            element: <Dashboard />,
+         },
+         {
+            path: '/customers',
+            element: <Customers />,
+         },
+         {
+            path: '/stocks',
+            element: <Stocks />,
+         },
+         {
+            path: '/items',
+            element: <Items />,
+         },
+         {
+            path: 'transfers',
+            element: <Transfers />,
+         },
+         {
+            path: '/transfer/view/:transferId',
+            element: <ViewTransfer />,
+         },
+         {
+            path: '/receipts',
+            element: <Receipts />,
+         },
+         {
+            path: '/receipt/edit/:receiptId',
+            element: <EditReceipt />,
+         },
+         {
+            path: '/receipt/view/:receiptId',
+            element: <ViewReceipt />,
+         },
+         {
+            path: '/stocks/wh',
+            element: <WarehouseStocks />,
+         },
+         ...(isAdmin
             ? [
-                 {
-                    index: true,
-                    element: <Dashboard />,
-                 },
-                 {
-                    path: '/customers',
-                    element: <Customers />,
-                 },
-                 {
-                    path: '/stocks',
-                    element: <Stocks />,
-                 },
-                 {
-                    path: '/items',
-                    element: <Items />,
-                 },
-
                  {
                     path: '/suppliers',
                     element: <Suppliers />,
@@ -60,18 +84,7 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     path: '/users',
                     element: <UserPage />,
                  },
-                 {
-                    path: '/receipts',
-                    element: <Receipts />,
-                 },
-                 {
-                    path: '/receipt/edit/:receiptId',
-                    element: <EditReceipt />,
-                 },
-                 {
-                    path: '/receipt/view/:receiptId',
-                    element: <ViewReceipt />,
-                 },
+
                  {
                     path: '/create/receipts',
                     element: <CreateReceipts />,
@@ -92,10 +105,7 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     path: '/supply/view/:supplyId',
                     element: <ViewSupply />,
                  },
-                 {
-                    path: 'transfers',
-                    element: <Transfers />,
-                 },
+
                  {
                     path: '/create/transfers',
                     element: <CreateTransfers />,
@@ -104,25 +114,9 @@ const Routes: RoutesProps = (isLoggedIn, role) => [
                     path: '/transfer/edit/:transferId',
                     element: <EditTransfer />,
                  },
-                 {
-                    path: '/transfer/view/:transferId',
-                    element: <ViewTransfer />,
-                 },
               ]
-            : [
-                 {
-                    index: true,
-                    element: <Dashboard />,
-                 },
-                 {
-                    path: '/customers',
-                    element: <Customers />,
-                 },
-                 {
-                    path: '/create/receipts',
-                    element: <CreateReceipts />,
-                 },
-              ],
+            : []),
+      ],
    },
 
    {

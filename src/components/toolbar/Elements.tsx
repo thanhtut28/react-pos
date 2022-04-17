@@ -60,6 +60,7 @@ export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} va
       height: '100%',
       backgroundColor: theme.palette.primary.dark,
       color: theme.palette.common.white,
+      padding: theme.spacing(0.5),
       '&:hover': {
          backgroundColor: theme.palette.primary.main,
       },
@@ -69,8 +70,7 @@ export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} va
 export const Flex = styled(Box)(() => ({ display: 'flex', alignItems: 'center' }))
 
 export const StyledButtonBase = styled(ButtonBase)(({ theme }) => ({
-   height: 56,
-   width: 56,
+   alignSelf: 'flex-end',
    '&.Mui-disabled .MuiAvatar-root': {
       backgroundColor: theme.palette.action.disabledBackground,
       color: theme.palette.action.disabled,
@@ -82,3 +82,9 @@ export const PageTitle = styled((props: TypographyProps) => <Typography {...prop
       fontWeight: theme.typography.fontWeightBold,
    })
 )
+
+export const SearchButtonWrapper = styled(Box)(({ theme }) => ({
+   paddingLeft: theme.spacing(1),
+   paddingRight: theme.spacing(1),
+   alignSelf: 'flex-end',
+}))

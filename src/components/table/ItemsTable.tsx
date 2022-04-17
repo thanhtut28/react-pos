@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { GridActionsCellItem, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Item } from '../../api/queries/types'
+import { useAuth } from '../../contexts/AuthContext'
 
 interface Props {
    loading: boolean
@@ -36,6 +37,7 @@ const ItemsTable = memo(function ItemsTable({
 }: Props) {
    const [rows, setRows] = useState<Item[]>([])
    const { data, isFetching, error } = useGetItems()
+   const { isAdmin } = useAuth()
 
    const items = data?.data
 
@@ -113,27 +115,31 @@ const ItemsTable = memo(function ItemsTable({
             return `${valueFormatted} %`
          },
       },
-      {
-         field: 'actions',
-         type: 'actions',
-         headerName: 'Actions',
-         width: 200,
-         getActions: (data: any) => [
-            <GridActionsCellItem
-               key="edit"
-               icon={<EditIcon />}
-               label="Edit"
-               onClick={() => handleUpdate(data)}
-            />,
-            <GridActionsCellItem
-               key="delete"
-               icon={<DeleteIcon />}
-               label="Delete"
-               onClick={() => handleDelete(data.id)}
-            />,
-         ],
-         headerClassName: 'table--header-actions table--header',
-      },
+      ...(isAdmin
+         ? [
+              {
+                 field: 'actions',
+                 type: 'actions',
+                 headerName: 'Actions',
+                 width: 200,
+                 getActions: (data: any) => [
+                    <GridActionsCellItem
+                       key="edit"
+                       icon={<EditIcon />}
+                       label="Edit"
+                       onClick={() => handleUpdate(data)}
+                    />,
+                    <GridActionsCellItem
+                       key="delete"
+                       icon={<DeleteIcon />}
+                       label="Delete"
+                       onClick={() => handleDelete(data.id)}
+                    />,
+                 ],
+                 headerClassName: 'table--header-actions table--header',
+              },
+           ]
+         : []),
    ]
 
    const handleDelete = (itemId: string) => {

@@ -136,23 +136,52 @@ export const pages: PageInterface[] = [
       title: 'Warehouse',
       type: Type.item,
       icon: Icons.WarehouseIcon,
-      url: '/login',
+      url: '/stocks/wh',
    },
 ]
 
 export const sellerPages: PageInterface[] = [
    {
-      id: 'Customers',
-      title: 'Customers',
-      type: Type.item,
-      icon: Icons.PersonIcon,
-      url: '/customers',
+      id: 'Sales',
+      title: 'Sales',
+      icon: Icons.SellIcon,
+      type: Type.collapse,
+      children: [
+         {
+            id: 'Receipts',
+            title: 'Receipts',
+            type: Type.item,
+            icon: Icons.ReceiptIcon,
+            url: '/receipts',
+         },
+         {
+            id: 'Customers',
+            title: 'Customers',
+            type: Type.item,
+            icon: Icons.PersonIcon,
+            url: '/customers',
+         },
+      ],
    },
    {
-      id: 'Receipts',
-      title: 'Receipts',
+      id: 'Items',
+      title: 'Items',
       type: Type.item,
-      icon: Icons.ReceiptIcon,
-      url: '/receipts',
+      url: '/items',
+      icon: Icons.InventoryIcon,
+   },
+   {
+      id: 'Transfers',
+      title: 'Transfers',
+      type: Type.item,
+      url: '/transfers',
+      icon: Icons.SendIcon,
+   },
+   {
+      id: 'Stocks',
+      title: 'Stocks',
+      type: Type.item,
+      icon: Icons.PlaylistAddCheckIcon,
+      url: '/stocks',
    },
 ]

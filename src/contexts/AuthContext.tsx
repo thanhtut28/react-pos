@@ -7,6 +7,7 @@ interface User {
 }
 interface AuthContextInterface {
    user: User | null
+   isAdmin: boolean
    signIn: (token: string) => void
    signOut: () => void
 }
@@ -19,6 +20,7 @@ export const useAuth = () => {
 
 export default function AuthContextProvider({ children }: { children: React.ReactNode }) {
    const [user, setUser] = useState<User | null>(null)
+   const isAdmin = user?.role === 'admin'
 
    const signIn = (token: string) => {
       setAccessToken(token)
@@ -43,6 +45,7 @@ export default function AuthContextProvider({ children }: { children: React.Reac
       user,
       signIn,
       signOut,
+      isAdmin,
    }
 
    return <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>

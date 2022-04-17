@@ -5,6 +5,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Receipt } from '../../api/queries/types'
+import { useAuth } from '../../contexts/AuthContext'
+import { formatDate } from '../../helpers/formatDate'
 
 interface Props {
    loading?: boolean
@@ -14,6 +16,7 @@ interface Props {
 type Row = Receipt & { id: number }
 
 const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
+   const { isAdmin } = useAuth()
    const [rows, setRows] = useState<Row[]>([])
    const navigate = useNavigate()
 
@@ -41,7 +44,8 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
             const dateString = params.value ? params.value.toString() : ''
-            const formattedValue = dateString.split('T')[0].split('-').reverse().join('-')
+            const formattedValue = formatDate(new Date(dateString.split('T')[0]))
+
             return formattedValue
          },
       },
@@ -67,6 +71,21 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          filterable: false,
          sortable: false,
       },
+      ...(isAdmin
+         ? [
+              {
+                 field: 'username',
+                 headerName: 'Username',
+                 flex: 1,
+                 minWidth: 150,
+                 headerClassName: 'table--header',
+                 hideSortIcons: true,
+                 disableColumnMenu: true,
+                 filterable: false,
+                 sortable: false,
+              },
+           ]
+         : []),
       {
          field: 'customerName',
          headerName: 'Customer Name',
@@ -110,6 +129,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
                     />,
                  ]
                : []),
+
             <GridActionsCellItem
                key="view"
                icon={<RemoveRedEyeIcon />}

@@ -21,12 +21,14 @@ import { isNotEmpty } from '../../helpers/isNotEmpty'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
 import { isPercentage } from '../../helpers/isPercentage'
 import { isValidQty } from '../../helpers/isValidQty'
+import { useAuth } from '../../contexts/AuthContext'
 
 export default function ItemPage() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [openModal, setOpenModal] = useState<boolean>(false)
    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
    const [selectedId, setSelectedId] = useState<string>('')
+   const { isAdmin } = useAuth()
 
    const { data: itemsData, isFetching: fetchingItems } = useGetItems()
    const items = itemsData?.data
@@ -419,17 +421,20 @@ export default function ItemPage() {
          />
 
          <ToolbarWrapper>
-            <Button
-               variant="contained"
-               color="primary"
-               size="small"
-               disabled={loading}
-               disableElevation
-               onClick={() => setOpenModal(true)}
-            >
-               Add Item
-            </Button>
+            {isAdmin && (
+               <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  disabled={loading}
+                  disableElevation
+                  onClick={() => setOpenModal(true)}
+               >
+                  Add Item
+               </Button>
+            )}
          </ToolbarWrapper>
+
          <ItemsTable
             setItemCode={setItemCode}
             setItemName={setItemName}
