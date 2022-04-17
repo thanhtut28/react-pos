@@ -42,3 +42,32 @@ items: [
 	itemName, qty, unitPrice, unitPercent, netAmount
 }
 ]
+
+Admin
+
+Dashboard
+Sales -> Receipts, Customers, Credit
+Supplies -> Supplies, Suppliers
+Items
+Users
+Transfers
+Stocks
+Warehouse
+Summary
+
+stocks?from=&to=&userId=
+receipt contain username in admin ui
+
+User
+
+Dashboard
+Sales -> Receipts, Customer, Credit
+Items
+Transfers
+Stocks
+
+receipts -> doesn't contain username, create,edit,view
+customers -> create, edit, delete
+items -> view
+transfer -> doesn't contain transfer to, view
+stocks -> doesn't contain userId
