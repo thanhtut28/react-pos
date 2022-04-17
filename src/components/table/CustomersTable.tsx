@@ -29,12 +29,10 @@ const CustomersTable = memo(function CustomersTable({
    setSelectedId,
 }: Props) {
    const [rows, setRows] = useState<Row[]>([])
-   const { data, isFetching, error } = useGetCustomers()
+   const { data, isFetching } = useGetCustomers()
 
    const customers = data?.data
-   // const customer = customers?.[0]
 
-   // const columnFields = customer ? Object.entries(customer) : []
    const columns: GridColumns = [
       {
          field: 'id',

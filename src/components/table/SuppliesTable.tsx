@@ -15,7 +15,6 @@ type Row = Supply & { id: number }
 
 const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
-   const oneDay = 1000 * 60 * 60 * 24
    const navigate = useNavigate()
 
    const columns: GridColumns = [

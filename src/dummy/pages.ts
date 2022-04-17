@@ -9,7 +9,7 @@ import SupportAgentIcon from '@mui/icons-material/SupportAgent'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import HandymanIcon from '@mui/icons-material/Handyman'
 import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
-import SummarizeIcon from '@mui/icons-material/Summarize'
+import WarehouseIcon from '@mui/icons-material/Warehouse'
 import SendIcon from '@mui/icons-material/Send'
 import GroupIcon from '@mui/icons-material/Group'
 
@@ -25,9 +25,9 @@ const Icons = {
    ShoppingCartIcon,
    HandymanIcon,
    PlaylistAddCheckIcon,
-   SummarizeIcon,
    SendIcon,
    GroupIcon,
+   WarehouseIcon,
 }
 
 export enum Type {
@@ -127,17 +127,16 @@ export const pages: PageInterface[] = [
    {
       id: 'Stocks',
       title: 'Stocks',
-      type: Type.collapse,
+      type: Type.item,
       icon: Icons.PlaylistAddCheckIcon,
-      children: [
-         {
-            id: 'Summary',
-            title: 'Summary',
-            type: Type.item,
-            icon: Icons.SummarizeIcon,
-            url: '/login',
-         },
-      ],
+      url: '/stocks',
+   },
+   {
+      id: 'Warehouse',
+      title: 'Warehouse',
+      type: Type.item,
+      icon: Icons.WarehouseIcon,
+      url: '/login',
    },
 ]
 

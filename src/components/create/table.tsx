@@ -40,8 +40,7 @@ export function CustomFooter(props: { total: number }) {
 }
 
 const StyledTable = ({ rows, columns, loading, getRowId, total }: Props) => {
-   console.log('table rendering')
-
+   console.log('table is rendering')
    return (
       <StyledContainer>
          <StyledTableWrapper>

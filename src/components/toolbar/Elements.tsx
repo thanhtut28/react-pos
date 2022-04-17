@@ -59,10 +59,9 @@ export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} va
       width: '100%',
       height: '100%',
       backgroundColor: theme.palette.primary.dark,
-      color: theme.palette.primary.light,
+      color: theme.palette.common.white,
       '&:hover': {
          backgroundColor: theme.palette.primary.main,
-         color: theme.palette.primary.light,
       },
    })
 )

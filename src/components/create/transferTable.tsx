@@ -1,4 +1,3 @@
-import React from 'react'
 import { LinearProgress } from '@mui/material'
 import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter } from '@mui/x-data-grid'
 import { StyledContainer, StyledTableWrapper } from '../table/Elements'

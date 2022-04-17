@@ -1,6 +1,6 @@
 import React from 'react'
 import { LinearProgress } from '@mui/material'
-import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter } from '@mui/x-data-grid'
+import { DataGrid, GridRowsProp, GridColumns, GridRowIdGetter, GridLoadingOverlay } from '@mui/x-data-grid'
 import { StyledContainer, StyledTableWrapper } from './Elements'
 import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'

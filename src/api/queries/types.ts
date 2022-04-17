@@ -196,6 +196,21 @@ export interface GetTransferByIdQuery {
    data: Transfer
 }
 
+export interface Stock {
+   itemName: string
+   openingBalance: number
+   supply: number
+   return: number
+   give: number
+   take: number
+   closingBalance: number
+}
+
+export interface GetStocksQuery {
+   status: string
+   data: Stock[]
+}
+
 export interface Params {
    from: string
    to: string

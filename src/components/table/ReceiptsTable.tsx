@@ -15,7 +15,6 @@ type Row = Receipt & { id: number }
 
 const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
-   const oneDay = 1000 * 60 * 60 * 24
    const navigate = useNavigate()
 
    const columns: GridColumns = [

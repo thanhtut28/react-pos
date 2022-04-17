@@ -1,6 +1,6 @@
 import { Box, Typography, TypographyProps, DialogTitle, Button, ButtonProps } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import theme from 'src/theme'
+import theme from '../../theme'
 
 export const DialogWrapper = styled('form')(() => ({}))
 

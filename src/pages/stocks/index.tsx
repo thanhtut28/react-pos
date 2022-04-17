@@ -1,305 +1,147 @@
-// import * as React from 'react'
-// import { DataGrid, GridColumns, GridRowsProp, GridToolbar, GridToolbarContainer } from '@mui/x-data-grid'
-// import { randomCreatedDate, randomTraderName, randomUpdatedDate } from '@mui/x-data-grid-generator'
-// import { useDemoData } from '@mui/x-data-grid-generator'
-// import { Button, Box, Typography } from '@mui/material'
+import { useState, useEffect } from 'react'
+import useGetStocks from '../../api/queries/useGetStocks'
+import { Stock } from '../../api/queries/types'
+import { Typography, Box } from '@mui/material'
+import { Container, StyledAvatar, Flex, StyledButtonBase, PageTitle } from '../../components/toolbar/Elements'
+import DatePicker from '../../components/datePicker'
+import SearchIcon from '@mui/icons-material/Search'
+import StocksTable from '../../components/stocksTable'
 
-// const PageSizeCustomOptions = () => {
-//    const [pageSize, setPageSize] = React.useState<number>(5)
-//    const [isEditable, setIsEditable] = React.useState<boolean>(false)
-//    const columns: GridColumns = [
-//       { field: 'name', headerName: 'Name', width: 180, editable: isEditable },
-//       { field: 'age', headerName: 'Age', type: 'number', editable: isEditable },
-//       {
-//          field: 'dateCreated',
-//          headerName: 'Date Created',
-//          type: 'date',
-//          width: 180,
-//          editable: isEditable,
-//       },
-//       {
-//          field: 'lastLogin',
-//          headerName: 'Last Login',
-//          type: 'dateTime',
-//          width: 220,
-//          editable: isEditable,
-//       },
-//    ]
-
-//    const rows: GridRowsProp = [
-//       {
-//          id: 1,
-//          name: randomTraderName(),
-//          age: 25,
-//          dateCreated: randomCreatedDate(),
-//          lastLogin: randomUpdatedDate(),
-//       },
-//       {
-//          id: 2,
-//          name: randomTraderName(),
-//          age: 36,
-//          dateCreated: randomCreatedDate(),
-//          lastLogin: randomUpdatedDate(),
-//       },
-//       {
-//          id: 3,
-//          name: randomTraderName(),
-//          age: 19,
-//          dateCreated: randomCreatedDate(),
-//          lastLogin: randomUpdatedDate(),
-//       },
-//       {
-//          id: 4,
-//          name: randomTraderName(),
-//          age: 28,
-//          dateCreated: randomCreatedDate(),
-//          lastLogin: randomUpdatedDate(),
-//       },
-//       {
-//          id: 5,
-//          name: randomTraderName(),
-//          age: 23,
-//          dateCreated: randomCreatedDate(),
-//          lastLogin: randomUpdatedDate(),
-//       },
-//    ]
-
-//    const { data } = useDemoData({
-//       dataSet: 'Commodity',
-//       rowLength: 1000000,
-//       maxColumns: 6,
-//       editable: isEditable,
-//    })
-
-//    function CustomToolbar() {
-//       return (
-//          <Box sx={{ width: '100%' }}>
-//             <GridToolbarContainer>
-//                <GridToolbar />
-//                <Button
-//                   variant={`${isEditable ? 'contained' : 'outlined'}`}
-//                   onClick={() => setIsEditable((prev) => !prev)}
-//                >
-//                   Edit
-//                </Button>
-//             </GridToolbarContainer>
-//          </Box>
-//       )
-//    }
-
-//    return (
-//       <Box
-//          sx={{
-//             height: '70vh',
-//             maxHeight: '100%',
-//             width: '100%',
-//             padding: 2,
-//             borderRadius: 1,
-//          }}
-//       >
-//          <DataGrid
-//             pageSize={pageSize}
-//             onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
-//             rowsPerPageOptions={[5, 10, 20, 100]}
-//             components={{ Toolbar: CustomToolbar }}
-//             pagination
-//             columns={columns}
-//             rows={rows}
-//             // {...data}
-//          />
-//       </Box>
-//    )
-// }
-
-// export default function Stocks() {
-//    return (
-//       <Box
-//          sx={{
-//             backgroundColor: (theme) => theme.palette.common.white,
-//             borderRadius: 1,
-//             padding: (theme) => theme.spacing(1),
-//          }}
-//       >
-//          <Typography variant="h6" sx={{ p: 2, pb: 0, color: 'primary.main' }}>
-//             Customers
-//          </Typography>
-//          <PageSizeCustomOptions />
-//       </Box>
-//    )
-// }
-
-// import { useDemoData } from '@mui/x-data-grid-generator'
-// import StyledTable from '../../components/table'
-
-// export default function StylingRowsGrid() {
-//    const { data } = useDemoData({
-//       dataSet: 'Commodity',
-//       rowLength: 100,
-//       maxColumns: 6,
-//       editable: true,
-//    })
-
-//    return <StyledTable data={data}></StyledTable>
-// }
-
-import * as React from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import {
-   GridColumns,
-   GridRowsProp,
-   DataGrid,
-   GridCellParams,
-   GridEventListener,
-   MuiEvent,
-   GridEvents,
-   useGridApiContext,
-} from '@mui/x-data-grid'
-import { randomCreatedDate, randomTraderName, randomUpdatedDate } from '@mui/x-data-grid-generator'
-
-interface EditToolbarProps {
-   selectedCellParams?: any
-   setSelectedCellParams: (value: any) => void
+export interface Column {
+   id: string
+   label: string
+   minWidth?: number
+   align?: 'left' | 'right' | 'center'
+   isSubColumn?: boolean
+   rowSpan?: number
+   colSpan?: number
+   format?: (value: number) => string
 }
 
-function EditToolbar(props: EditToolbarProps) {
-   const apiRef = useGridApiContext()
-   const { selectedCellParams, setSelectedCellParams } = props
-
-   const handleClick = async () => {
-      if (!selectedCellParams) {
-         return
-      }
-
-      const { id, field, rowMode } = selectedCellParams
-      console.log(rowMode, id, field)
-      if (rowMode === 'edit') {
-         apiRef.current.setRowMode(id, 'view')
-         setSelectedCellParams({ ...selectedCellParams, rowMode: 'view' })
-      } else {
-         apiRef.current.setRowMode(id, 'edit')
-         setSelectedCellParams({ ...selectedCellParams, rowMode: 'edit' })
-      }
-   }
-
-   const handleMouseDown = (event: any) => {
-      // Keep the focus in the cell
-      event.preventDefault()
-   }
-
-   return (
-      <Box
-         sx={{
-            justifyContent: 'center',
-            display: 'flex',
-            borderBottom: 1,
-            borderColor: 'divider',
-         }}
-      >
-         <Button
-            onClick={handleClick}
-            onMouseDown={handleMouseDown}
-            disabled={!selectedCellParams}
-            color="primary"
-         >
-            {selectedCellParams?.cellMode === 'edit' ? 'Save' : 'Edit'}
-         </Button>
-      </Box>
-   )
-}
-
-export default function StartEditButtonGrid() {
-   const [selectedCellParams, setSelectedCellParams] = React.useState<GridCellParams | null>(null)
-
-   const handleCellClick = React.useCallback((params: GridCellParams) => {
-      setSelectedCellParams(params)
-   }, [])
-
-   const handleCellEditStart = (params: GridCellParams, event: MuiEvent<React.SyntheticEvent>) => {
-      event.defaultMuiPrevented = true
-   }
-
-   const handleCellEditStop: GridEventListener<GridEvents.cellEditStop> = (params, event) => {
-      event.defaultMuiPrevented = true
-   }
-
-   return (
-      <div style={{ height: 400, width: '100%' }}>
-         <DataGrid
-            editMode="row"
-            rows={rows}
-            columns={columns}
-            onCellClick={handleCellClick}
-            onCellEditStart={handleCellEditStart}
-            onCellEditStop={handleCellEditStop}
-            components={{
-               Toolbar: EditToolbar,
-            }}
-            componentsProps={{
-               toolbar: {
-                  selectedCellParams,
-                  setSelectedCellParams,
-               },
-            }}
-            // experimentalFeatures={{ newEditingApi: true } as any}
-         />
-      </div>
-   )
-}
-
-const columns: GridColumns = [
-   { field: 'name', headerName: 'Name', width: 180, editable: true },
-   { field: 'age', headerName: 'Age', type: 'number', editable: true },
+const columns: Column[] = [
+   { id: 'No', label: 'No', minWidth: 80, rowSpan: 2, align: 'left' },
+   { id: 'itemName', label: 'Item\u00a0Name', minWidth: 170, rowSpan: 2, align: 'center' },
    {
-      field: 'dateCreated',
-      headerName: 'Date Created',
-      type: 'date',
-      width: 180,
-      editable: true,
+      id: 'openingBalance',
+      label: 'Opening\u00a0Balance',
+      minWidth: 100,
+      align: 'center',
+      rowSpan: 2,
+      format: (value: number) => value.toLocaleString('en-US'),
    },
    {
-      field: 'lastLogin',
-      headerName: 'Last Login',
-      type: 'dateTime',
-      width: 220,
-      editable: true,
+      id: 'transfer',
+      label: 'Transfer',
+      minWidth: 300,
+      align: 'center',
+      colSpan: 2,
+   },
+   {
+      id: 'give',
+      label: 'Give',
+      isSubColumn: true,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+   },
+   {
+      id: 'take',
+      label: 'Take',
+      isSubColumn: true,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+   },
+   {
+      id: 'sales',
+      label: 'Sales',
+      minWidth: 300,
+      align: 'center',
+      colSpan: 2,
+   },
+   {
+      id: 'sale',
+      label: 'Sale',
+      isSubColumn: true,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+   },
+   {
+      id: 'return',
+      label: 'Return',
+      isSubColumn: true,
+      align: 'center',
+      format: (value: number) => value.toLocaleString('en-US'),
+   },
+   {
+      id: 'closingBalance',
+      label: 'Closing\u00a0Balance',
+      align: 'right',
+      minWidth: 200,
+      rowSpan: 2,
+      format: (value: number) => value.toLocaleString('en-US'),
    },
 ]
 
-const rows: GridRowsProp = [
-   {
-      id: 1,
-      name: randomTraderName(),
-      age: 25,
-      dateCreated: randomCreatedDate(),
-      lastLogin: randomUpdatedDate(),
-   },
-   {
-      id: 2,
-      name: randomTraderName(),
-      age: 36,
-      dateCreated: randomCreatedDate(),
-      lastLogin: randomUpdatedDate(),
-   },
-   {
-      id: 3,
-      name: randomTraderName(),
-      age: 19,
-      dateCreated: randomCreatedDate(),
-      lastLogin: randomUpdatedDate(),
-   },
-   {
-      id: 4,
-      name: randomTraderName(),
-      age: 28,
-      dateCreated: randomCreatedDate(),
-      lastLogin: randomUpdatedDate(),
-   },
-   {
-      id: 5,
-      name: randomTraderName(),
-      age: 23,
-      dateCreated: randomCreatedDate(),
-      lastLogin: randomUpdatedDate(),
-   },
-]
+export default function ColumnGroupingTable() {
+   const [rows, setRows] = useState<Stock[]>([])
+   const today = new Date()
+   const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
+   const [fromDate, setFromDate] = useState<Date | null>(
+      new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+   )
+   const [toDate, setToDate] = useState<Date | null>(today)
+
+   const { data: stocksData, refetch } = useGetStocks(
+      {
+         from: fromDate!.toString(),
+         to: toDate!.toString(),
+      },
+      shouldRefetch
+   )
+
+   const stocks = stocksData?.data
+
+   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
+
+   const handleChangeFromDate = (newDate: Date | null) => {
+      if (newDate && newDate.getTime() <= new Date().getTime()) {
+         setFromDate(newDate)
+      }
+   }
+
+   useEffect(() => {
+      if (stocks) {
+         setShouldRefetch(false)
+         setRows(stocks)
+      }
+   }, [stocks])
+
+   return (
+      <Container>
+         <PageTitle>Stocks</PageTitle>
+         <Flex sx={{ py: 3 }}>
+            <Box sx={{ pr: 1 }}>
+               <DatePicker value={fromDate} onChange={handleChangeFromDate} maxDate={toDate as Date} />
+            </Box>
+            <Typography variant="subtitle2">To</Typography>
+            <Box sx={{ px: 1 }}>
+               <DatePicker value={toDate} onChange={(newValue) => setToDate(newValue)} maxDate={new Date()} />
+            </Box>
+
+            <Box sx={{ px: 1 }}>
+               <StyledButtonBase
+                  aria-label="menu-toggler"
+                  onClick={() => {
+                     refetch()
+                  }}
+                  disabled={!dateIsValid}
+               >
+                  <StyledAvatar>
+                     <SearchIcon fontSize="large" />
+                  </StyledAvatar>
+               </StyledButtonBase>
+            </Box>
+         </Flex>
+         <StocksTable rows={rows} columns={columns} />
+      </Container>
+   )
+}

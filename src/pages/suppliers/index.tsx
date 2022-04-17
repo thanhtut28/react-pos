@@ -13,6 +13,7 @@ import {
    ToolbarWrapper,
    StyledDialogTitle,
    StyledButton,
+   PageTitle,
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -237,7 +238,7 @@ export default function SupplierPage() {
 
    return (
       <Container>
-         <Typography variant="h5">Suppliers</Typography>
+         <PageTitle>Suppliers</PageTitle>
          <Dialog onClose={handleOnCloseModal} open={openModal}>
             <StyledDialogTitle>{isEditing ? 'Update Supplier' : 'Add Supplier'}</StyledDialogTitle>
             <DialogBody

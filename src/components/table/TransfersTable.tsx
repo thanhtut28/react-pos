@@ -15,7 +15,6 @@ type Row = Transfer & { id: number }
 
 const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
-   const oneDay = 1000 * 60 * 60 * 24
    const navigate = useNavigate()
 
    const columns: GridColumns = [

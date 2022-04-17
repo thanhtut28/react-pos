@@ -17,26 +17,28 @@ export const StyledTableWrapper = styled(Box)(({ theme }) => ({
       borderRadius: 0,
       //   boxShadow: theme.shadows[1],
       '& .table--header': {
-         backgroundColor: theme.palette.grey[200],
+         backgroundColor: theme.palette.primary.main,
+         color: theme.palette.common.white,
       },
       '& .MuiDataGrid-columnSeparator': {
          display: 'none',
          visibility: 'hidden',
       },
       '& .MuiDataGrid-row': {
-         //  '&:nth-of-type(2n)': {
-         //     backgroundColor: alpha(theme.palette.primary.accent as string, 0.5),
-         //  },
+         fontWeight: theme.typography.fontWeightMedium,
+         '&:nth-of-type(2n)': {
+            backgroundColor: alpha(theme.palette.secondary.accent as string, 0.8),
+         },
 
          '&:hover': {
-            backgroundColor: alpha(theme.palette.primary.light as string, 0.25),
+            backgroundColor: alpha(theme.palette.secondary.main as string, 0.2),
          },
       },
       //   height: '100%',
       '& .MuiDataGrid-row.Mui-selected': {
-         backgroundColor: alpha(theme.palette.primary.light, 0.35),
+         backgroundColor: alpha(theme.palette.secondary.main, 0.35),
          '&:hover': {
-            backgroundColor: alpha(theme.palette.primary.light, 0.4),
+            backgroundColor: alpha(theme.palette.secondary.main, 0.4),
          },
       },
 

@@ -1,7 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
 import Dashboard from '../pages/dashboard'
 import Customers from '../pages/customers'
-import Category from '../pages/category'
 import Stocks from '../pages/stocks'
 import Items from '../pages/items'
 import Receipts from '../pages/receipts'

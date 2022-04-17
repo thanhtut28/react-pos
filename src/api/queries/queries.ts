@@ -19,6 +19,9 @@ export const RECEIPTS_URL = '/receipts'
 export const GET_SUPPLIES_QUERY = 'GET_SUPPLIES_QUERY'
 export const SUPPLIES_URL = '/supplies'
 
+export const GET_STOCKS_QUERY = 'GET_STOCKS_QUERY'
+export const STOCKS_URL = '/stocks'
+
 export const GET_TRANSFERS_QUERY = 'GET_TRANSFERS_QUERY'
 export const TRANSFERS_URL = '/transfers'
 

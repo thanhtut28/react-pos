@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getAccessToken, setAccessToken } from 'src/helpers/accessToken'
+import { getAccessToken, setAccessToken } from '../helpers/accessToken'
 
 interface User {
    role: string

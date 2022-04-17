@@ -13,6 +13,7 @@ import {
    ToolbarWrapper,
    StyledDialogTitle,
    StyledButton,
+   PageTitle,
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -290,7 +291,7 @@ export default function ItemPage() {
 
    return (
       <Container>
-         <Typography variant="h5">Items</Typography>
+         <PageTitle>Items</PageTitle>
          <Dialog onClose={handleOnCloseModal} open={openModal}>
             <StyledDialogTitle>{isEditing ? 'Update Item' : 'Add Item'}</StyledDialogTitle>
             <DialogBody noValidate autoComplete="off" onSubmit={isEditing ? handleUpdateItem : handleAddItem}>

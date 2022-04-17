@@ -4,7 +4,7 @@ import useMessageModal from '../../hooks/useMessageModal'
 import CustomersTable from '../../components/table/CustomersTable'
 import useGetCustomers from '../../api/queries/useGetCustomers'
 import { useAddCustomer, useUpdateCustomer, useDeleteCustomer } from '../../api/mutations/customer'
-import { Typography, Button, TextField, Dialog } from '@mui/material'
+import { Button, TextField, Dialog } from '@mui/material'
 import {
    Container,
    ActionsWrapper,
@@ -13,6 +13,7 @@ import {
    ToolbarWrapper,
    StyledDialogTitle,
    StyledButton,
+   PageTitle,
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -235,7 +236,7 @@ export default function CustomerPage() {
 
    return (
       <Container>
-         <Typography variant="h5">Customers</Typography>
+         <PageTitle>Customers</PageTitle>
          <Dialog onClose={handleOnCloseModal} open={openModal}>
             <StyledDialogTitle>{isEditing ? 'Update Customer' : 'Add Customer'}</StyledDialogTitle>
             <DialogBody

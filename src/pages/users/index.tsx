@@ -13,6 +13,7 @@ import {
    ToolbarWrapper,
    StyledDialogTitle,
    StyledButton,
+   PageTitle,
 } from '../../components/toolbar/Elements'
 import WarningModal from '../../components/warningModal'
 import MessageModal from '../../components/messageModal'
@@ -220,112 +221,106 @@ export default function UserPage() {
 
    return (
       <Container>
-         <Box sx={{ p: 1 }}>
-            <Typography variant="h5">Users</Typography>
-            <Dialog onClose={handleOnCloseModal} open={openModal}>
-               <StyledDialogTitle>{isEditing ? 'Update User' : 'Add User'}</StyledDialogTitle>
-               <DialogBody
-                  noValidate
-                  autoComplete="off"
-                  onSubmit={isEditing ? handleUpdateUser : handleAddUser}
-               >
-                  <TextFieldWrapper>
-                     <TextField
-                        key="username"
-                        variant="outlined"
-                        label="Username"
-                        onChange={usernameChangeHandler}
-                        onBlur={usernameBlurHandler}
-                        value={username}
-                        error={usernameError}
-                        helperText={usernameError && 'Please fill correct value'}
-                        size="small"
-                     />
-                  </TextFieldWrapper>
-                  <TextFieldWrapper>
-                     <TextField
-                        key="password"
-                        variant="outlined"
-                        label="Password"
-                        onChange={passwordChangeHandler}
-                        onBlur={passwordBlurHandler}
-                        value={password}
-                        error={passwordError}
-                        helperText={passwordError && 'Please fill correct value'}
-                        size="small"
-                     />
-                  </TextFieldWrapper>
-                  {error && (
-                     <Typography variant="caption" color="error">
-                        {error}
-                     </Typography>
-                  )}
-                  <ActionsWrapper>
-                     <StyledButton
-                        variant="outlined"
-                        color="primary"
-                        size="small"
-                        disableElevation
-                        onClick={handleOnCloseModal}
-                        sx={{ mr: 2 }}
-                     >
-                        Cancel
-                     </StyledButton>
-                     <StyledButton
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        disableElevation
-                        type="submit"
-                     >
-                        {isEditing ? 'Update' : 'Add'}
-                     </StyledButton>
-                  </ActionsWrapper>
-               </DialogBody>
-            </Dialog>
-            <WarningModal
-               onSubmit={handleDeleteUser}
-               open={openDeleteModal}
-               onClose={handleOnCloseDeleteModal}
-               action="delete this entry"
-               proceedTitle="Delete"
-            />
+         <PageTitle>Users</PageTitle>
+         <Dialog onClose={handleOnCloseModal} open={openModal}>
+            <StyledDialogTitle>{isEditing ? 'Update User' : 'Add User'}</StyledDialogTitle>
+            <DialogBody noValidate autoComplete="off" onSubmit={isEditing ? handleUpdateUser : handleAddUser}>
+               <TextFieldWrapper>
+                  <TextField
+                     key="username"
+                     variant="outlined"
+                     label="Username"
+                     onChange={usernameChangeHandler}
+                     onBlur={usernameBlurHandler}
+                     value={username}
+                     error={usernameError}
+                     helperText={usernameError && 'Please fill correct value'}
+                     size="small"
+                  />
+               </TextFieldWrapper>
+               <TextFieldWrapper>
+                  <TextField
+                     key="password"
+                     variant="outlined"
+                     label="Password"
+                     onChange={passwordChangeHandler}
+                     onBlur={passwordBlurHandler}
+                     value={password}
+                     error={passwordError}
+                     helperText={passwordError && 'Please fill correct value'}
+                     size="small"
+                  />
+               </TextFieldWrapper>
+               {error && (
+                  <Typography variant="caption" color="error">
+                     {error}
+                  </Typography>
+               )}
+               <ActionsWrapper>
+                  <StyledButton
+                     variant="outlined"
+                     color="primary"
+                     size="small"
+                     disableElevation
+                     onClick={handleOnCloseModal}
+                     sx={{ mr: 2 }}
+                  >
+                     Cancel
+                  </StyledButton>
+                  <StyledButton
+                     variant="contained"
+                     color="primary"
+                     size="small"
+                     disableElevation
+                     type="submit"
+                  >
+                     {isEditing ? 'Update' : 'Add'}
+                  </StyledButton>
+               </ActionsWrapper>
+            </DialogBody>
+         </Dialog>
+         <WarningModal
+            onSubmit={handleDeleteUser}
+            open={openDeleteModal}
+            onClose={handleOnCloseDeleteModal}
+            action="delete this entry"
+            proceedTitle="Delete"
+         />
 
-            <MessageModal
-               variant="success"
-               onClose={handleCloseSuccessMessageModal}
-               message={successMessage}
-               open={openSuccessMessageModal}
-            />
+         <MessageModal
+            variant="success"
+            onClose={handleCloseSuccessMessageModal}
+            message={successMessage}
+            open={openSuccessMessageModal}
+         />
 
-            <MessageModal
-               variant="error"
-               onClose={handleCloseErrorMessageModal}
-               message={errorMessage}
-               open={openErrorMessageModal}
-            />
+         <MessageModal
+            variant="error"
+            onClose={handleCloseErrorMessageModal}
+            message={errorMessage}
+            open={openErrorMessageModal}
+         />
 
-            <ToolbarWrapper>
-               <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  disabled={loading}
-                  disableElevation
-                  onClick={() => setOpenModal(true)}
-               >
-                  Add User
-               </Button>
-            </ToolbarWrapper>
-            <UsersTable
-               setUsername={setUsername}
-               setSelectedId={setSelectedId}
-               setIsEditing={setIsEditing}
-               setOpenModal={setOpenModal}
-               setOpenDeleteModal={setOpenDeleteModal}
-               loading={loading}
-            />
-         </Box>
+         <ToolbarWrapper>
+            <Button
+               variant="contained"
+               color="primary"
+               size="small"
+               disabled={loading}
+               disableElevation
+               onClick={() => setOpenModal(true)}
+            >
+               Add User
+            </Button>
+         </ToolbarWrapper>
+         <UsersTable
+            setUsername={setUsername}
+            setSelectedId={setSelectedId}
+            setIsEditing={setIsEditing}
+            setOpenModal={setOpenModal}
+            setOpenDeleteModal={setOpenDeleteModal}
+            loading={loading}
+         />
       </Container>
    )
 }
