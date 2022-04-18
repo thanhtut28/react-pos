@@ -48,6 +48,7 @@ const CustomersTable = memo(function CustomersTable({
          field: 'code',
          headerName: 'Customer Code',
          flex: 1,
+         minWidth: 120,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -57,6 +58,7 @@ const CustomersTable = memo(function CustomersTable({
       {
          field: 'name',
          headerName: 'Customer Name',
+         minWidth: 140,
          flex: 1,
          headerClassName: 'table--header',
          hideSortIcons: true,

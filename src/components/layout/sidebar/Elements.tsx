@@ -1,5 +1,13 @@
 import { styled } from '@mui/material/styles'
-import { Box } from '@mui/material'
+import {
+   Box,
+   Typography,
+   TypographyProps,
+   svgIconClasses,
+   typographyClasses,
+   listItemIconClasses,
+   paperClasses,
+} from '@mui/material'
 import List, { ListProps } from '@mui/material/List'
 import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton'
 import Drawer, { DrawerProps } from '@mui/material/Drawer'
@@ -8,7 +16,7 @@ import { drawerWidth } from '../../../constants/drawer'
 export const SidebarContainer = styled(Box)<{ openSidebar?: boolean }>(({ theme, openSidebar }) => ({
    flexShrink: 0,
    width: drawerWidth,
-   transform: openSidebar ? 'none' : `translateX(-260px)`,
+   transform: openSidebar ? 'none' : `translateX(-${drawerWidth}px)`,
    // transition: theme.transitions.create('transform', {
    //    duration: theme.transitions.duration.standard,
    // }),
@@ -31,27 +39,34 @@ export const SidebarListItem = styled((props: ListItemButtonProps) => <ListItemB
       marginBottom: theme.spacing(1.5),
       color: theme.palette.grey[700],
       borderRadius: theme.shape.borderRadius,
+      [`& .${listItemIconClasses.root}`]: {
+         minWidth: 36,
+      },
       '&.Mui-selected': {
          color: theme.palette.primary.main,
          backgroundColor: theme.palette.primary.accent,
-         '& .MuiTypography-root': {
+         [`& .${typographyClasses.root}`]: {
             fontWeight: theme.typography.fontWeightBold,
          },
-         '& .MuiSvgIcon-root': {
+         [`& .${svgIconClasses.root}`]: {
             color: theme.palette.primary.main,
          },
       },
-      '& .MuiListItemIcon-root': {
-         minWidth: 36,
-      },
-
       '&:hover': {
          backgroundColor: theme.palette.primary.accent,
          color: theme.palette.primary.main,
-         '& .MuiSvgIcon-root': {
+         [`& .${svgIconClasses.root}`]: {
             color: theme.palette.primary.main,
          },
       },
+   })
+)
+
+export const Username = styled((props: TypographyProps) => <Typography {...props} variant="h5" />)(
+   ({ theme }) => ({
+      fontWeight: theme.typography.fontWeightBold,
+      textAlign: 'center',
+      color: theme.palette.primary.dark,
    })
 )
 
@@ -68,7 +83,7 @@ export const SidebarDrawerContainer = styled((props: DrawerProps) => (
    width: drawerWidth,
    padding: theme.spacing(3),
    paddingTop: 0,
-   '& .MuiPaper-root': {
+   [`& .${paperClasses.root}`]: {
       width: drawerWidth,
       padding: theme.spacing(3),
    },

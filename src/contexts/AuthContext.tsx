@@ -1,15 +1,17 @@
 import jwtDecode from 'jwt-decode'
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { getAccessToken, setAccessToken } from '../helpers/accessToken'
-
+import axios, { AxiosInstance } from 'axios'
 interface User {
    role: string
+   username: string
+   userId: string
 }
 interface AuthContextInterface {
    user: User | null
    isAdmin: boolean
    signIn: (token: string) => void
    signOut: () => void
+   apiClient: AxiosInstance
 }
 
 const AuthContext = createContext({} as AuthContextInterface)
@@ -19,8 +21,14 @@ export const useAuth = () => {
 }
 
 export default function AuthContextProvider({ children }: { children: React.ReactNode }) {
+   const [accessToken, setToken] = useState<string>('')
    const [user, setUser] = useState<User | null>(null)
    const isAdmin = user?.role === 'admin'
+
+   const setAccessToken = (token: string) => {
+      localStorage.setItem('accessToken', token)
+      setToken(token)
+   }
 
    const signIn = (token: string) => {
       setAccessToken(token)
@@ -33,9 +41,17 @@ export default function AuthContextProvider({ children }: { children: React.Reac
       setUser(null)
    }
 
+   const apiClient = axios.create({
+      baseURL: 'https://umt-api-mgoum.ondigitalocean.app/api',
+      headers: {
+         Authorization: accessToken ? `Bearer ${accessToken}` : '',
+      },
+   })
+
    useEffect(() => {
-      const token = getAccessToken()
+      const token = localStorage.getItem('accessToken')
       if (token) {
+         setToken(token)
          const user: User = jwtDecode(token)
          setUser(user)
       }
@@ -46,6 +62,7 @@ export default function AuthContextProvider({ children }: { children: React.Reac
       signIn,
       signOut,
       isAdmin,
+      apiClient,
    }
 
    return <AuthContext.Provider value={authContext}>{children}</AuthContext.Provider>

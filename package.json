@@ -22,6 +22,7 @@
       "date-fns": "^2.28.0",
       "jwt-decode": "^3.1.2",
       "react": "^17.0.2",
+      "react-custom-scrollbars": "^4.2.1",
       "react-dom": "^17.0.2",
       "react-hotkeys-hook": "^3.4.4",
       "react-query": "^3.34.16",
@@ -58,6 +59,7 @@
    },
    "devDependencies": {
       "@types/jwt-decode": "^3.1.0",
+      "@types/react-custom-scrollbars": "^4.0.10",
       "@typescript-eslint/eslint-plugin": "^5.14.0",
       "@typescript-eslint/parser": "^5.14.0",
       "eslint": "^8.10.0",

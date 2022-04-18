@@ -1,15 +1,23 @@
 import { useMutation } from 'react-query'
-import { apiClient } from '../..'
+import { useAuth } from '../../../contexts/AuthContext'
 import { URL } from './url'
 import { CreateTransferMutation, CreateTransferMutationVariables } from './types'
+import { AxiosInstance } from 'axios'
 
-async function createTransfer(newTransfer: CreateTransferMutationVariables): Promise<CreateTransferMutation> {
+async function createTransfer(
+   newTransfer: CreateTransferMutationVariables,
+   apiClient: AxiosInstance
+): Promise<CreateTransferMutation> {
    const { data } = await apiClient.post(URL, newTransfer)
    return data
 }
 
 export default function useCreateTransfer(refetch: any) {
-   return useMutation((newTransfer: CreateTransferMutationVariables) => createTransfer(newTransfer), {
-      onSuccess: async () => await refetch(),
-   })
+   const { apiClient } = useAuth()
+   return useMutation(
+      (newTransfer: CreateTransferMutationVariables) => createTransfer(newTransfer, apiClient),
+      {
+         onSuccess: async () => await refetch(),
+      }
+   )
 }

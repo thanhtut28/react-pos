@@ -248,6 +248,7 @@ export default function UserPage() {
                      value={password}
                      error={passwordError}
                      helperText={passwordError && 'Please fill correct value'}
+                     type="password"
                      size="small"
                   />
                </TextFieldWrapper>

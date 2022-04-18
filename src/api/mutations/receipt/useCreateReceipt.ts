@@ -1,15 +1,20 @@
 import { useMutation } from 'react-query'
-import { apiClient } from '../..'
 import { URL } from './url'
+import { useAuth } from '../../../contexts/AuthContext'
 import { CreateReceiptMutation, CreateReceiptMutationVariables } from './types'
+import { AxiosInstance } from 'axios'
 
-async function createReceipt(newReceipt: CreateReceiptMutationVariables): Promise<CreateReceiptMutation> {
+async function createReceipt(
+   newReceipt: CreateReceiptMutationVariables,
+   apiClient: AxiosInstance
+): Promise<CreateReceiptMutation> {
    const { data } = await apiClient.post(URL, newReceipt)
    return data
 }
 
 export default function useCreateReceipt(refetch: any) {
-   return useMutation((newReceipt: CreateReceiptMutationVariables) => createReceipt(newReceipt), {
+   const { apiClient } = useAuth()
+   return useMutation((newReceipt: CreateReceiptMutationVariables) => createReceipt(newReceipt, apiClient), {
       onSuccess: async () => await refetch(),
    })
 }

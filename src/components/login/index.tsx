@@ -66,10 +66,6 @@ export default function Login({
                   error={passwordError}
                   helperText={passwordError && 'Please enter valid password'}
                />
-               <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-               />
                <LoginButton type="submit" disabled={!formIsValid} fullWidth variant="contained">
                   Sign In
                </LoginButton>

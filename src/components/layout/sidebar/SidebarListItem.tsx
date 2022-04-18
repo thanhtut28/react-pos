@@ -1,5 +1,5 @@
 import { SidebarListItem } from './Elements'
-import { ListItemIcon, ListItemText } from '@mui/material'
+import { ListItemIcon, ListItemText, useTheme, useMediaQuery } from '@mui/material'
 import { PageInterface } from '../../../dummy'
 import { FiberManualRecord } from '@mui/icons-material'
 import { useNavigate, matchPath, useLocation } from 'react-router-dom'
@@ -15,7 +15,9 @@ const MenuItem: React.FC<Props> = ({ item, level }: Props) => {
    const itemIcon = item?.icon ? <Icon fontSize="small" /> : <FiberManualRecord fontSize="small" />
    const navigate = useNavigate()
    const { pathname } = useLocation()
-   const { setDestinationRoute, handleOpenWarningModal } = useLayoutContext()
+   const { setDestinationRoute, handleOpenWarningModal, handleCloseSidebar } = useLayoutContext()
+   const theme = useTheme()
+   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
    const active = !!matchPath({ path: item.url as string }, pathname)
 
@@ -27,6 +29,9 @@ const MenuItem: React.FC<Props> = ({ item, level }: Props) => {
          return
       }
       navigate(item.url as string, { replace: true })
+      if (isMobile) {
+         handleCloseSidebar()
+      }
    }
 
    return (

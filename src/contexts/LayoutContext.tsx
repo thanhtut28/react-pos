@@ -6,6 +6,7 @@ interface LayoutContextInterface {
    openSidebar: boolean
    openWarningModal: boolean
    handleToggleSidebar: () => void
+   handleCloseSidebar: () => void
    handleOpenWarningModal: () => void
    handleCloseWarningModal: () => void
    destinationRoute: string | null
@@ -27,6 +28,10 @@ export default function LayoutContextProvider({ children }: { children: React.Re
 
    const handleToggleSidebar = () => {
       setOpenSidebar((prev) => !prev)
+   }
+
+   const handleCloseSidebar = () => {
+      setOpenSidebar(false)
    }
 
    const handleOpenWarningModal = () => {
@@ -51,6 +56,7 @@ export default function LayoutContextProvider({ children }: { children: React.Re
       handleOpenWarningModal,
       destinationRoute,
       setDestinationRoute,
+      handleCloseSidebar,
    }
    return <LayoutContext.Provider value={layoutContext}>{children}</LayoutContext.Provider>
 }

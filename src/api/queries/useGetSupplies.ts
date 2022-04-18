@@ -1,9 +1,10 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '..'
 import { GET_SUPPLIES_QUERY, SUPPLIES_URL } from './queries'
 import { GetSuppliesQuery, Params } from './types'
+import { useAuth } from '../../contexts/AuthContext'
+import { AxiosInstance } from 'axios'
 
-async function getSupplies(params: Params): Promise<GetSuppliesQuery> {
+async function getSupplies(params: Params, apiClient: AxiosInstance): Promise<GetSuppliesQuery> {
    const { data } = await apiClient.get(SUPPLIES_URL, {
       params,
    })
@@ -11,7 +12,13 @@ async function getSupplies(params: Params): Promise<GetSuppliesQuery> {
 }
 
 export default function useGetSupplies(params: Params, shouldRefetch: boolean) {
-   return useQuery<GetSuppliesQuery, Error>([GET_SUPPLIES_QUERY, params], () => getSupplies(params), {
-      enabled: shouldRefetch,
-   })
+   const { apiClient } = useAuth()
+
+   return useQuery<GetSuppliesQuery, Error>(
+      [GET_SUPPLIES_QUERY, params],
+      () => getSupplies(params, apiClient),
+      {
+         enabled: shouldRefetch,
+      }
+   )
 }

@@ -99,7 +99,7 @@ export default function Stocks() {
    const [toDate, setToDate] = useState<Date | null>(today)
    const [username, setUsername] = useState<string | null>(null)
    const [userId, setUserId] = useState<string>('')
-   const { isAdmin } = useAuth()
+   const { isAdmin, user } = useAuth()
 
    const {
       data: stocksData,
@@ -143,10 +143,16 @@ export default function Stocks() {
       setUserId('')
    }, [username, users, isAdmin])
 
+   useEffect(() => {
+      if (user && users) {
+         setUsername(user.username)
+      }
+   }, [user, users])
+
    return (
       <Container>
          <PageTitle>Stocks</PageTitle>
-         <Flex sx={{ py: 3, justifyContent: 'space-between', flexWrap: 'wrap' }}>
+         <Flex sx={{ py: 3, flexWrap: 'wrap' }}>
             <Flex sx={{ py: 3 }}>
                <Box sx={{ pr: 1 }}>
                   <DatePicker value={fromDate} onChange={handleChangeFromDate} maxDate={toDate as Date} />
@@ -159,7 +165,21 @@ export default function Stocks() {
                      maxDate={new Date()}
                   />
                </Box>
-
+            </Flex>
+            <Flex flex={1}>
+               {isAdmin && (
+                  <Box width={1} maxWidth={300} minWidth={100} pl={0}>
+                     <Autocomplete
+                        key="username"
+                        value={username}
+                        onChange={(event: any, newValue: any) => {
+                           setUsername(newValue as string)
+                        }}
+                        options={users ? users.map((user) => user.username) : [null]}
+                        renderInput={(params: any) => <TextField {...params} label="Username" />}
+                     />
+                  </Box>
+               )}
                <SearchButtonWrapper>
                   <StyledButtonBase
                      aria-label="menu-toggler"
@@ -174,19 +194,6 @@ export default function Stocks() {
                   </StyledButtonBase>
                </SearchButtonWrapper>
             </Flex>
-            {isAdmin && (
-               <Box width={1} maxWidth={400} pl={0}>
-                  <Autocomplete
-                     key="username"
-                     value={username}
-                     onChange={(event: any, newValue: any) => {
-                        setUsername(newValue as string)
-                     }}
-                     options={users ? users.map((user) => user.username) : [null]}
-                     renderInput={(params: any) => <TextField {...params} label="Username" />}
-                  />
-               </Box>
-            )}
          </Flex>
          <StocksTable rows={rows} columns={columns} loading={(isAdmin && fetchingUsers) || fetchingStocks} />
       </Container>

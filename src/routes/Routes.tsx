@@ -63,6 +63,10 @@ const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
             element: <Receipts />,
          },
          {
+            path: '/create/receipts',
+            element: <CreateReceipts />,
+         },
+         {
             path: '/receipt/edit/:receiptId',
             element: <EditReceipt />,
          },
@@ -85,10 +89,6 @@ const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
                     element: <UserPage />,
                  },
 
-                 {
-                    path: '/create/receipts',
-                    element: <CreateReceipts />,
-                 },
                  {
                     path: '/supplies',
                     element: <Supplies />,

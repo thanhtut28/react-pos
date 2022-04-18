@@ -1,5 +1,6 @@
-import { Box } from '@mui/material'
+import { Box, selectClasses } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles'
+import { gridClasses } from '@mui/x-data-grid'
 
 export const StyledContainer = styled(Box)(({ theme }) => ({
    backgroundColor: theme.palette.common.white,
@@ -8,23 +9,17 @@ export const StyledContainer = styled(Box)(({ theme }) => ({
 }))
 
 export const StyledTableWrapper = styled(Box)(({ theme }) => ({
-   //    height: 600,
-   //    width: '100%',
-   //    flexGrow: 1,
-   '& .MuiDataGrid-root': {
-      //   border: 10,
-      //   padding: 10
+   [`& .${gridClasses.root}`]: {
       borderRadius: 0,
-      //   boxShadow: theme.shadows[1],
       '& .table--header': {
          backgroundColor: theme.palette.primary.main,
          color: theme.palette.common.white,
       },
-      '& .MuiDataGrid-columnSeparator': {
+      [`& .${gridClasses['columnSeparator']}`]: {
          display: 'none',
          visibility: 'hidden',
       },
-      '& .MuiDataGrid-row': {
+      [`& .${gridClasses.row}`]: {
          fontWeight: theme.typography.fontWeightMedium,
          '&:nth-of-type(2n)': {
             backgroundColor: alpha(theme.palette.secondary.accent as string, 0.8),
@@ -33,16 +28,15 @@ export const StyledTableWrapper = styled(Box)(({ theme }) => ({
          '&:hover': {
             backgroundColor: alpha(theme.palette.secondary.main as string, 0.2),
          },
-      },
-      //   height: '100%',
-      '& .MuiDataGrid-row.Mui-selected': {
-         backgroundColor: alpha(theme.palette.secondary.main, 0.35),
-         '&:hover': {
-            backgroundColor: alpha(theme.palette.secondary.main, 0.4),
+         '&.Mui-selected': {
+            backgroundColor: alpha(theme.palette.secondary.main, 0.35),
+            '&:hover': {
+               backgroundColor: alpha(theme.palette.secondary.main, 0.4),
+            },
          },
       },
 
-      '& .MuiDataGrid-cell': {
+      [`& .${gridClasses.cell}`]: {
          borderBottom: 0,
          //  '&:focus': {
          //     outline: `1px solid red`,

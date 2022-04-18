@@ -1,13 +1,18 @@
 import { useMutation } from 'react-query'
-import { apiClient } from '../..'
 import { URL } from './url'
 import { UpdateSupplyMutation, UpdateSupplyMutationVariables } from './types'
+import { useAuth } from '../../../contexts/AuthContext'
+import { AxiosInstance } from 'axios'
 
-async function updateSupply(newSupply: UpdateSupplyMutationVariables): Promise<UpdateSupplyMutation> {
+async function updateSupply(
+   newSupply: UpdateSupplyMutationVariables,
+   apiClient: AxiosInstance
+): Promise<UpdateSupplyMutation> {
    const { data } = await apiClient.put(URL, newSupply)
    return data
 }
 
 export default function useUpdateSupply() {
-   return useMutation((newSupply: UpdateSupplyMutationVariables) => updateSupply(newSupply))
+   const { apiClient } = useAuth()
+   return useMutation((newSupply: UpdateSupplyMutationVariables) => updateSupply(newSupply, apiClient))
 }

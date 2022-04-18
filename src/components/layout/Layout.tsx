@@ -30,6 +30,7 @@ export default function Layout() {
             <MainContainer openSidebar={openSidebar}>
                <Outlet />
             </MainContainer>
+
             <WarningModal
                onSubmit={handleNavigate}
                open={openWarningModal}

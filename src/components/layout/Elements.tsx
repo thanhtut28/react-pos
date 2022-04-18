@@ -49,6 +49,10 @@ export const ToolbarWrapper = styled(Box)(({ theme }) => ({
    alignItems: 'center',
    paddingLeft: theme.spacing(4),
    paddingRight: theme.spacing(4),
+   [theme.breakpoints.down('md')]: {
+      paddingLeft: theme.spacing(0),
+      paddingRight: theme.spacing(0),
+   },
 }))
 
 export const StyledAvatar = styled((props: AvatarProps) => <Avatar {...props} variant="rounded" />)(

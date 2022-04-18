@@ -1,18 +1,20 @@
 import { useMutation, useQueryClient } from 'react-query'
-import { apiClient } from '../..'
 import { GET_ITEMS_QUERY } from '../../queries/queries'
 import { URL } from './mutations'
+import { useAuth } from '../../../contexts/AuthContext'
 import { ItemMutation, AddItemMutationVariables } from './types'
+import { AxiosInstance } from 'axios'
 
-async function addItem(newItem: AddItemMutationVariables): Promise<ItemMutation> {
+async function addItem(newItem: AddItemMutationVariables, apiClient: AxiosInstance): Promise<ItemMutation> {
    const { data } = await apiClient.post(URL, newItem)
    return data
 }
 
 export default function useAddItem() {
    const queryClient = useQueryClient()
+   const { apiClient } = useAuth()
 
-   return useMutation((newItem: AddItemMutationVariables) => addItem(newItem), {
+   return useMutation((newItem: AddItemMutationVariables) => addItem(newItem, apiClient), {
       onSuccess: () => queryClient.invalidateQueries({ queryKey: GET_ITEMS_QUERY }),
    })
 }

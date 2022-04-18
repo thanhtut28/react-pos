@@ -1,7 +1,6 @@
 import { SidebarContainer, SidebarWrapper } from './Elements'
 import SidebarList from './SidebarList'
-// import SimpleBar from 'simplebar-react'
-// import 'simplebar/dist/simplebar.min.css'
+import { Scrollbars } from 'react-custom-scrollbars'
 interface Props {
    openSidebar?: boolean
 }
@@ -9,11 +8,11 @@ interface Props {
 const Sidebar: React.FC<Props> = ({ openSidebar }) => {
    return (
       <SidebarContainer openSidebar={openSidebar}>
-         {/* <SimpleBar> */}
          <SidebarWrapper>
-            <SidebarList />
+            <Scrollbars autoHide autoHideTimeout={1000} autoHideDuration={200}>
+               <SidebarList />
+            </Scrollbars>
          </SidebarWrapper>
-         {/* </SimpleBar> */}
       </SidebarContainer>
    )
 }
