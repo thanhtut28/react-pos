@@ -4,6 +4,7 @@ import Customers from '../pages/customers'
 import Stocks from '../pages/stocks'
 import Items from '../pages/items'
 import Receipts from '../pages/receipts'
+import Credits from '../pages/credit'
 import Supplies from '../pages/supplies'
 import Transfers from '../pages/transfers'
 import Suppliers from '../pages/suppliers'
@@ -15,6 +16,7 @@ import EditReceipt from '../pages/edit/receipts'
 import EditSupply from '../pages/edit/supplies'
 import EditTransfer from '../pages/edit/transfers'
 import ViewReceipt from '../pages/view/receipts'
+import ViewCredit from '../pages/view/credit'
 import ViewSupply from '../pages/view/supplies'
 import ViewTransfer from '../pages/view/transfers'
 
@@ -77,6 +79,14 @@ const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
          {
             path: '/stocks/wh',
             element: <WarehouseStocks />,
+         },
+         {
+            path: '/credits',
+            element: <Credits />,
+         },
+         {
+            path: '/credit/view/:receiptId',
+            element: <ViewCredit />,
          },
          ...(isAdmin
             ? [

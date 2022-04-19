@@ -226,6 +226,35 @@ export interface GetWHStocksQuery {
    data: WHStock[]
 }
 
+export interface Credit {
+   creditId: string
+   creditDate: Date
+   username: string
+   creditAmount: number
+}
+
+export interface CreditReceipt {
+   receiptId: string
+   receiptNum: string
+   receiptDate: Date
+   username: string
+   customerName: string
+   status: string
+   totalAmount: number
+   paidAmount?: number
+   credits: Credit[]
+}
+
+export interface GetCreditsQuery {
+   status: string
+   data: CreditReceipt[]
+}
+
+export interface GetCreditByIdQuery {
+   status: string
+   data: CreditReceipt
+}
+
 export interface Params {
    from: string
    to: string

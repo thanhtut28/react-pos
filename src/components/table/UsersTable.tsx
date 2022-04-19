@@ -41,6 +41,7 @@ const UsersTable = memo(function UsersTable({
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'userId',

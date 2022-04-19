@@ -53,6 +53,7 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({ rows, loading, total
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+
          valueFormatter: (params: GridValueFormatterParams) => {
             const valueFormatted = Number(params.value as number).toLocaleString()
             return `${valueFormatted} Ks`

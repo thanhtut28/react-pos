@@ -1,9 +1,9 @@
-import { memo, useCallback } from 'react'
-import StyledTable from '../../create/transferTable'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { memo } from 'react'
+import StyledTable from '../../create/creditTable'
 import EditIcon from '@mui/icons-material/Edit'
-import { GridActionsCellItem, GridColumns } from '@mui/x-data-grid'
-import { Row } from '../../../pages/create/transfers'
+import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
+import { Row } from '../../../pages/view/credit'
+import { useAuth } from '../../../contexts/AuthContext'
 
 interface Props {
    rows: Row[]
@@ -14,18 +14,24 @@ interface Props {
    setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
    onUpdate: (data: any) => void
    resetItemInputs: () => void
+   totalAmount: number
+   paidAmount: number
 }
 
 const TransferItemsTable = memo(function TransferItemsTable({
    rows,
    editId,
-   setRows,
+   totalAmount,
+   paidAmount,
    loading,
    isEditing,
    setIsEditing,
    onUpdate,
    resetItemInputs,
 }: Props) {
+   const { isAdmin } = useAuth()
+   const remainingAmount = totalAmount - paidAmount
+
    const columns: GridColumns = [
       {
          field: 'id',
@@ -39,27 +45,47 @@ const TransferItemsTable = memo(function TransferItemsTable({
          type: 'number',
       },
       {
-         field: 'itemName',
-         headerName: 'Item Name',
+         field: 'creditDate',
+         headerName: 'Date',
          flex: 1,
          minWidth: 100,
+         type: 'date',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
       },
+      ...(isAdmin
+         ? [
+              {
+                 field: 'username',
+                 headerName: 'Username',
+                 flex: 1,
+                 minWidth: 150,
+                 headerClassName: 'table--header',
+                 hideSortIcons: true,
+                 disableColumnMenu: true,
+                 filterable: false,
+                 sortable: false,
+              },
+           ]
+         : []),
       {
-         field: 'qty',
-         headerName: 'Quantity',
+         field: 'creditAmount',
+         headerName: 'Amount',
          flex: 1,
-         minWidth: 80,
+         minWidth: 150,
          headerClassName: 'table--header',
-         type: 'number',
          hideSortIcons: true,
+         type: 'number',
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = Number(params.value as number).toLocaleString()
+            return `${valueFormatted} Ks`
+         },
       },
       {
          field: 'actions',
@@ -74,28 +100,10 @@ const TransferItemsTable = memo(function TransferItemsTable({
                onClick={() => (isEditing && data.id === editId ? handleCancelUpdate() : handleUpdate(data))}
                disabled={loading}
             />,
-            <GridActionsCellItem
-               key="delete"
-               icon={<DeleteIcon />}
-               label="Delete"
-               onClick={() => handleDelete(data.id)}
-               disabled={loading}
-            />,
          ],
          headerClassName: 'table--header-actions table--header',
       },
    ]
-
-   const handleDelete = useCallback(
-      (id: number) => {
-         if (editId === id) {
-            setIsEditing(false)
-            resetItemInputs()
-         }
-         setTimeout(() => setRows((prev) => prev.filter((row) => row.id !== id)))
-      },
-      [editId, resetItemInputs, setIsEditing, setRows]
-   )
 
    const handleUpdate = (data: any) => {
       setIsEditing(true)
@@ -109,7 +117,14 @@ const TransferItemsTable = memo(function TransferItemsTable({
 
    return (
       <>
-         <StyledTable rows={rows} columns={columns} loading={loading} />
+         <StyledTable
+            rows={rows}
+            columns={columns}
+            loading={loading}
+            totalAmount={totalAmount}
+            paidAmount={paidAmount}
+            remainingAmount={remainingAmount}
+         />
       </>
    )
 })

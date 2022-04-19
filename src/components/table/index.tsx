@@ -43,7 +43,6 @@ const StyledTable = ({ rows, columns, loading, getRowId }: Props) => {
                rows={rows}
                columns={columns}
                loading={loading}
-               getRowClassName={(params) => `row super-app-theme--${params.row.status}`}
                disableSelectionOnClick
                hideFooterSelectedRowCount
             />

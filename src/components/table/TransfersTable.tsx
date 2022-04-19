@@ -30,6 +30,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'transferDate',
@@ -59,6 +60,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'transferType',

@@ -38,6 +38,7 @@ const ReceiptItemsTable = memo(function ReceiptItemsTable({
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'itemName',

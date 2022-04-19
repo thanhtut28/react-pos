@@ -217,8 +217,6 @@ export default function UserPage() {
       updateError,
    ])
 
-   console.log(nameIsNotCreated(username))
-
    return (
       <Container>
          <PageTitle>Users</PageTitle>

@@ -43,6 +43,7 @@ const CustomersTable = memo(function CustomersTable({
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'code',

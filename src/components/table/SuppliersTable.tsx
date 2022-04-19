@@ -43,6 +43,7 @@ const SuppliersTable = memo(function SuppliersTable({
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         type: 'number',
       },
       {
          field: 'supplierCode',

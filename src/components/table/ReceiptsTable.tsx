@@ -1,9 +1,15 @@
 import { memo, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Chip } from '@mui/material'
 import StyledTable from './index'
 import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
+import {
+   GridActionsCellItem,
+   GridColumns,
+   GridValueFormatterParams,
+   GridRenderCellParams,
+} from '@mui/x-data-grid'
 import { Receipt } from '../../api/queries/types'
 import { useAuth } from '../../contexts/AuthContext'
 import { formatDate } from '../../helpers/formatDate'
@@ -14,6 +20,21 @@ interface Props {
 }
 
 type Row = Receipt & { id: number }
+
+function getChipColor(
+   type: string
+): 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | undefined {
+   switch (type) {
+      case 'cash':
+         return 'success'
+      case 'credit':
+         return 'error'
+      case 'return':
+         return 'warning'
+      case 'cancel':
+         return 'default'
+   }
+}
 
 const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
    const { isAdmin } = useAuth()
@@ -29,6 +50,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
+         type: 'number',
          sortable: false,
       },
       {
@@ -54,6 +76,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
          headerName: 'Receipt Num',
          flex: 1,
          minWidth: 80,
+         type: 'number',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -63,13 +86,16 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
       {
          field: 'receiptType',
          headerName: 'Receipt Type',
-         flex: 1,
-         minWidth: 150,
+         width: 100,
+         align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         renderCell: (params: GridRenderCellParams<string>) => (
+            <Chip label={params.value} variant="outlined" color={getChipColor(params.value!)} />
+         ),
       },
       ...(isAdmin
          ? [

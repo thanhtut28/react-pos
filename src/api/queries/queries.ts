@@ -16,6 +16,9 @@ export const USERS_URL = '/users'
 export const GET_RECEIPTS_QUERY = 'GET_RECEIPTS_QUERY'
 export const RECEIPTS_URL = '/receipts'
 
+export const GET_CREDITS_QUERY = 'GET_CREDITS_QUERY'
+export const CREDITS_URL = '/receipts/credit'
+
 export const GET_SUPPLIES_QUERY = 'GET_SUPPLIES_QUERY'
 export const SUPPLIES_URL = '/supplies'
 
@@ -45,3 +48,6 @@ export const SUPPLY_BY_ID_URL = '/supply'
 
 export const GET_TRANSFER_BY_ID_QUERY = 'GET_TRANSFER_BY_ID_QUERY'
 export const TRANSFER_BY_ID_URL = '/transfer'
+
+export const GET_CREDIT_BY_ID_QUERY = 'GET_CREDIT_BY_ID_QUERY'
+export const CREDIT_URL = '/credit'

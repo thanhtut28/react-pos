@@ -1,20 +1,40 @@
 import { memo, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Chip } from '@mui/material'
 import StyledTable from './index'
-import EditIcon from '@mui/icons-material/Edit'
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
-import { Supply } from '../../api/queries/types'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import {
+   GridActionsCellItem,
+   GridColumns,
+   GridValueFormatterParams,
+   GridRenderCellParams,
+} from '@mui/x-data-grid'
+import { CreditReceipt } from '../../api/queries/types'
+import { useAuth } from '../../contexts/AuthContext'
 import { formatDate } from '../../helpers/formatDate'
 
 interface Props {
    loading?: boolean
-   data: Supply[] | undefined
+   data: CreditReceipt[] | undefined
 }
 
-type Row = Supply & { id: number }
+type Row = CreditReceipt & { id: number }
 
-const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
+const getStatusColor = (
+   status: string
+): 'default' | 'error' | 'success' | 'primary' | 'secondary' | 'info' | 'warning' | undefined => {
+   switch (status) {
+      case 'paid':
+         return 'success'
+      case 'paying':
+         return 'secondary'
+      case 'unpaid':
+         return 'error'
+   }
+}
+
+const CreditsTable = memo(function CreditsTable({ loading, data }: Props) {
+   const { isAdmin } = useAuth()
    const [rows, setRows] = useState<Row[]>([])
    const navigate = useNavigate()
 
@@ -27,11 +47,11 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
-         sortable: false,
          type: 'number',
+         sortable: false,
       },
       {
-         field: 'supplyDate',
+         field: 'receiptDate',
          headerName: 'Date',
          flex: 1,
          minWidth: 150,
@@ -49,20 +69,35 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          },
       },
       {
-         field: 'supplyNum',
-         headerName: 'Supply Num',
+         field: 'receiptNum',
+         headerName: 'Receipt Num',
          flex: 1,
          minWidth: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
-         sortable: false,
          type: 'number',
+         sortable: false,
       },
+      ...(isAdmin
+         ? [
+              {
+                 field: 'username',
+                 headerName: 'Username',
+                 flex: 1,
+                 minWidth: 150,
+                 headerClassName: 'table--header',
+                 hideSortIcons: true,
+                 disableColumnMenu: true,
+                 filterable: false,
+                 sortable: false,
+              },
+           ]
+         : []),
       {
-         field: 'supplyType',
-         headerName: 'Supply Type',
+         field: 'customerName',
+         headerName: 'Customer Name',
          flex: 1,
          minWidth: 150,
          headerClassName: 'table--header',
@@ -72,16 +107,36 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          sortable: false,
       },
       {
-         field: 'supplierName',
-         headerName: 'Supplier Name',
-         flex: 1,
-         minWidth: 150,
+         field: 'status',
+         headerName: 'Status',
+         width: 90,
+         align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         renderCell: (params: GridRenderCellParams<string>) => (
+            <Chip label={params.value} variant="outlined" color={getStatusColor(params.value!)} />
+         ),
       },
+      {
+         field: 'paidAmount',
+         headerName: 'Paid Amount',
+         flex: 1,
+         minWidth: 150,
+         headerClassName: 'table--header',
+         hideSortIcons: true,
+         disableColumnMenu: true,
+         type: 'number',
+         filterable: false,
+         sortable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const valueFormatted = params.value ? Number(params.value as number).toLocaleString() : 0
+            return `${valueFormatted} Ks`
+         },
+      },
+
       {
          field: 'totalAmount',
          headerName: 'Total Amount',
@@ -89,8 +144,8 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          minWidth: 150,
          headerClassName: 'table--header',
          hideSortIcons: true,
-         disableColumnMenu: true,
          type: 'number',
+         disableColumnMenu: true,
          filterable: false,
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
@@ -104,22 +159,11 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          headerName: 'Actions',
          width: 200,
          getActions: (data: any) => [
-            ...(new Date().toLocaleDateString() === new Date(data.row.supplyDate).toLocaleDateString()
-               ? [
-                    <GridActionsCellItem
-                       key="edit"
-                       icon={<EditIcon />}
-                       label="Edit"
-                       onClick={() => navigate(`/supply/edit/${data.id}`, { replace: true })}
-                       disabled={loading}
-                    />,
-                 ]
-               : []),
             <GridActionsCellItem
                key="view"
-               icon={<RemoveRedEyeIcon />}
-               label="View"
-               onClick={() => navigate(`/supply/view/${data.id}`, { replace: true })}
+               icon={<AddCircleOutlineIcon />}
+               label="add"
+               onClick={() => navigate(`/credit/view/${data.id}`, { replace: true })}
                disabled={loading}
             />,
          ],
@@ -135,9 +179,9 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
 
    return (
       <>
-         <StyledTable rows={rows} columns={columns} loading={loading} getRowId={(row) => row.supplyId} />
+         <StyledTable rows={rows} columns={columns} loading={loading} getRowId={(row) => row.receiptId} />
       </>
    )
 })
 
-export default SuppliesTable
+export default CreditsTable

@@ -12,6 +12,7 @@ import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck'
 import WarehouseIcon from '@mui/icons-material/Warehouse'
 import SendIcon from '@mui/icons-material/Send'
 import GroupIcon from '@mui/icons-material/Group'
+import CreditCardIcon from '@mui/icons-material/CreditCard'
 
 const Icons = {
    DashboardIcon,
@@ -28,6 +29,7 @@ const Icons = {
    SendIcon,
    GroupIcon,
    WarehouseIcon,
+   CreditCardIcon,
 }
 
 export enum Type {
@@ -78,6 +80,13 @@ export const pages: PageInterface[] = [
             type: Type.item,
             icon: Icons.PersonIcon,
             url: '/customers',
+         },
+         {
+            id: 'Credits',
+            title: 'Credits',
+            type: Type.item,
+            icon: Icons.CreditCardIcon,
+            url: '/credits',
          },
       ],
    },
@@ -160,6 +169,13 @@ export const sellerPages: PageInterface[] = [
             type: Type.item,
             icon: Icons.PersonIcon,
             url: '/customers',
+         },
+         {
+            id: 'Credits',
+            title: 'Credits',
+            type: Type.item,
+            icon: Icons.CreditCardIcon,
+            url: '/credits',
          },
       ],
    },

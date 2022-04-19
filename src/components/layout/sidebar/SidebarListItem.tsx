@@ -23,7 +23,8 @@ const MenuItem: React.FC<Props> = ({ item, level }: Props) => {
 
    const handleNavigate = () => {
       if (pathname === item.url) return
-      if (pathname.includes('create') || pathname.includes('edit')) {
+      console.log(pathname.split('/').some((s) => s === 'create' || s === 'edit'))
+      if (pathname.split('/').some((s) => s === 'create' || s === 'edit')) {
          setDestinationRoute(item!.url as string)
          handleOpenWarningModal()
          return
