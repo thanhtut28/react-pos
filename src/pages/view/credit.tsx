@@ -262,7 +262,7 @@ export default function ViewCredit() {
                         value={status}
                         label="Status"
                         onChange={(e) => setStatus(e.target.value as string)}
-                        // disabled
+                        disabled
                      >
                         {statusTypes.map((type) => (
                            <MenuItem key={type} value={type}>

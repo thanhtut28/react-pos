@@ -4,6 +4,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
 import { Row } from '../../../pages/view/credit'
 import { useAuth } from '../../../contexts/AuthContext'
+import { formatDate } from '../../../helpers/formatDate'
 
 interface Props {
    rows: Row[]
@@ -55,6 +56,12 @@ const TransferItemsTable = memo(function TransferItemsTable({
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         valueFormatter: (params: GridValueFormatterParams) => {
+            const dateString = params.value ? params.value.toString() : ''
+            const formattedValue = formatDate(new Date(dateString.split('T')[0]))
+
+            return formattedValue
+         },
       },
       ...(isAdmin
          ? [
