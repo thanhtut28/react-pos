@@ -27,7 +27,7 @@ const getStatusColor = (
       case 'paid':
          return 'success'
       case 'paying':
-         return 'secondary'
+         return 'warning'
       case 'unpaid':
          return 'error'
    }

@@ -21,25 +21,25 @@ interface Props {
 
 type Row = Receipt & { id: number }
 
-function getChipColor(
-   type: string
-): 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | undefined {
-   switch (type) {
-      case 'cash':
-         return 'success'
-      case 'credit':
-         return 'error'
-      case 'return':
-         return 'warning'
-      case 'cancel':
-         return 'default'
-   }
-}
-
 const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
    const { isAdmin } = useAuth()
    const [rows, setRows] = useState<Row[]>([])
    const navigate = useNavigate()
+
+   const getChipColor = (
+      type: string
+   ): 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | undefined => {
+      switch (type) {
+         case 'cash':
+            return 'success'
+         case 'credit':
+            return 'error'
+         case 'return':
+            return 'warning'
+         case 'cancel':
+            return 'default'
+      }
+   }
 
    const columns: GridColumns = [
       {
@@ -86,7 +86,7 @@ const ReceiptsTable = memo(function ReceiptsTable({ loading, data }: Props) {
       {
          field: 'receiptType',
          headerName: 'Receipt Type',
-         width: 100,
+         width: 150,
          align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,

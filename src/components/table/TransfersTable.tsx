@@ -3,10 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import StyledTable from './index'
 import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
+import {
+   GridActionsCellItem,
+   GridColumns,
+   GridRenderCellParams,
+   GridValueFormatterParams,
+} from '@mui/x-data-grid'
 import { Transfer } from '../../api/queries/types'
 import { formatDate } from '../../helpers/formatDate'
 import { useAuth } from '../../contexts/AuthContext'
+import { Chip } from '@mui/material'
 
 interface Props {
    loading?: boolean
@@ -65,13 +71,20 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
       {
          field: 'transferType',
          headerName: 'Transfer Type',
-         flex: 1,
-         minWidth: 150,
+         width: 150,
+         align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         renderCell: (params: GridRenderCellParams<string>) => (
+            <Chip
+               label={params.value}
+               variant="outlined"
+               color={params.value !== 'give' ? 'success' : 'warning'}
+            />
+         ),
       },
       ...(isAdmin
          ? [

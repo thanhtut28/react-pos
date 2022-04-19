@@ -5,7 +5,7 @@ import Select from '@mui/material/Select'
 import useMessageModal from '../../hooks/useMessageModal'
 import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
-import useGetCustomers from '../../api/queries/useGetCustomers'
+
 import useGetCreditById from '../../api/queries/useGetCreditById'
 import { usePayCredit, useEditCredit } from '../../api/mutations/credit'
 import {
@@ -70,8 +70,6 @@ export default function ViewCredit() {
       submitInputHandler: submitAmountInput,
    } = useInput(isGreaterThanZero)
 
-   const { data: customersData, isFetching: fetchingCustomers } = useGetCustomers()
-
    const { data: creditData, isFetching: fetchingCredit } = useGetCreditById(receiptId!)
 
    const {
@@ -94,8 +92,6 @@ export default function ViewCredit() {
       error: updateCreditError,
    } = useEditCredit(receiptId!)
 
-   const customers = customersData?.data
-
    const resetItemInputs = useCallback(() => {
       setEditId(-1)
       setCreditId('')
@@ -106,7 +102,7 @@ export default function ViewCredit() {
       submitAmountInput()
    }
 
-   const loading = fetchingCustomers || fetchingCredit
+   const loading = payingCredit || updatingCredit || fetchingCredit
 
    const formIsValid = amountIsValid
 
@@ -146,22 +142,6 @@ export default function ViewCredit() {
       resetItemInputs()
       setIsEditing(false)
    }
-
-   //    const handleUpdateTransfer = () => {
-   //       if (username && isValidToUpdate) {
-   //          const items = rows.map((row) => ({
-   //             itemId: row.itemId,
-   //             qty: +row.qty,
-   //          }))
-   //          updateTransfer({ transferId: transferId as string, username, userId, transferType, items }).then(
-   //             () => {
-   //                setRows([])
-   //                resetItemInputs()
-   //                navigate('/transfers', { replace: true })
-   //             }
-   //          )
-   //       }
-   //    }
 
    useEffect(() => {
       if (creditData) {

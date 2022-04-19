@@ -3,9 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import StyledTable from './index'
 import EditIcon from '@mui/icons-material/Edit'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import { GridActionsCellItem, GridColumns, GridValueFormatterParams } from '@mui/x-data-grid'
+import {
+   GridActionsCellItem,
+   GridColumns,
+   GridRenderCellParams,
+   GridValueFormatterParams,
+} from '@mui/x-data-grid'
 import { Supply } from '../../api/queries/types'
 import { formatDate } from '../../helpers/formatDate'
+import { Chip } from '@mui/material'
 
 interface Props {
    loading?: boolean
@@ -17,6 +23,21 @@ type Row = Supply & { id: number }
 const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
    const [rows, setRows] = useState<Row[]>([])
    const navigate = useNavigate()
+
+   const getChipColor = (
+      type: string
+   ): 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | undefined => {
+      switch (type) {
+         case 'cash':
+            return 'success'
+         case 'credit':
+            return 'error'
+         case 'return':
+            return 'warning'
+         case 'cancel':
+            return 'default'
+      }
+   }
 
    const columns: GridColumns = [
       {
@@ -63,13 +84,16 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
       {
          field: 'supplyType',
          headerName: 'Supply Type',
-         flex: 1,
-         minWidth: 150,
+         width: 150,
+         align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
          filterable: false,
          sortable: false,
+         renderCell: (params: GridRenderCellParams<string>) => (
+            <Chip label={params.value} variant="outlined" color={getChipColor(params.value!)} />
+         ),
       },
       {
          field: 'supplierName',
