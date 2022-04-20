@@ -61,6 +61,10 @@ export default function CreateReceipts() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const codeRef = useRef<HTMLInputElement>(null)
+   const qtyRef = useRef<HTMLInputElement>(null)
+   const priceRef = useRef<HTMLInputElement>(null)
+   const percentRef = useRef<HTMLInputElement>(null)
 
    useHotkeys(
       'alt+r',
@@ -185,7 +189,15 @@ export default function CreateReceipts() {
    const receiptNumber = receiptNumData?.data
    const items = itemsData?.data
 
+   const refsBlur = () => {
+      codeRef?.current?.blur()
+      qtyRef?.current?.blur()
+      priceRef?.current?.blur()
+      percentRef?.current?.blur()
+   }
+
    const resetItemInputs = useCallback(() => {
+      refsBlur()
       setEditId(-1)
       setItemId('')
       resetItemCode()
@@ -287,6 +299,7 @@ export default function CreateReceipts() {
          },
       ])
       resetItemInputs()
+      codeRef?.current?.focus()
    }
 
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
@@ -497,6 +510,7 @@ export default function CreateReceipts() {
                            error={itemCodeError}
                            helperText={itemCodeError && 'This field is required'}
                            fullWidth
+                           inputRef={codeRef}
                         />
                      </TextFieldWrapper>
                      <TextFieldWrapper sx={{ flex: 2 }}>
@@ -522,6 +536,7 @@ export default function CreateReceipts() {
                            label="Quantity"
                            size="small"
                            value={qty}
+                           inputRef={qtyRef}
                            type="number"
                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                            onChange={qtyChangeHandler}
@@ -540,6 +555,7 @@ export default function CreateReceipts() {
                            type="number"
                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                            value={unitPrice}
+                           inputRef={priceRef}
                            onChange={unitPriceChangeHandler}
                            onBlur={unitPriceBlurHandler}
                            error={unitPriceError}
@@ -555,11 +571,13 @@ export default function CreateReceipts() {
                            size="small"
                            type="number"
                            inputProps={{
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*',
+                              inputMode: 'decimal',
+                              pattern: '[0-9]+([.,][0-9])*',
                               min: '0',
                               max: '100',
+                              step: 'any',
                            }}
+                           inputRef={percentRef}
                            value={unitPercent}
                            onChange={unitPercentChangeHandler}
                            onBlur={unitPercentBlurHandler}
