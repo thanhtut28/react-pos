@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
@@ -62,6 +62,10 @@ export default function CreateSupplies() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const codeRef = useRef<HTMLInputElement>(null)
+   const qtyRef = useRef<HTMLInputElement>(null)
+   const priceRef = useRef<HTMLInputElement>(null)
+   const percentRef = useRef<HTMLInputElement>(null)
 
    useHotkeys(
       'alt+r',
@@ -180,6 +184,13 @@ export default function CreateSupplies() {
    const supplyNumber = supplyNumData?.data
    const items = itemsData?.data
 
+   const refsBlur = () => {
+      codeRef?.current?.blur()
+      qtyRef?.current?.blur()
+      priceRef?.current?.blur()
+      percentRef?.current?.blur()
+   }
+
    const resetItemInputs = useCallback(() => {
       setEditId(-1)
       setItemId('')
@@ -282,6 +293,7 @@ export default function CreateSupplies() {
             netAmount,
          },
       ])
+      refsBlur()
       resetItemInputs()
    }
 
@@ -308,6 +320,7 @@ export default function CreateSupplies() {
                : row
          )
       )
+      refsBlur()
       resetItemInputs()
       setIsEditing(false)
    }
@@ -494,6 +507,7 @@ export default function CreateSupplies() {
                            error={itemCodeError}
                            helperText={itemCodeError && 'This field is required'}
                            fullWidth
+                           inputRef={codeRef}
                         />
                      </TextFieldWrapper>
                      <TextFieldWrapper sx={{ flex: 2 }}>
@@ -526,6 +540,7 @@ export default function CreateSupplies() {
                            error={qtyError}
                            helperText={qtyError && 'This field is required'}
                            fullWidth
+                           inputRef={qtyRef}
                         />
                      </TextFieldWrapper>
 
@@ -542,6 +557,7 @@ export default function CreateSupplies() {
                            error={unitPriceError}
                            helperText={unitPriceError && 'Please Fill a valid price'}
                            fullWidth
+                           inputRef={priceRef}
                         />
                      </TextFieldWrapper>
 
@@ -552,8 +568,9 @@ export default function CreateSupplies() {
                            size="small"
                            type="number"
                            inputProps={{
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*',
+                              inputMode: 'decimal',
+                              pattern: '[0-9]+([.,][0-9])*',
+                              step: 'any',
                               min: '0',
                               max: '100',
                            }}
@@ -563,6 +580,7 @@ export default function CreateSupplies() {
                            error={unitPercentError}
                            helperText={unitPercentError && 'Must be between 0 and 100'}
                            fullWidth
+                           inputRef={percentRef}
                         />
                      </TextFieldWrapper>
                      <ActionsWrapper>

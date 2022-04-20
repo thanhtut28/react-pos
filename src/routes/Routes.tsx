@@ -4,6 +4,7 @@ import Customers from '../pages/customers'
 import Stocks from '../pages/stocks'
 import Items from '../pages/items'
 import Receipts from '../pages/receipts'
+import Summary from '../pages/summary'
 import Credits from '../pages/credit'
 import Supplies from '../pages/supplies'
 import Transfers from '../pages/transfers'
@@ -123,6 +124,10 @@ const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
                  {
                     path: '/transfer/edit/:transferId',
                     element: <EditTransfer />,
+                 },
+                 {
+                    path: '/summary',
+                    element: <Summary />,
                  },
               ]
             : []),

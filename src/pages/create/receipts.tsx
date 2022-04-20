@@ -197,7 +197,6 @@ export default function CreateReceipts() {
    }
 
    const resetItemInputs = useCallback(() => {
-      refsBlur()
       setEditId(-1)
       setItemId('')
       resetItemCode()
@@ -298,8 +297,8 @@ export default function CreateReceipts() {
             netAmount,
          },
       ])
+      refsBlur()
       resetItemInputs()
-      codeRef?.current?.focus()
    }
 
    const handleUpdateItem = (e: React.FormEvent<HTMLFormElement>) => {
@@ -324,6 +323,7 @@ export default function CreateReceipts() {
                : row
          )
       )
+      refsBlur()
       resetItemInputs()
       setIsEditing(false)
    }
@@ -573,9 +573,9 @@ export default function CreateReceipts() {
                            inputProps={{
                               inputMode: 'decimal',
                               pattern: '[0-9]+([.,][0-9])*',
+                              step: 'any',
                               min: '0',
                               max: '100',
-                              step: 'any',
                            }}
                            inputRef={percentRef}
                            value={unitPercent}

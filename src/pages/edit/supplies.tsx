@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
@@ -63,6 +63,10 @@ export default function EditSupply() {
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
    const { supplyId } = useParams()
+   const codeRef = useRef<HTMLInputElement>(null)
+   const qtyRef = useRef<HTMLInputElement>(null)
+   const priceRef = useRef<HTMLInputElement>(null)
+   const percentRef = useRef<HTMLInputElement>(null)
    const navigate = useNavigate()
 
    useHotkeys(
@@ -184,6 +188,13 @@ export default function EditSupply() {
    const suppliers = suppliersData?.data
    const items = itemsData?.data
 
+   const refsBlur = () => {
+      codeRef?.current?.blur()
+      qtyRef?.current?.blur()
+      priceRef?.current?.blur()
+      percentRef?.current?.blur()
+   }
+
    const resetItemInputs = useCallback(() => {
       setEditId(-1)
       setItemId('')
@@ -285,6 +296,7 @@ export default function EditSupply() {
             netAmount,
          },
       ])
+      refsBlur()
       resetItemInputs()
    }
 
@@ -310,6 +322,7 @@ export default function EditSupply() {
                : row
          )
       )
+      refsBlur()
       resetItemInputs()
       setIsEditing(false)
    }
@@ -520,6 +533,7 @@ export default function EditSupply() {
                            onBlur={itemCodeBlurHandler}
                            error={itemCodeError}
                            helperText={itemCodeError && 'This field is required'}
+                           inputRef={codeRef}
                            fullWidth
                         />
                      </TextFieldWrapper>
@@ -545,6 +559,7 @@ export default function EditSupply() {
                            variant="outlined"
                            label="Quantity"
                            size="small"
+                           inputRef={qtyRef}
                            value={qty}
                            type="number"
                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -564,6 +579,7 @@ export default function EditSupply() {
                            type="number"
                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                            value={unitPrice}
+                           inputRef={priceRef}
                            onChange={unitPriceChangeHandler}
                            onBlur={unitPriceBlurHandler}
                            error={unitPriceError}
@@ -579,12 +595,14 @@ export default function EditSupply() {
                            size="small"
                            type="number"
                            inputProps={{
-                              inputMode: 'numeric',
-                              pattern: '[0-9]*',
+                              inputMode: 'decimal',
+                              pattern: '[0-9]+([.,][0-9])*',
+                              step: 'any',
                               min: '0',
                               max: '100',
                            }}
                            value={unitPercent}
+                           inputRef={percentRef}
                            onChange={unitPercentChangeHandler}
                            onBlur={unitPercentBlurHandler}
                            error={unitPercentError}

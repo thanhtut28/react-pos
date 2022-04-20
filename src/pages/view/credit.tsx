@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
 import Select from '@mui/material/Select'
@@ -40,6 +40,7 @@ export default function ViewCredit() {
    const { receiptId } = useParams()
    const [totalAmount, setTotalAmount] = useState<number>(0)
    const [paidAmount, setPaidAmount] = useState<number>(0)
+   const amountRef = useRef<HTMLInputElement>(null)
 
    const {
       message: successMessage,
@@ -128,6 +129,7 @@ export default function ViewCredit() {
          submitItemInputs()
          return
       }
+      amountRef?.current?.blur()
       payCredit({ creditAmount: +amount })
       resetItemInputs()
    }
@@ -138,6 +140,7 @@ export default function ViewCredit() {
          submitItemInputs()
          return
       }
+      amountRef?.current?.blur()
       updateCredit({ creditAmount: +amount, creditId })
       resetItemInputs()
       setIsEditing(false)
@@ -297,6 +300,7 @@ export default function ViewCredit() {
                      size="small"
                      value={amount}
                      type="number"
+                     inputRef={amountRef}
                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                      onChange={amountChangeHandler}
                      onBlur={amountBlurHandler}

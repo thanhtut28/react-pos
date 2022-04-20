@@ -11,13 +11,7 @@ async function getStocks(params: Params, apiClient: AxiosInstance): Promise<GetW
    return data
 }
 
-export default function useWHGetStocks(params: Params, shouldRefetch: boolean) {
+export default function useWHGetStocks(params: Params) {
    const { apiClient } = useAuth()
-   return useQuery<GetWHStocksQuery, Error>(
-      [GET_STOCKS_WH_QUERY, params],
-      () => getStocks(params, apiClient),
-      {
-         enabled: shouldRefetch,
-      }
-   )
+   return useQuery<GetWHStocksQuery, Error>([GET_STOCKS_WH_QUERY, params], () => getStocks(params, apiClient))
 }

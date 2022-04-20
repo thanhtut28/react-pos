@@ -92,7 +92,11 @@ const TransferItemsTable = memo(function TransferItemsTable({
             setIsEditing(false)
             resetItemInputs()
          }
-         setTimeout(() => setRows((prev) => prev.filter((row) => row.id !== id)))
+         setTimeout(() =>
+            setRows((prev) =>
+               prev.filter((row) => row.id !== id).map((row, index) => ({ ...row, id: index + 1 }))
+            )
+         )
       },
       [editId, resetItemInputs, setIsEditing, setRows]
    )

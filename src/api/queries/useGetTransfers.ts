@@ -11,13 +11,9 @@ async function getTransfers(params: Params, apiClient: AxiosInstance): Promise<G
    return data
 }
 
-export default function useGetTransfers(params: Params, shouldRefetch: boolean) {
+export default function useGetTransfers(params: Params) {
    const { apiClient } = useAuth()
-   return useQuery<GetTransfersQuery, Error>(
-      [GET_TRANSFERS_QUERY, params],
-      () => getTransfers(params, apiClient),
-      {
-         enabled: shouldRefetch,
-      }
+   return useQuery<GetTransfersQuery, Error>([GET_TRANSFERS_QUERY, params], () =>
+      getTransfers(params, apiClient)
    )
 }

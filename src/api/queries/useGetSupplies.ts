@@ -11,14 +11,10 @@ async function getSupplies(params: Params, apiClient: AxiosInstance): Promise<Ge
    return data
 }
 
-export default function useGetSupplies(params: Params, shouldRefetch: boolean) {
+export default function useGetSupplies(params: Params) {
    const { apiClient } = useAuth()
 
-   return useQuery<GetSuppliesQuery, Error>(
-      [GET_SUPPLIES_QUERY, params],
-      () => getSupplies(params, apiClient),
-      {
-         enabled: shouldRefetch,
-      }
+   return useQuery<GetSuppliesQuery, Error>([GET_SUPPLIES_QUERY, params], () =>
+      getSupplies(params, apiClient)
    )
 }

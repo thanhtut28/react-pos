@@ -51,3 +51,6 @@ export const TRANSFER_BY_ID_URL = '/transfer'
 
 export const GET_CREDIT_BY_ID_QUERY = 'GET_CREDIT_BY_ID_QUERY'
 export const CREDIT_URL = '/credit'
+
+export const GET_SUMMARY_QUERY = 'GET_SUMMARY_QUERY'
+export const SUMMARY_URL = '/summary'

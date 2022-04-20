@@ -1,17 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useGetStocks from '../../api/queries/useGetWHStocks'
-import { WHStock } from '../../api/queries/types'
-import { Typography, Box, CircularProgress } from '@mui/material'
-import {
-   Container,
-   StyledAvatar,
-   Flex,
-   StyledButtonBase,
-   PageTitle,
-   SearchButtonWrapper,
-} from '../../components/toolbar/Elements'
+import { Typography, Box } from '@mui/material'
+import { Container, Flex, PageTitle } from '../../components/toolbar/Elements'
 import DatePicker from '../../components/datePicker'
-import SearchIcon from '@mui/icons-material/Search'
 import StocksTable from '../../components/stocksTable'
 import { formatDate } from '../../helpers/formatDate'
 
@@ -90,40 +81,22 @@ const columns: Column[] = [
 ]
 
 export default function WarehouseStocks() {
-   const [rows, setRows] = useState<WHStock[]>([])
    const today = new Date()
-   const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
    const [fromDate, setFromDate] = useState<Date | null>(today)
    const [toDate, setToDate] = useState<Date | null>(today)
 
-   const {
-      data: stocksData,
-      refetch,
-      isFetching: fetchingStocks,
-   } = useGetStocks(
-      {
-         from: formatDate(fromDate!),
-         to: formatDate(toDate!),
-      },
-      shouldRefetch
-   )
+   const { data: stocksData, isFetching: fetchingStocks } = useGetStocks({
+      from: formatDate(fromDate!),
+      to: formatDate(toDate!),
+   })
 
    const stocks = stocksData?.data
-
-   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
 
    const handleChangeFromDate = (newDate: Date | null) => {
       if (newDate && newDate.getTime() <= new Date().getTime()) {
          setFromDate(newDate)
       }
    }
-
-   useEffect(() => {
-      if (stocks) {
-         setShouldRefetch(false)
-         setRows(stocks)
-      }
-   }, [stocks])
 
    return (
       <Container>
@@ -133,26 +106,12 @@ export default function WarehouseStocks() {
                <DatePicker value={fromDate} onChange={handleChangeFromDate} maxDate={toDate as Date} />
             </Box>
             <Typography variant="subtitle2">To</Typography>
-            <Box sx={{ px: 1 }}>
+            <Box sx={{ pl: 1 }}>
                <DatePicker value={toDate} onChange={(newValue) => setToDate(newValue)} maxDate={new Date()} />
             </Box>
-
-            <SearchButtonWrapper>
-               <StyledButtonBase
-                  aria-label="menu-toggler"
-                  onClick={() => {
-                     refetch()
-                  }}
-                  disabled={!dateIsValid}
-               >
-                  <StyledAvatar>
-                     <SearchIcon fontSize="large" />
-                  </StyledAvatar>
-               </StyledButtonBase>
-            </SearchButtonWrapper>
          </Flex>
 
-         <StocksTable rows={rows} columns={columns} loading={fetchingStocks} />
+         <StocksTable rows={stocks!} columns={columns} loading={fetchingStocks} />
       </Container>
    )
 }

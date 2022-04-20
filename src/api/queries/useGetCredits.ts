@@ -11,9 +11,7 @@ async function getCredits(params: Params, apiClient: AxiosInstance): Promise<Get
    return data
 }
 
-export default function useGetCredits(params: Params, shouldRefetch: boolean) {
+export default function useGetCredits(params: Params) {
    const { apiClient } = useAuth()
-   return useQuery<GetCreditsQuery, Error>([GET_CREDITS_QUERY, params], () => getCredits(params, apiClient), {
-      enabled: shouldRefetch,
-   })
+   return useQuery<GetCreditsQuery, Error>([GET_CREDITS_QUERY, params], () => getCredits(params, apiClient))
 }

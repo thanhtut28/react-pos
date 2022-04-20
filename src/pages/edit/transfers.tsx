@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
@@ -53,6 +53,8 @@ export default function EditTransfer() {
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
    const { transferId } = useParams()
+   const codeRef = useRef<HTMLInputElement>(null)
+   const qtyRef = useRef<HTMLInputElement>(null)
    const navigate = useNavigate()
 
    useHotkeys(
@@ -131,6 +133,11 @@ export default function EditTransfer() {
 
    const users = usersData?.data
    const items = itemsData?.data
+
+   const refsBlur = () => {
+      codeRef?.current?.blur()
+      qtyRef?.current?.blur()
+   }
 
    const resetItemInputs = useCallback(() => {
       setEditId(-1)
@@ -217,6 +224,7 @@ export default function EditTransfer() {
             qty,
          },
       ])
+      refsBlur()
       resetItemInputs()
    }
 
@@ -239,6 +247,7 @@ export default function EditTransfer() {
                : row
          )
       )
+      refsBlur()
       resetItemInputs()
       setIsEditing(false)
    }
@@ -396,6 +405,7 @@ export default function EditTransfer() {
                            onChange={handleItemCodeChangeHandler}
                            onBlur={itemCodeBlurHandler}
                            error={itemCodeError}
+                           inputRef={codeRef}
                            helperText={itemCodeError && 'This field is required'}
                            fullWidth
                         />
@@ -423,6 +433,7 @@ export default function EditTransfer() {
                            label="Quantity"
                            size="small"
                            value={qty}
+                           inputRef={qtyRef}
                            type="number"
                            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
                            onChange={qtyChangeHandler}

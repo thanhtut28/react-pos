@@ -255,6 +255,19 @@ export interface GetCreditByIdQuery {
    data: CreditReceipt
 }
 
+export interface GetSummaryQuery {
+   status: string
+   data: {
+      totalSale: number
+      totalReceived: number
+      openingBalance: number
+      totalSupplies: number
+      closingBalance: number
+      totalCapital: number
+      totalProfit: number
+   }
+}
+
 export interface Params {
    from: string
    to: string

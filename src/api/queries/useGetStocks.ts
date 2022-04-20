@@ -15,13 +15,9 @@ async function getStocks(apiClient: AxiosInstance, params: Params, userId?: stri
    return data
 }
 
-export default function useGetStocks(params: Params, shouldRefetch: boolean, userId?: string) {
+export default function useGetStocks(params: Params, userId?: string) {
    const { apiClient } = useAuth()
-   return useQuery<GetStocksQuery, Error>(
-      [GET_STOCKS_QUERY, params],
-      () => getStocks(apiClient, params, userId),
-      {
-         enabled: shouldRefetch,
-      }
+   return useQuery<GetStocksQuery, Error>([GET_STOCKS_QUERY, params, userId], () =>
+      getStocks(apiClient, params, userId)
    )
 }

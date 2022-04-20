@@ -1,52 +1,32 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import TransfersTable from '../../components/table/TransfersTable'
 import useGetTransfers from '../../api/queries/useGetTransfers'
-import { Typography, Button, Box, ButtonBase } from '@mui/material'
-import {
-   Container,
-   StyledAvatar,
-   Flex,
-   StyledButtonBase,
-   PageTitle,
-   SearchButtonWrapper,
-} from '../../components/toolbar/Elements'
+import { Typography, Button, Box } from '@mui/material'
+import { Container, Flex, PageTitle } from '../../components/toolbar/Elements'
 import { useNavigate } from 'react-router-dom'
 import DatePicker from '../../components/datePicker'
-import SearchIcon from '@mui/icons-material/Search'
 import { formatDate } from '../../helpers/formatDate'
 import { useAuth } from '../../contexts/AuthContext'
 
 export default function TransfersPage() {
    const navigate = useNavigate()
    const today = new Date()
-   const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
    const [fromDate, setFromDate] = useState<Date | null>(today)
    const [toDate, setToDate] = useState<Date | null>(today)
    const { isAdmin } = useAuth()
 
-   const { data, isFetching, refetch } = useGetTransfers(
-      {
-         from: formatDate(fromDate!),
-         to: formatDate(toDate!),
-      },
-      shouldRefetch
-   )
+   const { data, isFetching, refetch } = useGetTransfers({
+      from: formatDate(fromDate!),
+      to: formatDate(toDate!),
+   })
 
    const transfers = data?.data
-
-   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
 
    const handleChangeFromDate = (newDate: Date | null) => {
       if (newDate && newDate.getTime() <= new Date().getTime()) {
          setFromDate(newDate)
       }
    }
-
-   useEffect(() => {
-      if (transfers) {
-         setShouldRefetch(false)
-      }
-   }, [transfers])
 
    return (
       <Container>
@@ -57,27 +37,13 @@ export default function TransfersPage() {
                   <DatePicker value={fromDate} onChange={handleChangeFromDate} maxDate={toDate as Date} />
                </Box>
                <Typography variant="subtitle2">To</Typography>
-               <Box sx={{ px: 1 }}>
+               <Box sx={{ pl: 1 }}>
                   <DatePicker
                      value={toDate}
                      onChange={(newValue) => setToDate(newValue)}
                      maxDate={new Date()}
                   />
                </Box>
-
-               <SearchButtonWrapper>
-                  <StyledButtonBase
-                     aria-label="menu-toggler"
-                     onClick={() => {
-                        refetch()
-                     }}
-                     disabled={!dateIsValid}
-                  >
-                     <StyledAvatar>
-                        <SearchIcon fontSize="large" />
-                     </StyledAvatar>
-                  </StyledButtonBase>
-               </SearchButtonWrapper>
             </Flex>
 
             {isAdmin && (

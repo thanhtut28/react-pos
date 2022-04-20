@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { TextField, FormControl, MenuItem, InputLabel, Divider, Box, Autocomplete } from '@mui/material'
 import Select from '@mui/material/Select'
@@ -51,6 +51,8 @@ export default function CreateTransfers() {
    const [isEditing, setIsEditing] = useState<boolean>(false)
    const [editId, setEditId] = useState<number>(-1)
    const [openDiscardModal, setOpenDiscardModal] = useState<boolean>(false)
+   const codeRef = useRef<HTMLInputElement>(null)
+   const qtyRef = useRef<HTMLInputElement>(null)
 
    useHotkeys(
       'alt+r',
@@ -132,6 +134,11 @@ export default function CreateTransfers() {
    const users = usersData?.data
    const transferNumber = transferNumData?.data
    const items = itemsData?.data
+
+   const refsBlur = () => {
+      codeRef?.current?.blur()
+      qtyRef?.current?.blur()
+   }
 
    const resetItemInputs = useCallback(() => {
       setEditId(-1)
@@ -217,6 +224,7 @@ export default function CreateTransfers() {
             qty,
          },
       ])
+      refsBlur()
       resetItemInputs()
    }
 
@@ -239,6 +247,7 @@ export default function CreateTransfers() {
                : row
          )
       )
+      refsBlur()
       resetItemInputs()
       setIsEditing(false)
    }
@@ -385,6 +394,7 @@ export default function CreateTransfers() {
                            onBlur={itemCodeBlurHandler}
                            error={itemCodeError}
                            helperText={itemCodeError && 'This field is required'}
+                           inputRef={codeRef}
                            fullWidth
                         />
                      </TextFieldWrapper>
@@ -416,6 +426,7 @@ export default function CreateTransfers() {
                            onChange={qtyChangeHandler}
                            onBlur={qtyBlurHandler}
                            error={qtyError}
+                           inputRef={qtyRef}
                            helperText={qtyError && 'This field is required'}
                            fullWidth
                         />

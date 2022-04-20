@@ -13,6 +13,7 @@ import WarehouseIcon from '@mui/icons-material/Warehouse'
 import SendIcon from '@mui/icons-material/Send'
 import GroupIcon from '@mui/icons-material/Group'
 import CreditCardIcon from '@mui/icons-material/CreditCard'
+import SummarizeIcon from '@mui/icons-material/Summarize'
 
 const Icons = {
    DashboardIcon,
@@ -30,6 +31,7 @@ const Icons = {
    GroupIcon,
    WarehouseIcon,
    CreditCardIcon,
+   SummarizeIcon,
 }
 
 export enum Type {
@@ -146,6 +148,13 @@ export const pages: PageInterface[] = [
       type: Type.item,
       icon: Icons.WarehouseIcon,
       url: '/stocks/wh',
+   },
+   {
+      id: 'Summary',
+      title: 'Summary',
+      type: Type.item,
+      icon: Icons.SummarizeIcon,
+      url: '/summary',
    },
 ]
 

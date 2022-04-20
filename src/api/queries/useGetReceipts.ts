@@ -11,13 +11,9 @@ async function getReceipts(params: Params, apiClient: AxiosInstance): Promise<Ge
    return data
 }
 
-export default function useGetReceipts(params: Params, shouldRefetch: boolean) {
+export default function useGetReceipts(params: Params) {
    const { apiClient } = useAuth()
-   return useQuery<GetReceiptsQuery, Error>(
-      [GET_RECEIPTS_QUERY, params],
-      () => getReceipts(params, apiClient),
-      {
-         enabled: shouldRefetch,
-      }
+   return useQuery<GetReceiptsQuery, Error>([GET_RECEIPTS_QUERY, params], () =>
+      getReceipts(params, apiClient)
    )
 }

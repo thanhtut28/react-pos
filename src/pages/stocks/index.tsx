@@ -1,18 +1,9 @@
 import { useState, useEffect } from 'react'
 import useGetStocks from '../../api/queries/useGetStocks'
 import useGetUsers from '../../api/queries/useGetUsers'
-import { Stock } from '../../api/queries/types'
 import { Typography, Box, Autocomplete, TextField } from '@mui/material'
-import {
-   Container,
-   StyledAvatar,
-   Flex,
-   StyledButtonBase,
-   PageTitle,
-   SearchButtonWrapper,
-} from '../../components/toolbar/Elements'
+import { Container, Flex, PageTitle } from '../../components/toolbar/Elements'
 import DatePicker from '../../components/datePicker'
-import SearchIcon from '@mui/icons-material/Search'
 import StocksTable from '../../components/stocksTable'
 import { formatDate } from '../../helpers/formatDate'
 import { useAuth } from '../../contexts/AuthContext'
@@ -92,25 +83,18 @@ const columns: Column[] = [
 ]
 
 export default function Stocks() {
-   const [rows, setRows] = useState<Stock[]>([])
    const today = new Date()
-   const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
    const [fromDate, setFromDate] = useState<Date | null>(today)
    const [toDate, setToDate] = useState<Date | null>(today)
    const [username, setUsername] = useState<string | null>(null)
    const [userId, setUserId] = useState<string>('')
    const { isAdmin, user } = useAuth()
 
-   const {
-      data: stocksData,
-      refetch,
-      isFetching: fetchingStocks,
-   } = useGetStocks(
+   const { data: stocksData, isFetching: fetchingStocks } = useGetStocks(
       {
          from: formatDate(fromDate!),
          to: formatDate(toDate!),
       },
-      shouldRefetch,
       userId
    )
 
@@ -119,20 +103,11 @@ export default function Stocks() {
    const stocks = stocksData?.data
    const users = usersData?.data
 
-   const dateIsValid = fromDate!.getTime() <= toDate!.getTime() && toDate!.getTime() <= new Date().getTime()
-
    const handleChangeFromDate = (newDate: Date | null) => {
       if (newDate && newDate.getTime() <= new Date().getTime()) {
          setFromDate(newDate)
       }
    }
-
-   useEffect(() => {
-      if (stocks) {
-         setShouldRefetch(false)
-         setRows(stocks)
-      }
-   }, [stocks])
 
    useEffect(() => {
       const user = users?.find((user) => user.username === username)
@@ -158,7 +133,7 @@ export default function Stocks() {
                   <DatePicker value={fromDate} onChange={handleChangeFromDate} maxDate={toDate as Date} />
                </Box>
                <Typography variant="subtitle2">To</Typography>
-               <Box sx={{ px: 1 }}>
+               <Box sx={{ pl: 1 }}>
                   <DatePicker
                      value={toDate}
                      onChange={(newValue) => setToDate(newValue)}
@@ -166,7 +141,7 @@ export default function Stocks() {
                   />
                </Box>
             </Flex>
-            <Flex flex={1}>
+            <Flex flex={1} pl={1}>
                {isAdmin && (
                   <Box width={1} maxWidth={300} minWidth={100} pl={0}>
                      <Autocomplete
@@ -180,22 +155,13 @@ export default function Stocks() {
                      />
                   </Box>
                )}
-               <SearchButtonWrapper>
-                  <StyledButtonBase
-                     aria-label="menu-toggler"
-                     onClick={() => {
-                        refetch()
-                     }}
-                     disabled={!dateIsValid}
-                  >
-                     <StyledAvatar>
-                        <SearchIcon fontSize="large" />
-                     </StyledAvatar>
-                  </StyledButtonBase>
-               </SearchButtonWrapper>
             </Flex>
          </Flex>
-         <StocksTable rows={rows} columns={columns} loading={(isAdmin && fetchingUsers) || fetchingStocks} />
+         <StocksTable
+            rows={stocks!}
+            columns={columns}
+            loading={(isAdmin && fetchingUsers) || fetchingStocks}
+         />
       </Container>
    )
 }
