@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { TextField, FormControl, MenuItem, InputLabel, Divider } from '@mui/material'
+import { TextField, FormControl, MenuItem, InputLabel, Divider, Box } from '@mui/material'
 import Select from '@mui/material/Select'
 
 import useInput from '../../hooks/useInput'
 import useDisableInput from '../../hooks/useDisableInput'
 import { isNotEmpty } from '../../helpers/isNotEmpty'
 import useGetCustomers from '../../api/queries/useGetCustomers'
+import useMessageModal from '../../hooks/useMessageModal'
 import useGetReceiptById from '../../api/queries/useGetReceiptById'
 import useGetItems from '../../api/queries/useGetItems'
+import { usePrintMutation } from '../../api/mutations/print'
 import {
    Container,
    InputsWrapper,
@@ -17,11 +19,15 @@ import {
    TextFieldWrapper,
    Row,
    TableWrapper,
+   SubmitActionsWrapper,
+   StyledButton,
 } from '../../components/create/Elements'
 import DateTimePicker from '../../components/dateTimePicker'
 import { receiptTypes } from '../../dummy'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
 import ReceiptItemsTable from '../../components/table/view/ReceiptItemsTable'
+import { useHotkeys } from 'react-hotkeys-hook'
+import MessageModal from '../../components/messageModal'
 
 const calcNetAmount = (qty: number, price: number, percent = 0): number => {
    const total = qty * price
@@ -45,6 +51,32 @@ export default function ViewReceipt() {
    const [total, setTotal] = useState<number>(0)
    const [date, setDate] = useState<Date | null>(null)
    const [receiptType, setReceiptType] = useState<string>(receiptTypes[0])
+
+   const {
+      message: successMessage,
+      openMessageModal: openSuccessMessageModal,
+      handleOpenMessageModal: handleOpenSuccessMessageModal,
+      handleCloseMessageModal: handleCloseSuccessMessageModal,
+      handleSetMessage: handleSetSuccessMessage,
+   } = useMessageModal()
+
+   const {
+      message: errorMessage,
+      openMessageModal: openErrorMessageModal,
+      handleOpenMessageModal: handleOpenErrorMessageModal,
+      handleSetMessage: handleSetErrorMessage,
+      handleCloseMessageModal: handleCloseErrorMessageModal,
+   } = useMessageModal()
+
+   const {
+      data: printReceiptData,
+      mutate: printReceipt,
+      reset: resetPrintReceipt,
+      isLoading: printingReceipt,
+      isSuccess: isPrintedReceipt,
+      isError: isFailToPrint,
+      error: printReceiptError,
+   } = usePrintMutation()
 
    const { receiptId } = useParams()
 
@@ -77,9 +109,21 @@ export default function ViewReceipt() {
    const customers = customersData?.data
    const items = itemsData?.data
 
-   const loading = fetchingCustomers || fetchingItems || fetchingReceipt
+   const loading = fetchingCustomers || fetchingItems || fetchingReceipt || printingReceipt
 
    const handleDateChange = (value: Date | null) => {}
+
+   const handlePrintReceipt = () => {
+      const items = rows.map((row) => ({
+         itemId: row.itemId,
+         qty: +row.qty,
+         unitPrice: +row.unitPrice,
+         unitPercent: +row.unitPercent,
+      }))
+      printReceipt({ customerName, receiptType, items })
+   }
+
+   useHotkeys('alt+p', handlePrintReceipt)
 
    useEffect(() => {
       const customer = customers?.find((customer) => customer.code === customerCode)
@@ -127,6 +171,22 @@ export default function ViewReceipt() {
          }
       }
    }, [customers, items, receiptData, setCustomerCode, setCustomerName, setReceiptNum])
+
+   useEffect(() => {
+      if (isPrintedReceipt) {
+         handleSetSuccessMessage(printReceiptData.message)
+         handleOpenSuccessMessageModal()
+         resetPrintReceipt()
+         return
+      }
+
+      if (isFailToPrint) {
+         handleSetErrorMessage((printReceiptError as Error).message)
+         handleOpenErrorMessageModal()
+         resetPrintReceipt()
+         return
+      }
+   }, [isFailToPrint, isPrintedReceipt, printReceiptData?.message, printReceiptError, resetPrintReceipt])
 
    return (
       <Container>
@@ -224,6 +284,34 @@ export default function ViewReceipt() {
          <TableWrapper>
             <ReceiptItemsTable rows={rows} total={total} loading={loading} />
          </TableWrapper>
+         <Box sx={{ pt: 3, display: 'flex', justifyContent: 'flex-end' }}>
+            <SubmitActionsWrapper sx={{ maxWidth: 200 }}>
+               <TextFieldWrapper>
+                  <StyledButton
+                     variant="outlined"
+                     size="small"
+                     color="primary"
+                     onClick={handlePrintReceipt}
+                     fullWidth
+                  >
+                     Print
+                  </StyledButton>
+               </TextFieldWrapper>
+            </SubmitActionsWrapper>
+         </Box>
+         <MessageModal
+            variant="success"
+            onClose={handleCloseSuccessMessageModal}
+            message={successMessage}
+            open={openSuccessMessageModal}
+         />
+
+         <MessageModal
+            variant="error"
+            onClose={handleCloseErrorMessageModal}
+            message={errorMessage}
+            open={openErrorMessageModal}
+         />
       </Container>
    )
 }

@@ -19,6 +19,7 @@ import {
    Row,
    Flex,
    TableWrapper,
+   SubmitActionsWrapper,
 } from '../../components/create/Elements'
 import DateTimePicker from '../../components/dateTimePicker'
 import { isGreaterThanZero } from '../../helpers/isGreaterThanZero'
@@ -258,7 +259,7 @@ export default function ViewCredit() {
             <StyledRow>
                <TextFieldWrapper width={1} maxWidth={400}>
                   <FormControl fullWidth>
-                     <InputLabel id="demo-simple-select-label">Transfer Type</InputLabel>
+                     <InputLabel id="demo-simple-select-label">Status</InputLabel>
                      <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"

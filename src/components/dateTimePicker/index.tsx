@@ -14,7 +14,7 @@ export default function BasicDateTimePicker({ value, onChange }: Props) {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
          <DateTimePicker
             renderInput={(props) => <TextField {...props} />}
-            label="DateTimePicker"
+            label="Date"
             value={value}
             disabled
             onChange={onChange}

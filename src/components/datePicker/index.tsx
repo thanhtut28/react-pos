@@ -24,6 +24,7 @@ export default function DatePickerComponent({
             renderInput={(params) => <TextField {...params} />}
             disabled={disabled}
             maxDate={maxDate}
+            label="Date"
             allowSameDateSelection
          />
       </LocalizationProvider>

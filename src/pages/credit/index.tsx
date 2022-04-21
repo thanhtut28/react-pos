@@ -8,11 +8,10 @@ import { formatDate } from '../../helpers/formatDate'
 
 export default function CreditsPage() {
    const today = new Date()
-   const [shouldRefetch, setShouldRefetch] = useState<boolean>(true)
    const [fromDate, setFromDate] = useState<Date | null>(today)
    const [toDate, setToDate] = useState<Date | null>(today)
 
-   const { data, isFetching, refetch } = useGetCredits({
+   const { data, isFetching } = useGetCredits({
       from: formatDate(fromDate!),
       to: formatDate(toDate!),
    })

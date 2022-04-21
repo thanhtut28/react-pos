@@ -75,8 +75,6 @@ export default function CreateSupplies() {
       [rows]
    )
 
-   useHotkeys('alt+p', () => console.log('print'))
-
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -95,7 +93,6 @@ export default function CreateSupplies() {
 
    const {
       value: supplierCode,
-      valueIsValid: supplierCodeIsValid,
       inputChangeHandler: supplierCodeChangeHandler,
       inputBlurHandler: supplierCodeBlurHandler,
       inputError: supplierCodeError,
@@ -211,7 +208,7 @@ export default function CreateSupplies() {
 
    const loading = fetchingSuppliers || fetchingSupplyNum || fetchingItems || isCreatingSupply
 
-   const isValidToCreate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
+   const isValidToCreate = supplierNameIsValid && rows.length > 0
    useHotkeys('alt+s', () => handleCreateSupply(), [isValidToCreate, rows, supplierName, supplyType])
 
    const formIsValid =
@@ -626,17 +623,7 @@ export default function CreateSupplies() {
                      Save
                   </StyledButton>
                </TextFieldWrapper>
-               <TextFieldWrapper>
-                  <StyledButton
-                     variant="outlined"
-                     size="small"
-                     color="primary"
-                     onClick={() => console.log('print')}
-                     fullWidth
-                  >
-                     Print
-                  </StyledButton>
-               </TextFieldWrapper>
+
                <TextFieldWrapper sx={{ pr: 0 }}>
                   <StyledButton
                      variant="outlined"

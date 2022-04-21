@@ -77,8 +77,6 @@ export default function EditSupply() {
       [rows]
    )
 
-   useHotkeys('alt+p', () => console.log('print'))
-
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -215,7 +213,7 @@ export default function EditSupply() {
 
    const loading = fetchingSuppliers || fetchingItems || isCreatingSupply || fetchingSupply
 
-   const isValidToUpdate = supplierCodeIsValid && supplierNameIsValid && rows.length > 0
+   const isValidToUpdate = supplierNameIsValid && rows.length > 0
    useHotkeys('alt+s', () => handleUpdateSupply(), [isValidToUpdate, rows, supplierName, supplyType])
 
    const formIsValid =
@@ -652,17 +650,7 @@ export default function EditSupply() {
                      Save
                   </StyledButton>
                </TextFieldWrapper>
-               <TextFieldWrapper>
-                  <StyledButton
-                     variant="outlined"
-                     size="small"
-                     color="primary"
-                     onClick={() => console.log('print')}
-                     fullWidth
-                  >
-                     Print
-                  </StyledButton>
-               </TextFieldWrapper>
+
                <TextFieldWrapper sx={{ pr: 0 }}>
                   <StyledButton
                      variant="outlined"

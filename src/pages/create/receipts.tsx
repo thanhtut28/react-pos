@@ -10,6 +10,7 @@ import useGetCustomers from '../../api/queries/useGetCustomers'
 import useGetReceiptNum from '../../api/queries/useGetReceiptNum'
 import useGetItems from '../../api/queries/useGetItems'
 import { useCreateReceipt } from '../../api/mutations/receipt'
+import { usePrintMutation } from '../../api/mutations/print'
 import {
    Container,
    InputsWrapper,
@@ -74,8 +75,6 @@ export default function CreateReceipts() {
       [rows]
    )
 
-   useHotkeys('alt+p', () => console.log('print'))
-
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -94,7 +93,6 @@ export default function CreateReceipts() {
 
    const {
       value: customerCode,
-      valueIsValid: customerCodeIsValid,
       inputChangeHandler: customerCodeChangeHandler,
       inputBlurHandler: customerCodeBlurHandler,
       inputError: customerCodeError,
@@ -185,6 +183,16 @@ export default function CreateReceipts() {
       error: createReceiptError,
    } = useCreateReceipt(refetchReceiptNum)
 
+   const {
+      data: printReceiptData,
+      mutate: printReceipt,
+      reset: resetPrintReceipt,
+      isLoading: printingReceipt,
+      isSuccess: isPrintedReceipt,
+      isError: isFailToPrint,
+      error: printReceiptError,
+   } = usePrintMutation()
+
    const customers = customersData?.data
    const receiptNumber = receiptNumData?.data
    const items = itemsData?.data
@@ -214,9 +222,10 @@ export default function CreateReceipts() {
       submitUnitPriceInput()
    }
 
-   const loading = fetchingCustomers || fetchingReceiptNum || fetchingItems || isCreatingReceipt
+   const loading =
+      fetchingCustomers || fetchingReceiptNum || fetchingItems || isCreatingReceipt || printingReceipt
 
-   const isValidToCreate = customerCodeIsValid && customerNameIsValid && rows.length > 0
+   const isValidToCreate = customerNameIsValid && rows.length > 0
    useHotkeys('alt+s', () => handleCreateReceipt(), [isValidToCreate, rows, customerName, receiptType])
 
    const formIsValid =
@@ -346,6 +355,24 @@ export default function CreateReceipts() {
       setRows([])
    }
 
+   const handlePrintReceipt = () => {
+      if (!isValidToCreate) {
+         submitCustomerCodeInput()
+         submitCustomerNameInput()
+
+         return
+      }
+      const items = rows.map((row) => ({
+         itemId: row.itemId,
+         qty: +row.qty,
+         unitPrice: +row.unitPrice,
+         unitPercent: +row.unitPercent,
+      }))
+      printReceipt({ customerName, receiptType, items })
+   }
+
+   useHotkeys('alt+p', () => console.log('print'))
+
    useEffect(() => {
       const customer = customers?.find((customer) => customer.code === customerCode)
       if (customer) {
@@ -385,6 +412,20 @@ export default function CreateReceipts() {
          return
       }
 
+      if (isPrintedReceipt) {
+         handleSetSuccessMessage(printReceiptData.message)
+         handleOpenSuccessMessageModal()
+         resetPrintReceipt()
+         return
+      }
+
+      if (isFailToPrint) {
+         handleSetErrorMessage((printReceiptError as Error).message)
+         handleOpenErrorMessageModal()
+         resetPrintReceipt()
+         return
+      }
+
       if (isFailToCreate) {
          handleSetErrorMessage((createReceiptError as Error).message)
          handleOpenErrorMessageModal()
@@ -400,7 +441,12 @@ export default function CreateReceipts() {
       handleSetSuccessMessage,
       isCreatedReceipt,
       isFailToCreate,
+      isFailToPrint,
+      isPrintedReceipt,
+      printReceiptData?.message,
+      printReceiptError,
       resetCreateReceipt,
+      resetPrintReceipt,
    ])
 
    console.log(isValidToCreate)
@@ -621,6 +667,18 @@ export default function CreateReceipts() {
                   <StyledButton
                      variant="outlined"
                      size="small"
+                     color="primary"
+                     onClick={handlePrintReceipt}
+                     fullWidth
+                  >
+                     Print
+                  </StyledButton>
+               </TextFieldWrapper>
+
+               <TextFieldWrapper>
+                  <StyledButton
+                     variant="outlined"
+                     size="small"
                      color="success"
                      onClick={handleCreateReceipt}
                      disabled={isCreatingReceipt}
@@ -629,17 +687,7 @@ export default function CreateReceipts() {
                      Save
                   </StyledButton>
                </TextFieldWrapper>
-               <TextFieldWrapper>
-                  <StyledButton
-                     variant="outlined"
-                     size="small"
-                     color="primary"
-                     onClick={() => console.log('print')}
-                     fullWidth
-                  >
-                     Print
-                  </StyledButton>
-               </TextFieldWrapper>
+
                <TextFieldWrapper sx={{ pr: 0 }}>
                   <StyledButton
                      variant="outlined"

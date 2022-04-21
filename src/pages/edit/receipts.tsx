@@ -11,6 +11,7 @@ import useGetCustomers from '../../api/queries/useGetCustomers'
 import useGetReceiptById from '../../api/queries/useGetReceiptById'
 import useGetItems from '../../api/queries/useGetItems'
 import { useUpdateReceipt } from '../../api/mutations/receipt'
+import { usePrintMutation } from '../../api/mutations/print'
 import {
    Container,
    InputsWrapper,
@@ -77,8 +78,6 @@ export default function EditReceipt() {
       [rows]
    )
 
-   useHotkeys('alt+p', () => console.log('print'))
-
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -97,7 +96,6 @@ export default function EditReceipt() {
 
    const {
       value: customerCode,
-      valueIsValid: customerCodeIsValid,
       setValue: setCustomerCode,
       inputChangeHandler: customerCodeChangeHandler,
       inputBlurHandler: customerCodeBlurHandler,
@@ -185,6 +183,16 @@ export default function EditReceipt() {
       error: updateReceiptError,
    } = useUpdateReceipt()
 
+   const {
+      data: printReceiptData,
+      mutate: printReceipt,
+      reset: resetPrintReceipt,
+      isLoading: printingReceipt,
+      isSuccess: isPrintedReceipt,
+      isError: isFailToPrint,
+      error: printReceiptError,
+   } = usePrintMutation()
+
    const customers = customersData?.data
    const items = itemsData?.data
 
@@ -215,7 +223,7 @@ export default function EditReceipt() {
 
    const loading = fetchingCustomers || fetchingItems || isCreatingReceipt || fetchingReceipt
 
-   const isValidToUpdate = customerCodeIsValid && customerNameIsValid && rows.length > 0
+   const isValidToUpdate = customerNameIsValid && rows.length > 0
    useHotkeys('alt+s', () => handleUpdateReceipt(), [isValidToUpdate, rows, customerName, receiptType])
 
    const formIsValid =
@@ -347,6 +355,24 @@ export default function EditReceipt() {
       })
    }
 
+   const handlePrintReceipt = () => {
+      if (!isValidToUpdate) {
+         submitCustomerCodeInput()
+         submitCustomerNameInput()
+
+         return
+      }
+      const items = rows.map((row) => ({
+         itemId: row.itemId,
+         qty: +row.qty,
+         unitPrice: +row.unitPrice,
+         unitPercent: +row.unitPercent,
+      }))
+      printReceipt({ customerName, receiptType, items })
+   }
+
+   useHotkeys('alt+p', handlePrintReceipt)
+
    useEffect(() => {
       const customer = customers?.find((customer) => customer.code === customerCode)
       if (customer) {
@@ -408,6 +434,20 @@ export default function EditReceipt() {
          return
       }
 
+      if (isPrintedReceipt) {
+         handleSetSuccessMessage(printReceiptData.message)
+         handleOpenSuccessMessageModal()
+         resetPrintReceipt()
+         return
+      }
+
+      if (isFailToPrint) {
+         handleSetErrorMessage((printReceiptError as Error).message)
+         handleOpenErrorMessageModal()
+         resetPrintReceipt()
+         return
+      }
+
       if (isFailToUpdate) {
          handleSetErrorMessage((updateReceiptError as Error).message)
          handleOpenErrorMessageModal()
@@ -424,6 +464,11 @@ export default function EditReceipt() {
       isUpdatedReceipt,
       isFailToUpdate,
       resetUpdateReceipt,
+      isPrintedReceipt,
+      printReceiptData?.message,
+      resetPrintReceipt,
+      isFailToPrint,
+      printReceiptError,
    ])
 
    return (
@@ -642,22 +687,22 @@ export default function EditReceipt() {
                   <StyledButton
                      variant="outlined"
                      size="small"
-                     color="success"
-                     onClick={handleUpdateReceipt}
+                     color="primary"
+                     onClick={handlePrintReceipt}
                      fullWidth
                   >
-                     Save
+                     Print
                   </StyledButton>
                </TextFieldWrapper>
                <TextFieldWrapper>
                   <StyledButton
                      variant="outlined"
                      size="small"
-                     color="primary"
-                     onClick={() => console.log('print')}
+                     color="success"
+                     onClick={handleUpdateReceipt}
                      fullWidth
                   >
-                     Print
+                     Save
                   </StyledButton>
                </TextFieldWrapper>
                <TextFieldWrapper sx={{ pr: 0 }}>

@@ -49,7 +49,7 @@ const TransferItemsTable = memo(function TransferItemsTable({
          field: 'creditDate',
          headerName: 'Date',
          flex: 1,
-         minWidth: 100,
+         minWidth: 180,
          type: 'date',
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -58,7 +58,11 @@ const TransferItemsTable = memo(function TransferItemsTable({
          sortable: false,
          valueFormatter: (params: GridValueFormatterParams) => {
             const dateString = params.value ? params.value.toString() : ''
-            const formattedValue = formatDate(new Date(dateString.split('T')[0]))
+            console.log()
+
+            const formattedValue = `${formatDate(new Date(dateString.split('T')[0]))} ${new Date(
+               dateString
+            ).toLocaleTimeString('en-US')}`
 
             return formattedValue
          },

@@ -62,8 +62,6 @@ export default function CreateTransfers() {
       [rows]
    )
 
-   useHotkeys('alt+p', () => console.log('print'))
-
    const {
       message: successMessage,
       openMessageModal: openSuccessMessageModal,
@@ -474,17 +472,7 @@ export default function CreateTransfers() {
                      Save
                   </StyledButton>
                </TextFieldWrapper>
-               <TextFieldWrapper>
-                  <StyledButton
-                     variant="outlined"
-                     size="small"
-                     color="primary"
-                     onClick={() => console.log('print')}
-                     fullWidth
-                  >
-                     Print
-                  </StyledButton>
-               </TextFieldWrapper>
+
                <TextFieldWrapper sx={{ pr: 0 }}>
                   <StyledButton
                      variant="outlined"
