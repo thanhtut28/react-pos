@@ -42,7 +42,7 @@ export default function AuthContextProvider({ children }: { children: React.Reac
    }
 
    const apiClient = axios.create({
-      baseURL: 'https://umt-api-mgoum.ondigitalocean.app/api',
+      baseURL: 'https://my-app-zmoyo.ondigitalocean.app/api',
       headers: {
          Authorization: accessToken ? `Bearer ${accessToken}` : '',
       },
