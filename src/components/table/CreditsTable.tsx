@@ -42,7 +42,7 @@ const CreditsTable = memo(function CreditsTable({ loading, data }: Props) {
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -54,7 +54,7 @@ const CreditsTable = memo(function CreditsTable({ loading, data }: Props) {
          field: 'receiptDate',
          headerName: 'Date',
          flex: 1,
-         minWidth: 150,
+         minWidth: 100,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -70,9 +70,9 @@ const CreditsTable = memo(function CreditsTable({ loading, data }: Props) {
       },
       {
          field: 'receiptNum',
-         headerName: 'Receipt Num',
+         headerName: 'Num',
          flex: 1,
-         minWidth: 80,
+         minWidth: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -157,7 +157,7 @@ const CreditsTable = memo(function CreditsTable({ loading, data }: Props) {
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             <GridActionsCellItem
                key="view"

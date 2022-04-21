@@ -45,7 +45,7 @@ const ItemsTable = memo(function ItemsTable({
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -55,9 +55,9 @@ const ItemsTable = memo(function ItemsTable({
       },
       {
          field: 'itemCode',
-         headerName: 'Item Code',
+         headerName: 'Code',
          flex: 1,
-         minWidth: 100,
+         minWidth: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -68,7 +68,7 @@ const ItemsTable = memo(function ItemsTable({
          field: 'itemName',
          headerName: 'Item Name',
          flex: 1,
-         minWidth: 120,
+         minWidth: 130,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -77,9 +77,9 @@ const ItemsTable = memo(function ItemsTable({
       },
       {
          field: 'lowestQty',
-         headerName: 'Lowest Qty',
+         headerName: 'Lowest',
          flex: 1,
-         minWidth: 100,
+         minWidth: 70,
          type: 'number',
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -89,9 +89,9 @@ const ItemsTable = memo(function ItemsTable({
       },
       {
          field: 'unitPrice',
-         headerName: 'Unit Price',
+         headerName: 'Price',
          flex: 1,
-         minWidth: 100,
+         minWidth: 120,
          headerClassName: 'table--header',
          hideSortIcons: true,
          type: 'number',
@@ -105,7 +105,7 @@ const ItemsTable = memo(function ItemsTable({
       },
       {
          field: 'unitPercent',
-         headerName: 'Unit Percent',
+         headerName: 'Percent',
          flex: 1,
          minWidth: 100,
          headerClassName: 'table--header',
@@ -125,7 +125,7 @@ const ItemsTable = memo(function ItemsTable({
                  field: 'actions',
                  type: 'actions',
                  headerName: 'Actions',
-                 width: 200,
+                 width: 100,
                  getActions: (data: any) => [
                     <GridActionsCellItem
                        key="edit"

@@ -35,7 +35,7 @@ const UsersTable = memo(function UsersTable({
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -58,7 +58,7 @@ const UsersTable = memo(function UsersTable({
          field: 'username',
          headerName: 'Username',
          flex: 1,
-         minWidth: 150,
+         minWidth: 180,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -69,7 +69,7 @@ const UsersTable = memo(function UsersTable({
          field: 'role',
          headerName: 'Role',
          flex: 1,
-         minWidth: 150,
+         minWidth: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -80,7 +80,7 @@ const UsersTable = memo(function UsersTable({
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             <GridActionsCellItem
                key="edit"

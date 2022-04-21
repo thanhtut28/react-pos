@@ -43,7 +43,7 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -55,7 +55,7 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          field: 'supplyDate',
          headerName: 'Date',
          flex: 1,
-         minWidth: 150,
+         minWidth: 100,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -71,9 +71,9 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
       },
       {
          field: 'supplyNum',
-         headerName: 'Supply Num',
+         headerName: 'Num',
          flex: 1,
-         minWidth: 80,
+         minWidth: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -83,8 +83,8 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
       },
       {
          field: 'supplyType',
-         headerName: 'Supply Type',
-         width: 150,
+         headerName: 'Type',
+         width: 80,
          align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -99,7 +99,7 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          field: 'supplierName',
          headerName: 'Supplier Name',
          flex: 1,
-         minWidth: 150,
+         minWidth: 180,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -126,7 +126,7 @@ const SuppliesTable = memo(function SuppliesTable({ loading, data }: Props) {
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             ...(new Date().toLocaleDateString() === new Date(data.row.supplyDate).toLocaleDateString()
                ? [

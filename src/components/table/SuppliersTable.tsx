@@ -37,7 +37,7 @@ const SuppliersTable = memo(function SuppliersTable({
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -47,9 +47,9 @@ const SuppliersTable = memo(function SuppliersTable({
       },
       {
          field: 'supplierCode',
-         headerName: 'Supplier Code',
+         headerName: 'Code',
          flex: 1,
-         minWidth: 150,
+         minWidth: 80,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -60,7 +60,7 @@ const SuppliersTable = memo(function SuppliersTable({
          field: 'supplierName',
          headerName: 'Supplier Name',
          flex: 1,
-         minWidth: 150,
+         minWidth: 180,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -71,7 +71,7 @@ const SuppliersTable = memo(function SuppliersTable({
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             <GridActionsCellItem
                key="edit"

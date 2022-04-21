@@ -37,7 +37,7 @@ const CustomersTable = memo(function CustomersTable({
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -47,9 +47,9 @@ const CustomersTable = memo(function CustomersTable({
       },
       {
          field: 'code',
-         headerName: 'Customer Code',
+         headerName: 'Code',
          flex: 1,
-         minWidth: 120,
+         minWidth: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -59,7 +59,7 @@ const CustomersTable = memo(function CustomersTable({
       {
          field: 'name',
          headerName: 'Customer Name',
-         minWidth: 140,
+         minWidth: 180,
          flex: 1,
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -72,7 +72,7 @@ const CustomersTable = memo(function CustomersTable({
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             <GridActionsCellItem
                key="edit"

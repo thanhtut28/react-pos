@@ -30,7 +30,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
       {
          field: 'id',
          headerName: 'No',
-         width: 80,
+         width: 70,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -42,7 +42,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          field: 'transferDate',
          headerName: 'Date',
          flex: 1,
-         minWidth: 150,
+         minWidth: 100,
          headerClassName: 'table--header',
          hideSortIcons: true,
          disableColumnMenu: true,
@@ -58,7 +58,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
       },
       {
          field: 'transferNum',
-         headerName: 'Transfer Num',
+         headerName: 'Num',
          flex: 1,
          minWidth: 80,
          headerClassName: 'table--header',
@@ -70,8 +70,8 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
       },
       {
          field: 'transferType',
-         headerName: 'Transfer Type',
-         width: 150,
+         headerName: 'Type',
+         width: 80,
          align: 'center',
          headerClassName: 'table--header',
          hideSortIcons: true,
@@ -92,7 +92,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
                  field: 'username',
                  headerName: 'Transfer To',
                  flex: 1,
-                 minWidth: 150,
+                 minWidth: 180,
                  headerClassName: 'table--header',
                  hideSortIcons: true,
                  disableColumnMenu: true,
@@ -105,7 +105,7 @@ const TransfersTable = memo(function TransfersTable({ loading, data }: Props) {
          field: 'actions',
          type: 'actions',
          headerName: 'Actions',
-         width: 200,
+         width: 100,
          getActions: (data: any) => [
             ...(isAdmin &&
             new Date().toLocaleDateString() === new Date(data.row.transferDate).toLocaleDateString()
