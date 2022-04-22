@@ -120,7 +120,7 @@ export default function ViewReceipt() {
          unitPrice: +row.unitPrice,
          unitPercent: +row.unitPercent,
       }))
-      printReceipt({ customerName, receiptType, items })
+      printReceipt({ customerName, receiptType, receiptNum: +receiptNum, items })
    }
 
    useHotkeys('alt+p', handlePrintReceipt)
@@ -186,7 +186,17 @@ export default function ViewReceipt() {
          resetPrintReceipt()
          return
       }
-   }, [isFailToPrint, isPrintedReceipt, printReceiptData?.message, printReceiptError, resetPrintReceipt])
+   }, [
+      handleOpenErrorMessageModal,
+      handleOpenSuccessMessageModal,
+      handleSetErrorMessage,
+      handleSetSuccessMessage,
+      isFailToPrint,
+      isPrintedReceipt,
+      printReceiptData?.message,
+      printReceiptError,
+      resetPrintReceipt,
+   ])
 
    return (
       <Container>

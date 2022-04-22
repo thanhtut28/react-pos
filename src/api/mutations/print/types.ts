@@ -13,5 +13,6 @@ export interface Item {
 export interface PrintMutationVariables {
    customerName: string
    receiptType: string
+   receiptNum?: number
    items: Item[]
 }

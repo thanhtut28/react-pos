@@ -368,7 +368,7 @@ export default function EditReceipt() {
          unitPrice: +row.unitPrice,
          unitPercent: +row.unitPercent,
       }))
-      printReceipt({ customerName, receiptType, items })
+      printReceipt({ customerName, receiptType, receiptNum: +receiptNum, items })
    }
 
    useHotkeys('alt+p', handlePrintReceipt)
