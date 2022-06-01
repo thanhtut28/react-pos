@@ -137,7 +137,6 @@ const Routes: RoutesProps = (isLoggedIn, isAdmin) => [
    {
       path: '/login',
       element: !isLoggedIn ? <Login /> : <Navigate to="/" replace />,
-      children: [{ index: true, element: <h1>Hello User</h1> }],
    },
 
    {
