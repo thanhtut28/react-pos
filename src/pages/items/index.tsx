@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import useInput from '../../hooks/useInput'
 import useMessageModal from '../../hooks/useMessageModal'
 import ItemsTable from '../../components/table/ItemsTable'
-import { Typography, Button, TextField, Dialog } from '@mui/material'
+import { Button, TextField, Dialog } from '@mui/material'
 import useGetItems from '../../api/queries/useGetItems'
 import { useAddItem, useUpdateItem, useDeleteItem } from '../../api/mutations/item'
 import {
